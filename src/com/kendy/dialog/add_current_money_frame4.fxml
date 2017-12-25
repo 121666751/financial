@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane hgap="14.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="356.0" prefWidth="340.0" vgap="14.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kendy.controller.AddController">
+  <children>
+    <VBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" prefHeight="341.0" prefWidth="298.0" spacing="7.0" GridPane.columnIndex="1">
+      <children>
+            <Label fx:id="detailsLabel1111" text="玩家ID：" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <TextField fx:id="cmPlayerId" prefHeight="23.0" prefWidth="230.0" />
+        <Label fx:id="messageLabel" prefHeight="18.0" prefWidth="171.0" text="名称：" textAlignment="LEFT" wrapText="true">
+          <font>
+            <Font name="System Bold" size="13.0" />
+          </font>
+        </Label>
+            <TextField fx:id="cmName" prefHeight="23.0" prefWidth="230.0" />
+            <Label fx:id="detailsLabel1" text="金额：" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <TextField fx:id="cmMoney" prefHeight="23.0" prefWidth="230.0" />
+            <AnchorPane prefHeight="11.0" prefWidth="298.0" />
+            <Label fx:id="detailsLabel12" text="系统说明：" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label fx:id="detailsLabel121" prefHeight="18.0" prefWidth="287.0" text="1，若添加人员金额记录务必填写玩家ID和金额" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label fx:id="detailsLabel1211" prefHeight="18.0" prefWidth="287.0" text="2，若添加其他金额记录务必填写名称和金额" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label fx:id="detailsLabel12111" prefHeight="18.0" prefWidth="287.0" text="     不按以上规则添加导致不能平帐不要找小林" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <AnchorPane prefHeight="3.0" prefWidth="298.0" />
+          <HBox maxHeight="-Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity">
+            <children>
+                  <Button fx:id="add_current_money_OK_Btn1" minWidth="80.0" mnemonicParsing="false" onAction="#add_SSJE_person_Action" prefHeight="28.0" prefWidth="135.0" text="添加人员金额">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+            <Button fx:id="add_current_money_OK_Btn" minWidth="80.0" mnemonicParsing="false" onAction="#add_SSJE_other_Action" prefHeight="28.0" prefWidth="141.0" text="添加其他金额" HBox.hgrow="NEVER">
+              <HBox.margin>
+                <Insets left="14.0" />
+              </HBox.margin>
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+            </Button>
+            </children>
+          </HBox>
+      </children>
+    </VBox>
+  </children>
+  <columnConstraints>
+    <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
+    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="+Infinity" minWidth="-Infinity" />
+  </columnConstraints>
+  <padding>
+    <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+  </padding>
+  <rowConstraints>
+    <RowConstraints maxHeight="Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="ALWAYS" />
+    <RowConstraints maxHeight="Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="ALWAYS" />
+      <RowConstraints maxHeight="Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="ALWAYS" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
+  </rowConstraints>
+</GridPane>

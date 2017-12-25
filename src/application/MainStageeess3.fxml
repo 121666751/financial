@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.media.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.scene.*?>
+<?import javafx.embed.swing.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.paint.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="checkExcelBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="893.0" prefWidth="1328.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MyController">
+   <children>
+      <TabPane fx:id="tabs" layoutY="8.0" prefHeight="893.0" prefWidth="1068.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab text="基本信息">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="785.0" prefWidth="1073.0">
+                     <children>
+                        <Group layoutX="9.0" layoutY="52.0">
+                           <children> 
+                              <Label fx:id="lable_currentClubId" layoutX="216.0" layoutY="80.0" prefHeight="19.0" prefWidth="87.0" text="555550">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="label_clubId" layoutX="101.0" layoutY="80.0" text="当前俱乐部ID:">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Button fx:id="config_clubId" layoutX="346.0" layoutY="78.0" mnemonicParsing="false" onAction="#configCurrentClueIdAction" prefHeight="23.0" prefWidth="45.0" text="修改" />
+                           </children>
+                        </Group>
+                        <Group layoutX="-11.0" layoutY="93.0">
+                           <children>
+                              <Button fx:id="importHuishuiBtn" layoutX="616.0" layoutY="318.0" mnemonicParsing="false" onAction="#importHuishuiExcelAction" prefHeight="23.0" prefWidth="54.0" text="导入" />
+                              <Button fx:id="openPreDataBtn" layoutX="94.0" layoutY="396.0" mnemonicParsing="false" onAction="#openPreDataExcelAction" prefHeight="23.0" prefWidth="111.0" text="昨日留底excel" />
+                              <Button fx:id="addHuishuiBtn" layoutX="684.0" layoutY="318.0" mnemonicParsing="false" onAction="#addHuishuiAction" prefHeight="23.0" prefWidth="75.0" text="添加回水" />
+                              <Button fx:id="openMembersExcelBtn1" layoutX="94.0" layoutY="318.0" mnemonicParsing="false" onAction="#openHuishuiExcelAction" prefHeight="23.0" prefWidth="111.0" text="回水比例excel" />
+                              <Button fx:id="importMembersBtn" layoutX="614.0" layoutY="248.0" mnemonicParsing="false" onAction="#importMembersExcelAction" prefHeight="23.0" prefWidth="58.0" text="导入" />
+                              <TextField fx:id="huishuiDir" editable="false" layoutX="233.0" layoutY="318.0" opacity="0.38" prefHeight="23.0" prefWidth="361.0" />
+                              <TextField fx:id="membersDir" editable="false" layoutX="233.0" layoutY="248.0" opacity="0.38" prefHeight="23.0" prefWidth="361.0" />
+                              <TextField fx:id="preDataDir" editable="false" layoutX="233.0" layoutY="396.0" opacity="0.38" prefHeight="23.0" prefWidth="361.0" />
+                              <Button fx:id="importPreDataBtn" layoutX="619.0" layoutY="396.0" mnemonicParsing="false" onAction="#importPreDataExcelAction" prefHeight="23.0" prefWidth="139.0" text="导入到01场次" />
+                              <Button fx:id="openMembersExcelBtn" layoutX="94.0" layoutY="244.0" mnemonicParsing="false" onAction="#openMembersExcelAction" prefHeight="23.0" prefWidth="112.0" text="人员名单excel" />
+                              <Button fx:id="add_new_player_btn" layoutX="686.0" layoutY="248.0" mnemonicParsing="false" onAction="#openNewPlayerDialogAction" prefHeight="23.0" prefWidth="70.0" text="添加人员" />
+                              <Button fx:id="openDelMemberBtn" layoutX="771.0" layoutY="249.0" mnemonicParsing="false" onAction="#openDelMemberDialogAction" prefHeight="23.0" prefWidth="85.0" text="删除或修改" />
+                              <Button fx:id="exportMembersBtn" layoutX="872.0" layoutY="249.0" mnemonicParsing="false" onAction="#exportMembersExcelAction" prefHeight="23.0" prefWidth="58.0" text="导出" />
+                              <Button fx:id="exportHuishuiBtn" layoutX="773.0" layoutY="319.0" mnemonicParsing="false" onAction="#exportHuishuiExcelAction" prefHeight="23.0" prefWidth="56.0" text="导出" />
+                              <Button fx:id="exportHuishuiBtn2" layoutX="843.0" layoutY="319.0" mnemonicParsing="false" onAction="#updateTeamHsRateAction" prefHeight="23.0" prefWidth="97.0" text="修改团队回水" />
+                           </children>
+                        </Group>
+                        <Group layoutX="35.0" layoutY="52.0">
+                           <children>
+                              <Label fx:id="label_clubId1" layoutX="101.0" layoutY="145.0" text="股东信息： ">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Button fx:id="addNewGudong" layoutX="320.0" layoutY="143.0" mnemonicParsing="false" onAction="#addGudongAction" prefHeight="23.0" prefWidth="45.0" text="--&gt;" />
+                              <TextField fx:id="gudongInput" layoutX="193.0" layoutY="143.0" prefHeight="23.0" prefWidth="98.0" promptText="股东名称" />
+                              <Button fx:id="delGudongBtn" layoutX="325.0" layoutY="201.0" mnemonicParsing="false" onAction="#delGudongAction" text="&lt; --" />
+                           </children>
+                        </Group>
+                        <Button fx:id="startStaticBtn" layoutX="82.0" layoutY="632.0" mnemonicParsing="false" onAction="#openTimeInputAction" prefHeight="23.0" prefWidth="291.0" text="我要开始做新一天的报表" />
+                        <ListView fx:id="gudongListView" layoutX="434.0" layoutY="195.0" prefHeight="92.0" prefWidth="85.0" />
+                        <Label fx:id="dbConnectionState" layoutX="224.0" layoutY="76.0" text="未连接">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="label_clubId4" layoutX="96.0" layoutY="77.0" prefHeight="19.0" prefWidth="126.0" text="连接数据库状态：">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="dbConnectBtn" layoutX="335.0" layoutY="74.0" mnemonicParsing="false" onAction="#dbConnectAction" prefHeight="23.0" prefWidth="67.0" text="测试连接" />
+                        <Button fx:id="middle2ContinueBtn" layoutX="415.0" layoutY="632.0" mnemonicParsing="false" onAction="#middle2ContinueAction" prefHeight="23.0" prefWidth="333.0" text="软件关闭后，从中途接着做" />
+                        <Button fx:id="endStaticBtn" layoutX="81.0" layoutY="699.0" mnemonicParsing="false" onAction="#endStaticAction" prefHeight="23.0" prefWidth="670.0" text="结束今天所有报表操作，存入数据库归档" />
+                        <Button fx:id="clearAllData" layoutX="459.0" layoutY="75.0" mnemonicParsing="false" onAction="#clearAllDataAction" prefHeight="23.0" prefWidth="159.0" text="清空数据库（测试使用）" />
+                        <Button fx:id="combineIDButton" layoutX="831.0" layoutY="554.0" mnemonicParsing="false" onAction="#opentCombineIDDialogAction" prefHeight="23.0" prefWidth="79.0" text="玩家ID合并" />
+                        <Label fx:id="label_clubId2" layoutX="466.0" layoutY="130.0" text="系统编码：">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="sysCode" alignment="CENTER" layoutX="547.0" layoutY="128.0" prefHeight="23.0" prefWidth="71.0" text="UTF8" />
+                        <Button fx:id="combineIDButton1" layoutX="83.0" layoutY="554.0" mnemonicParsing="false" onAction="#opentBatchCombineIDDialogAction" prefHeight="23.0" prefWidth="110.0" text="合并ID模板excel" />
+                        <Button fx:id="combineIDButton11" layoutX="760.0" layoutY="554.0" mnemonicParsing="false" onAction="#exportCombineIDAction" prefHeight="23.0" prefWidth="57.0" text="导出" />
+                        <TextField fx:id="combineIdDir" editable="false" layoutX="222.0" layoutY="554.0" opacity="0.38" prefHeight="23.0" prefWidth="361.0" />
+                        <Button fx:id="importHuishuiBtn1" layoutX="610.0" layoutY="554.0" mnemonicParsing="false" onAction="#importBatchCombineIdExcelAction" prefHeight="23.0" prefWidth="54.0" text="导入" />
+                        <Label fx:id="label_clubId21" layoutX="637.0" layoutY="130.0" text="启动测试模式：">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <RadioButton fx:id="radio_autoTest_yes" layoutX="742.0" layoutY="133.0" mnemonicParsing="false" text="是" />
+                        <RadioButton fx:id="radio_autoTest_no" layoutX="789.0" layoutY="133.0" mnemonicParsing="false" selected="true" text="否" />
+                        <Button fx:id="checkCombineIdButton" layoutX="686.0" layoutY="554.0" mnemonicParsing="false" onAction="#checkCombineIdAction" prefHeight="23.0" prefWidth="57.0" text="检测" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="场次信息">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="864.0" prefWidth="1428.0">
+                     <children>
+                        <AnchorPane fx:id="pageAnchorPane" layoutX="800.0" layoutY="821.0" prefHeight="46.0" prefWidth="1328.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <HBox layoutX="1041.0" layoutY="9.0">
+                                 <children>
+                                    <Button fx:id="pageFirstBtn" mnemonicParsing="false" onAction="#pageFirstAction" text="第一局" />
+                                    <Button fx:id="pagePreBtn" mnemonicParsing="false" onAction="#pagePreAction" text="&lt;&lt;" />
+                                    <TextField fx:id="pageInput" alignment="CENTER" onKeyPressed="#turn2PageEnterAction" prefHeight="23.0" prefWidth="84.0" text="1">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </TextField>
+                                    <Button fx:id="pagetNextBtn" mnemonicParsing="false" onAction="#pageNextAction" text="&gt;&gt;" />
+                                    <Button fx:id="pagetLastBtn1" mnemonicParsing="false" onAction="#pageLastAction" text="最后一局" />
+                                 </children>
+                              </HBox>
+                              <Label layoutX="38.0" layoutY="13.0" prefHeight="20.0" prefWidth="43.0" text="时间：" />
+                              <Label fx:id="dateLabel" layoutX="81.0" layoutY="13.0" prefHeight="20.0" prefWidth="127.0" />
+                           </children>
+                        </AnchorPane>
+                        <ScrollPane focusTraversable="false" layoutX="4.0" layoutY="-6.0" prefHeight="826.0" prefWidth="1327.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0">
+                          <content>
+                            <AnchorPane fx:id="exportSSJE" maxHeight="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="823.0" prefWidth="1324.0">
+                                 <children>
+                                    <HBox fx:id="importZJHBox" layoutX="49.0" layoutY="53.0" prefHeight="24.0" prefWidth="652.0">
+                                       <children>
+                                          <Group>
+                                             <children>
+                                                <TextField fx:id="excelDir" editable="false" layoutX="156.0" layoutY="53.0" minWidth="100.0" opacity="0.38" prefHeight="23.0" prefWidth="330.0" AnchorPane.leftAnchor="156.0" />
+                                                <Button fx:id="importExcelBtn" layoutX="31.0" layoutY="53.0" mnemonicParsing="false" onAction="#openZJExcelAction" prefHeight="23.0" prefWidth="107.0" text="战绩excel" />
+                                             </children>
+                                          </Group>
+                                          <AnchorPane prefHeight="24.0" prefWidth="19.0" />
+                                          <Button fx:id="checkExcelBtn" mnemonicParsing="false" onAction="#checkExcelAction" prefHeight="23.0" prefWidth="47.0" text="校验" />
+                                          <AnchorPane prefHeight="24.0" prefWidth="19.0" />
+                                          <Button fx:id="importZJBtn1" mnemonicParsing="false" onAction="#openCancelAlertAction" prefHeight="23.0" prefWidth="65.0" text="撤销" />
+                                          <AnchorPane prefHeight="24.0" prefWidth="19.0" />
+                                          <Button fx:id="importZJBtn" mnemonicParsing="false" onAction="#importZJExcelAction" prefHeight="23.0" prefWidth="65.0" text="导入" />
+                                       </children>
+                                    </HBox>
+                                    <TableView fx:id="tableTotalInfo" layoutX="38.0" layoutY="116.0" prefHeight="227.0" prefWidth="875.0">
+                                      <columns>
+                                        <TableColumn fx:id="tuan" prefWidth="75.0" text="团ID" />
+                                        <TableColumn fx:id="wanjiaId" prefWidth="103.0" text="玩家ID" />
+                                          <TableColumn fx:id="wanjia" prefWidth="106.0" text="玩家" />
+                                          <TableColumn fx:id="jifen" prefWidth="71.0" text="计分" />
+                                          <TableColumn fx:id="shishou" prefWidth="67.0" text="实收" />
+                                          <TableColumn fx:id="baoxian" prefWidth="73.0" text="保险" />
+                                          <TableColumn fx:id="chuHuishui" prefWidth="70.0" text="出回水" />
+                                          <TableColumn fx:id="baohui" prefWidth="76.0" text="回保" />
+                                          <TableColumn fx:id="shuihouxian" prefWidth="65.0" text="水后险" />
+                                          <TableColumn fx:id="shouHuishui" prefWidth="75.0" text="收回水" />
+                                          <TableColumn fx:id="heLirun" prefWidth="83.0" text="合利润" />
+                                      </columns>
+                                    </TableView>
+                                    <TableView fx:id="tablePaiju" layoutX="40.0" layoutY="361.0" prefHeight="237.0" prefWidth="528.0">
+                                      <columns>
+                                          <TableColumn fx:id="copy" prefWidth="65.0" text="复制" />
+                                          <TableColumn fx:id="paiju" prefWidth="72.0" text="牌局" />
+                                        <TableColumn fx:id="wanjiaName" prefWidth="102.0" text="玩家" />
+                                        <TableColumn fx:id="zhangji" prefWidth="61.0" text="战绩" />
+                                          <TableColumn fx:id="yicunJifen" prefWidth="63.0" text="已存积分" />
+                                          <TableColumn fx:id="heji" prefWidth="63.0" text="合计" />
+                                          <TableColumn fx:id="pay" prefWidth="81.0" text="支付" />
+                                      </columns>
+                                    </TableView>
+                                    <TableView fx:id="tableCurrentMoneyInfo" layoutX="584.0" layoutY="398.0" maxHeight="1.7976931348623157E308" prefHeight="419.0" prefWidth="325.0">
+                                      <columns>
+                                          <TableColumn fx:id="cmSuperIdSum" prefWidth="57.0" text="总和" />
+                                        <TableColumn fx:id="mingzi" prefWidth="114.0" text="名字" />
+                                        <TableColumn fx:id="shishiJine" maxWidth="3000.0" minWidth="0.0" prefWidth="69.0" text="实时金额" />
+                                          <TableColumn fx:id="cmiEdu" minWidth="0.0" prefWidth="66.0" text="额度" />
+                                      </columns>
+                                    </TableView>
+                                    <VBox layoutX="943.0" layoutY="116.0" prefHeight="696.0" prefWidth="152.0">
+                                       <children>
+                                          <TableView fx:id="tableZijin" prefHeight="194.0" prefWidth="152.0">
+                                            <columns>
+                                              <TableColumn fx:id="zijinType" prefWidth="75.0" text="资金" />
+                                              <TableColumn fx:id="zijinAccount" prefWidth="75.0" />
+                                            </columns>
+                                          </TableView>
+                                          <AnchorPane prefHeight="52.0" prefWidth="152.0">
+                                             <children>
+                                                <HBox layoutX="3.0" layoutY="12.0" prefHeight="22.0" prefWidth="146.0">
+                                                   <children>
+                                                      <Button fx:id="lianmengBtn" mnemonicParsing="false" onAction="#openLMDialogAction" prefHeight="23.0" prefWidth="74.0" text="联盟对帐">
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor></Button>
+                                                      <Label fx:id="LMLabel" alignment="CENTER" layoutX="65.0" prefHeight="49.0" prefWidth="81.0" style="-fx-background-color: #EBEBEB; -fx-border-color: #D3D3D3;" text="0">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                             </children></AnchorPane>
+                                          <HBox>
+                                             <children>
+                                                <Button fx:id="openKaixiaoDialogBtn" mnemonicParsing="false" onAction="#openKaixiaoDialogAction" prefHeight="23.0" prefWidth="72.0" text="增加" />
+                                                <Button fx:id="delKaixiaoBtn" mnemonicParsing="false" onAction="#delKaixiaoAction" prefHeight="23.0" prefWidth="81.0" text="删除" />
+                                             </children>
+                                          </HBox>
+                                          <AnchorPane prefHeight="8.0" prefWidth="152.0" />
+                                          <TableView fx:id="tableKaixiao" layoutX="37.0" layoutY="898.0" prefHeight="416.0" prefWidth="152.0">
+                                             <columns>
+                                                <TableColumn fx:id="kaixiaoType" prefWidth="75.0" text="实时开销" />
+                                                <TableColumn fx:id="kaixiaoMoney" prefWidth="75.0" />
+                                             </columns>
+                                          </TableView>
+                                       </children>
+                                    </VBox>
+                                    <Hyperlink fx:id="addCurrentMoneyLink" layoutX="584.0" layoutY="366.0" onAction="#openAddCurrentMoneyAction" text="新增" />
+                                    <TableView fx:id="tableTeam" layoutX="42.0" layoutY="618.0" prefHeight="198.0" prefWidth="527.0">
+                                       <columns>
+                                          <TableColumn fx:id="teamID" prefWidth="73.0" text="团队ID" />
+                                          <TableColumn fx:id="teamZJ" prefWidth="82.0" text="团队累计战绩" />
+                                          <TableColumn fx:id="teamHS" prefWidth="107.0" text="团队累计回水" />
+                                          <TableColumn fx:id="teamBS" prefWidth="96.0" text="团队累计回保" />
+                                          <TableColumn fx:id="teamSum" prefWidth="75.0" text="总" />
+                                          <TableColumn fx:id="teamJiesuan" prefWidth="79.0" text="结算" />
+                                       </columns>
+                                    </TableView>
+                                    <VBox layoutX="1119.0" layoutY="112.0" prefHeight="705.0" prefWidth="158.0">
+                                       <children>
+                                          <Button fx:id="refreshBtn" layoutX="917.0" layoutY="156.0" mnemonicParsing="false" onAction="#refreshAction" prefHeight="23.0" prefWidth="148.0" text="平帐按钮" />
+                                          <AnchorPane prefHeight="26.0" prefWidth="159.0" />
+                                          <TableView fx:id="tablePingzhang" layoutX="921.0" layoutY="522.0" prefHeight="99.0" prefWidth="138.0">
+                                             <columns>
+                                                <TableColumn fx:id="pingzhangType" prefWidth="72.0" text="平账" />
+                                                <TableColumn fx:id="pingzhangMoney" prefWidth="64.0" />
+                                             </columns>
+                                          </TableView>
+                                          <AnchorPane prefHeight="26.0" prefWidth="159.0" />
+                                          <TableView fx:id="tableJiaoshou" layoutX="908.0" layoutY="674.0" prefHeight="104.0" prefWidth="141.0">
+                                             <columns>
+                                                <TableColumn fx:id="jiaoshouType" prefWidth="75.0" text="交收" />
+                                                <TableColumn fx:id="jiaoshouMoney" prefWidth="64.0" />
+                                             </columns>
+                                          </TableView>
+                                          <AnchorPane prefHeight="24.0" prefWidth="159.0" />
+                                          <TableView fx:id="tableProfit" layoutX="899.0" layoutY="244.0" prefHeight="217.0" prefWidth="159.0">
+                                             <columns>
+                                                <TableColumn fx:id="profitType" prefWidth="75.0" text="利润" />
+                                                <TableColumn fx:id="profitAccount" prefWidth="64.0" />
+                                             </columns>
+                                          </TableView>
+                                          <AnchorPane prefHeight="24.0" prefWidth="159.0" />
+                                          <TableView fx:id="tableDangju" prefHeight="152.0" prefWidth="159.0">
+                                             <columns>
+                                                <TableColumn fx:id="type" prefWidth="75.0" text="当局" />
+                                                <TableColumn fx:id="money" prefWidth="64.0" />
+                                             </columns>
+                                          </TableView>
+                                       </children>
+                                       <padding>
+                                          <Insets left="8.0" right="8.0" top="4.0" />
+                                       </padding>
+                                    </VBox>
+                                    <TextField fx:id="searchText" layoutX="725.0" layoutY="365.0" onDragEntered="#searchRowAction" onKeyPressed="#searchRowByEnterEvent" prefHeight="23.0" prefWidth="126.0" />
+                                    <Button fx:id="searchBtn" layoutX="848.0" layoutY="365.0" mnemonicParsing="false" onAction="#searchRowAction" prefHeight="23.0" prefWidth="61.0" text="搜索" />
+                                    <Button fx:id="lockDangjuBtn" layoutX="1127.0" layoutY="56.0" mnemonicParsing="false" onAction="#lockDangjuAction" prefHeight="34.0" prefWidth="142.0" style="-fx-border-color: red;" text="锁定当局">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Button>
+                                    <Label fx:id="lockedLabel" alignment="CENTER" layoutX="940.0" layoutY="30.0" opacity="0.76" prefHeight="46.0" prefWidth="335.0" style="-fx-background-color: red;" text="已锁定！" textAlignment="CENTER" visible="false">
+                                       <font>
+                                          <Font size="26.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="indexLabel" alignment="CENTER" layoutX="758.0" layoutY="32.0" prefHeight="58.0" prefWidth="153.0" text="第 0 局" />
+                                    <Hyperlink fx:id="delCurrentMoneyBtn" layoutX="616.0" layoutY="366.0" onAction="#delCurrentMoneyAction" text="删除" />
+                                    <Hyperlink fx:id="exportSSJE" layoutX="648.0" layoutY="366.0" onAction="#exportSSJEAction" text="导出" />
+                                    <HBox fx:id="hbox_autoTestMode" layoutX="940.0" layoutY="55.0" prefHeight="37.0" prefWidth="153.0" spacing="10.0">
+                                       <children>
+                                          <Button fx:id="importZJBtn2" mnemonicParsing="false" onAction="#refreshNextExcelAction" prefHeight="36.0" prefWidth="43.0" text="刷导" />
+                                          <Button fx:id="importZJBtn3" mnemonicParsing="false" onAction="#importNextZJExcelAction" prefHeight="36.0" prefWidth="99.0" text="导入下一场" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </ScrollPane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="总汇信息">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="785.0" prefWidth="1073.0">
+                     <children>
+                        <Button fx:id="zonghuiRefreshBtn" layoutX="117.0" layoutY="41.0" mnemonicParsing="false" onAction="#zonghuiRefreshAction" prefHeight="34.0" prefWidth="107.0" text="即时刷新" />
+                        <TableView fx:id="tableZonghui" layoutX="272.0" layoutY="114.0" prefHeight="686.0" prefWidth="448.0">
+                           <columns>
+                              <TableColumn fx:id="zonghuiTabelId" prefWidth="75.0" text="局数" />
+                              <TableColumn fx:id="zonghuiFuwufei" prefWidth="103.0" text="服务费" />
+                              <TableColumn fx:id="zonghuiBaoxian" prefWidth="87.0" text="保险" />
+                              <TableColumn fx:id="zonghuiHuishui" prefWidth="74.0" text="回水" />
+                              <TableColumn fx:id="zonghuiHuiBao" prefWidth="89.0" text="回保险" />
+                           </columns>
+                        </TableView>
+                        <TableView fx:id="tableDangtianHuizong" layoutX="770.0" layoutY="115.0" prefHeight="200.0" prefWidth="156.0">
+                           <columns>
+                              <TableColumn fx:id="huizongType" prefWidth="75.0" text="当天汇总" />
+                              <TableColumn fx:id="huizongMoney" prefWidth="75.0" />
+                           </columns>
+                        </TableView>
+                        <TableView fx:id="tableZonghuiKaixiao" layoutX="770.0" layoutY="352.0" prefHeight="348.0" prefWidth="157.0">
+                           <columns>
+                              <TableColumn fx:id="zonghuiKaixiaoType" prefWidth="75.0" text="开销表" />
+                              <TableColumn fx:id="zonghuiKaixiaoMoney" prefWidth="75.0" />
+                           </columns>
+                        </TableView>
+                        <VBox layoutX="117.0" layoutY="115.0">
+                           <children>
+                              <Label alignment="CENTER" layoutX="114.0" layoutY="252.0" prefHeight="22.0" prefWidth="111.0" style="-fx-background-color: #EBEBEB; -fx-border-color: #D3D3D3;" text="局类型" />
+                              <ListView fx:id="juTypeListView" layoutX="115.0" layoutY="274.0" prefHeight="200.0" prefWidth="109.0" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="外债信息">
+               <content>
+                  <ScrollPane prefViewportHeight="864.0" prefViewportWidth="1328.0">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="847.0" prefWidth="1799.0">
+                           <children>
+                              <TableView fx:id="tableWaizhai" layoutX="19.0" layoutY="112.0" prefHeight="206.0" prefWidth="152.0">
+                                <columns>
+                                  <TableColumn fx:id="waizhaiType" prefWidth="75.0" text="债务" />
+                                  <TableColumn fx:id="waizhaiMoney" prefWidth="75.0" />
+                                </columns>
+                              </TableView>
+                              <Button fx:id="waizhaiRefreshBtn" layoutX="117.0" layoutY="41.0" mnemonicParsing="false" onAction="#waizhaiRefreshAction" prefHeight="34.0" prefWidth="107.0" text="即时刷新" />
+                              <HBox fx:id="waizhaiHBox" layoutX="213.0" layoutY="109.0" prefHeight="721.0" prefWidth="1564.0" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+               </content>
+            </Tab>
+            <Tab text="代理查询">
+               <content>
+                  <AnchorPane fx:id="exportExcelBtn" minHeight="0.0" minWidth="0.0" prefHeight="785.0" prefWidth="1073.0">
+                  	<children>
+                  	<GridPane hgap="14.0" layoutX="178.0" layoutY="57.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="772.0" prefWidth="701.0" vgap="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+					  <children>
+					    <VBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" prefHeight="769.0" prefWidth="689.0" spacing="7.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+					      <children>
+					            <Group>
+					               <children>
+					                  <Label fx:id="proxyDateLabel" layoutX="48.0" prefHeight="15.0" prefWidth="115.0" textAlignment="LEFT" wrapText="true">
+					                     <font>
+					                        <Font size="12.0" />
+					                     </font>
+					                  </Label>
+                                          <Label fx:id="detailsLabel11" layoutX="-3.0" layoutY="-6.0" prefHeight="24.0" prefWidth="56.0" text="时间：" textAlignment="LEFT" wrapText="true">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Label>
+					               </children>
+					            </Group>
+					            <HBox>
+					               <children>
+					                  <Label fx:id="detailsLabel1" prefHeight="24.0" prefWidth="56.0" text="团队ID：" textAlignment="LEFT" wrapText="true">
+					                     <font>
+					                        <Font name="System Bold" size="12.0" />
+					                     </font>
+					                  </Label>
+					                  <ComboBox fx:id="teamIDCombox" onAction="#teamIDSelectedAction" prefHeight="23.0" prefWidth="78.0" />
+                                          <AnchorPane prefHeight="28.0" prefWidth="30.0" />
+                                          <CheckBox fx:id="isZjManage" mnemonicParsing="false" prefHeight="25.0" prefWidth="104.0" text="是否代管理">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </CheckBox>
+                                          <AnchorPane prefHeight="28.0" prefWidth="19.0" />
+                                          <Label prefHeight="24.0" prefWidth="60.0" text="回水比例">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <TextField fx:id="proxyHSRate" prefHeight="23.0" prefWidth="55.0" text="100%" />
+                                          <AnchorPane prefHeight="28.0" prefWidth="19.0" />
+                                          <Label prefHeight="24.0" prefWidth="60.0" text="回保比例">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <TextField fx:id="proxyHBRate" prefHeight="23.0" prefWidth="55.0" text="100%" />
+                                          <AnchorPane prefHeight="28.0" prefWidth="19.0" />
+                                          <Label prefHeight="24.0" prefWidth="55.0" text="服务费&gt;">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <TextField fx:id="proxyFWF" prefHeight="23.0" prefWidth="77.0" text="0" />
+					               </children>
+					            </HBox>
+					                  <TableView fx:id="tableProxyTeam" prefHeight="698.0" prefWidth="687.0">
+					                    <columns>
+                                          <TableColumn fx:id="proxyPlayerId" prefWidth="102.0" text="玩家ID" />
+					                      <TableColumn fx:id="proxyPlayerName" prefWidth="102.0" text="玩家名称" />
+					                      <TableColumn fx:id="proxyYSZJ" prefWidth="105.0" text="原始战绩" />
+					                        <TableColumn fx:id="proxyZJ" prefWidth="70.0" text="战绩" />
+                                          <TableColumn fx:id="proxyBaoxian" prefWidth="70.0" text="保险" />
+					                        <TableColumn fx:id="proxyHuishui" prefWidth="63.0" text="回水" />
+					                        <TableColumn fx:id="proxyHuiBao" prefWidth="73.0" text="回保" />
+					                        <TableColumn fx:id="proxyTableId" prefWidth="90.0" text="场次" />
+					                    </columns>
+					                  </TableView>
+					      </children>
+					    </VBox>
+					  </children>
+                           <columnConstraints>
+                              <ColumnConstraints />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                           </rowConstraints>
+					</GridPane>
+                        <Button fx:id="exportExcel" layoutX="810.0" layoutY="34.0" mnemonicParsing="false" onAction="#exportExcelAction" text="导出Excel" />
+                        <TableView fx:id="tableProxySum" layoutX="912.0" layoutY="146.0" prefHeight="200.0" prefWidth="157.0">
+                          <columns>
+                            <TableColumn fx:id="proxySumType" prefWidth="75.0" text="合计" />
+                            <TableColumn fx:id="proxySum" prefWidth="75.0" text="0" />
+                          </columns>
+                        </TableView>
+                        <Button fx:id="proxyRefreshBtn" layoutX="728.0" layoutY="34.0" mnemonicParsing="false" onAction="#proxyRefreshAction" prefHeight="23.0" prefWidth="65.0" text="刷新" />
+					            <HBox layoutX="708.0" layoutY="829.0" prefHeight="20.0" prefWidth="612.0" visible="false">
+					               <children>
+					                  <AnchorPane prefHeight="20.0" prefWidth="142.0" />
+                              <HBox fx:id="proxySumHBox" prefHeight="20.0" prefWidth="523.0">
+                                 <children>
+					                  <Label fx:id="sumYSZJ" alignment="CENTER" prefHeight="20.0" prefWidth="106.0" style="-fx-background-color: #FFEFDB;" text="0" wrapText="true">
+					                     <font>
+					                        <Font size="12.0" />
+					                     </font>
+					                     <HBox.margin>
+					                        <Insets left="45.0" />
+					                     </HBox.margin>
+					                  </Label>
+					                  <Label fx:id="sumZJ" alignment="CENTER" prefHeight="20.0" prefWidth="67.0" style="-fx-background-color: #CCCCCC;" text="0" textAlignment="RIGHT" wrapText="true">
+					                     <font>
+					                        <Font size="12.0" />
+					                     </font>
+					                  </Label>
+                                    <Label fx:id="sumBX" alignment="CENTER" prefHeight="20.0" prefWidth="70.0" style="-fx-background-color: #F5F5DC;" text="0" textAlignment="RIGHT" wrapText="true">
+                                       <font>
+                                          <Font size="12.0" />
+                                       </font>
+                                    </Label>
+					                  <Label fx:id="sumHS" alignment="CENTER" prefHeight="20.0" prefWidth="64.0" style="-fx-background-color: #CAE1FF;" text="0" textAlignment="RIGHT" wrapText="true">
+					                     <font>
+					                        <Font size="12.0" />
+					                     </font>
+					                  </Label>
+					                  <Label fx:id="sumHB" alignment="CENTER" prefHeight="20.0" prefWidth="71.0" style="-fx-background-color: #FFC0CB;" text="0" textAlignment="RIGHT" wrapText="true">
+					                     <font>
+					                        <Font size="12.0" />
+					                     </font>
+					                  </Label>
+					                  <Label fx:id="sumRC" alignment="CENTER" prefHeight="20.0" prefWidth="101.0" style="-fx-background-color: #FFEFDB;" text="0" textAlignment="RIGHT" wrapText="true">
+					                     <font>
+					                        <Font size="12.0" />
+					                     </font>
+					                  </Label>
+                                 </children>
+                              </HBox>
+					               </children>
+					            </HBox>
+                  	</children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="实时上码系统">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="785.0" prefWidth="1073.0">
+                     <children>
+                        <HBox fx:id="ShangmaHBox" layoutX="263.0" layoutY="90.0">
+                           <children>
+                              <Label prefHeight="35.0" prefWidth="64.0" text="团队ID：">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="shangmaTeamId" prefHeight="35.0" prefWidth="86.0">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="216.0" layoutY="84.0" prefHeight="35.0" prefWidth="86.0" text="团队总上码：">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="shangmaZSM" prefHeight="35.0" prefWidth="86.0" text="0">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="35.0" prefWidth="86.0" text="团队总战绩：">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="shangmaZZJ" prefHeight="35.0" prefWidth="204.0" text="0">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <AnchorPane prefHeight="35.0" prefWidth="250.0">
+                                 <children>
+                                    <HBox layoutX="14.0" layoutY="5.0">
+                                       <children>
+                                          <TextField fx:id="shangmaSearch" layoutX="14.0" layoutY="6.0" onDragEntered="#searchRowAction" onKeyPressed="#shangmaSearchByEnter" prefHeight="23.0" prefWidth="268.0" promptText="玩家名称" />
+                                          <Button fx:id="shangmaSearchBtn" layoutX="143.0" layoutY="5.0" mnemonicParsing="false" onAction="#shangmaSearchAction" prefHeight="23.0" prefWidth="74.0" text="搜索" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </HBox>
+                        <TableView fx:id="tableShangma" layoutX="197.0" layoutY="135.0" prefHeight="672.0" prefWidth="677.0">
+                          <columns>
+                              <TableColumn fx:id="shangmaLianheEdu" prefWidth="67.0" text="联合额度" />
+                              <TableColumn fx:id="shangmaPlayerId" prefWidth="97.0" text="玩家ID" />
+                            <TableColumn fx:id="shangmaName" prefWidth="111.0" text="玩家名称" />
+                              <TableColumn fx:id="shangmaAvailableEdu" prefWidth="94.0" text="可上码额度" />
+                            <TableColumn fx:id="shangmaEdu" prefWidth="77.0" text="额度" />
+                              <TableColumn fx:id="shangmaYCJF" prefWidth="69.0" text="已存积分" />
+                              <TableColumn fx:id="shangmaYiSM" prefWidth="64.0" text="已上码" />
+                              <TableColumn fx:id="shangmaSumOfZJ" text="战绩总结算" />
+                          </columns>
+                        </TableView>
+                        <VBox fx:id="shangmaVBox" layoutX="59.0" layoutY="6.0" prefHeight="849.0" prefWidth="105.0">
+                           <padding>
+                              <Insets left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </VBox>
+                        <TableView fx:id="tableShangmaDetail" layoutX="890.0" layoutY="135.0" prefHeight="672.0" prefWidth="338.0">
+                          <columns>
+                              <TableColumn fx:id="shangmaDetailName" prefWidth="92.0" text="玩家名称" />
+                            <TableColumn fx:id="shangmaJu" prefWidth="100.0" text="场次" />
+                            <TableColumn fx:id="shangmaSM" prefWidth="77.0" text="上码" />
+                              <TableColumn fx:id="shangmaShishou" prefWidth="52.0" text="战绩" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="会员查询">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="785.0" prefWidth="1073.0">
+                     <children>
+                        <SplitPane dividerPositions="0.29797979797979796" layoutX="637.0" layoutY="23.0" prefHeight="864.0" prefWidth="1328.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="862.0" prefWidth="463.0">
+                                 <children>
+                                    <TextField fx:id="memberSearchName" layoutX="116.0" layoutY="248.0" onKeyPressed="#searchMemberByEnterEvent" prefHeight="23.0" prefWidth="160.0" promptText="会员名称" />
+                                    <Button fx:id="memberSearchBtn" layoutX="271.0" layoutY="248.0" mnemonicParsing="false" onAction="#memberSearchAction" prefHeight="23.0" prefWidth="73.0" text="搜索会员" />
+                                 </children>
+                              </AnchorPane>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="862.0" prefWidth="856.0">
+                                 <children>
+                                    <SplitPane dividerPositions="0.29797979797979796" layoutX="222.0" layoutY="208.0" prefHeight="862.0" prefWidth="928.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <items>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                             <children>
+                                                <ListView fx:id="memberListView" layoutX="27.0" layoutY="249.0" prefHeight="246.0" prefWidth="216.0" />
+                                                <Label layoutX="43.0" layoutY="223.0" prefHeight="24.0" prefWidth="156.0" text="单击选项自动查询：" />
+                                             </children>
+                                          </AnchorPane>
+                                        <AnchorPane layoutX="1190.0" layoutY="3.0" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                             <children>
+                                                <VBox layoutX="271.0" layoutY="209.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" prefHeight="612.0" prefWidth="297.0" spacing="7.0" AnchorPane.leftAnchor="150.0">
+                                                   <children>
+                                                      <Group>
+                                                         <children>
+                                                            <HBox layoutY="-1.0" prefHeight="18.0" prefWidth="297.0">
+                                                               <children>
+                                                                  <Label fx:id="messageLabel11" layoutX="10.0" layoutY="10.0" prefHeight="18.0" prefWidth="51.0" text="时间：" textAlignment="LEFT" wrapText="true">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="13.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Label fx:id="memberDateStr" prefHeight="18.0" prefWidth="97.0" text="2017-00-00" textAlignment="LEFT" wrapText="true">
+                                                                     <font>
+                                                                        <Font size="13.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </Group>
+                                                      <Group>
+                                                         <children>
+                                                            <Label fx:id="detailsLabel14" prefHeight="15.0" prefWidth="86.0" text="玩家ID：" textAlignment="LEFT" wrapText="true">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label fx:id="memberPlayerId" layoutX="63.0" prefHeight="15.0" prefWidth="121.0" text="00000" textAlignment="LEFT" wrapText="true">
+                                                               <font>
+                                                                  <Font size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </Group>
+                                                      <Group>
+                                                         <children>
+                                                            <Label fx:id="detailsLabel141" prefHeight="15.0" prefWidth="64.0" text="玩家名称：" textAlignment="LEFT" wrapText="true">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label fx:id="memberPlayerName" layoutX="71.0" prefHeight="15.0" prefWidth="103.0" text="小林" textAlignment="LEFT" wrapText="true">
+                                                               <font>
+                                                                  <Font size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </Group>
+                                                      <Group>
+                                                         <children>
+                                                            <Label fx:id="detailsLabel1411" prefHeight="15.0" prefWidth="72.0" text="战绩总和：" textAlignment="LEFT" wrapText="true" />
+                                                            <Label fx:id="memberSumOfZJ" alignment="CENTER" layoutX="71.0" prefHeight="15.0" prefWidth="224.0" style="-fx-background-color: #CAE1FF;" text="0" textAlignment="LEFT" wrapText="true">
+                                                               <font>
+                                                                  <Font size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </Group>
+                                                      <TableView fx:id="tableMemberZJ" prefHeight="473.0" prefWidth="297.0">
+                                                         <columns>
+                                                            <TableColumn fx:id="memberJu" prefWidth="112.0" text="场次" />
+                                                            <TableColumn fx:id="memberZJ" prefWidth="160.0" text="战绩" />
+                                                         </columns>
+                                                      </TableView>
+                                                   </children>
+                                                </VBox>
+                                                <Button fx:id="memberZJQueryBtn" disable="true" layoutX="24.0" layoutY="185.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="122.0" text="会员当天战绩查询" />
+                                                <Button disable="true" layoutX="24.0" layoutY="104.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="123.0" text="会员历史战绩查询">
+                                                   <font>
+                                                      <Font name="System Bold" size="12.0" />
+                                                   </font></Button>
+                                                <Label fx:id="memberTotalZJ" layoutX="150.0" layoutY="139.0" prefHeight="18.0" prefWidth="51.0" text="0.0" textAlignment="LEFT" wrapText="true">
+                                                   <font>
+                                                      <Font name="System Bold" size="13.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </AnchorPane>
+                                      </items>
+                                    </SplitPane>
+                                 </children>
+                              </AnchorPane>
+                          </items>
+                        </SplitPane>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="积分查询">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="785.0" prefWidth="1073.0">
+                     <children>
+                        <Button fx:id="jfQuery" layoutX="473.0" layoutY="254.0" mnemonicParsing="false" onAction="#jfQueryAciton" prefHeight="24.0" prefWidth="123.0" text="确定查询" />
+                        <DatePicker fx:id="jfStartTime" layoutX="308.0" layoutY="126.0" prefHeight="23.0" prefWidth="120.0" promptText="开始时间" />
+                        <ComboBox fx:id="jfTeamIDCombox" layoutX="307.0" layoutY="255.0" prefHeight="23.0" prefWidth="123.0" promptText="请选择团队" />
+                        <TableView fx:id="tableJifen" layoutX="735.0" layoutY="26.0" prefHeight="808.0" prefWidth="448.0">
+                          <columns>
+                            <TableColumn fx:id="jfRank" text="排名" />
+                            <TableColumn fx:id="jfPlayerName" prefWidth="213.0" text="人员" />
+                              <TableColumn fx:id="jfValue" minWidth="0.0" prefWidth="135.0" text="积分" />
+                          </columns> 
+                        </TableView>
+                        <DatePicker fx:id="jfEndTime" layoutX="474.0" layoutY="126.0" prefHeight="23.0" prefWidth="121.0" promptText="结束时间" />
+                        <Label layoutX="307.0" layoutY="195.0" prefHeight="28.0" prefWidth="55.0" text="1积分 = " />
+                        <TextField fx:id="jifenInput" layoutX="356.0" layoutY="198.0" prefHeight="23.0" prefWidth="54.0" text="10" />
+                        <Label layoutX="412.0" layoutY="196.0" prefHeight="28.0" prefWidth="43.0" text=" 元" />
+                        <Label layoutX="579.0" layoutY="197.0" prefHeight="28.0" prefWidth="43.0" text=" 名" />
+                        <TextField fx:id="jifenRankLimit" layoutX="514.0" layoutY="199.0" prefHeight="23.0" prefWidth="63.0" text="50" />
+                        <Label layoutX="474.0" layoutY="196.0" prefHeight="28.0" prefWidth="55.0" text="选择前" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

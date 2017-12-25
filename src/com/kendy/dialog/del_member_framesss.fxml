@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="387.0" prefWidth="685.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kendy.controller.DelController">
+   <children>
+      <GridPane hgap="14.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="387.0" prefWidth="482.0">
+        <children>
+            <HBox prefHeight="311.0" prefWidth="509.0">
+               <children>
+                  <VBox prefHeight="323.0" prefWidth="273.0">
+                     <children>
+                      <VBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" prefHeight="324.0" prefWidth="273.0" spacing="7.0">
+                        <children>
+                              <HBox>
+                                 <children>
+                                    <Label fx:id="detailsLabel111" prefHeight="23.0" prefWidth="47.0" text="条件：" textAlignment="LEFT" wrapText="true">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="memberName" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="79.0" promptText="名称" />
+                                    <Label fx:id="detailsLabel1111" prefHeight="23.0" prefWidth="26.0" text="  或 " textAlignment="LEFT" wrapText="true">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="memberId" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="60.0" promptText="ID" />
+                                    <Button fx:id="delMemberQueryBtn" mnemonicParsing="false" onAction="#queryDelMemberAction" prefHeight="23.0" prefWidth="63.0" text="查询" />
+                                 </children>
+                              </HBox>
+                              <ListView fx:id="delMemberListView" prefHeight="277.0" prefWidth="273.0" />
+                        </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                      </VBox>
+                     </children>
+                  </VBox>
+                  <AnchorPane prefHeight="316.0" prefWidth="224.0">
+                     <children>
+                        <Label layoutX="134.0" layoutY="-3.0" prefHeight="35.0" prefWidth="63.0" text="详细信息" />
+                        <ListView fx:id="detailListView" layoutX="12.0" layoutY="32.0" prefHeight="275.0" prefWidth="175.0" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </HBox>
+            <AnchorPane prefHeight="87.0" prefWidth="509.0" GridPane.rowIndex="1">
+               <children>
+            <Button fx:id="del_member_OK_Btn" layoutX="-1.0" layoutY="1.0" minWidth="80.0" mnemonicParsing="false" onAction="#delMemberAction" prefHeight="28.0" prefWidth="465.0" text="确定删除">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+            </Button>
+               </children>
+            </AnchorPane>
+        </children>
+        <columnConstraints>
+          <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
+          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="Infinity" minWidth="-Infinity" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="ALWAYS" />
+          <RowConstraints maxHeight="Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
+        </rowConstraints>
+         <padding>
+            <Insets left="16.0" top="14.0" />
+         </padding>
+      </GridPane>
+      <Label layoutX="513.0" layoutY="14.0" prefHeight="35.0" prefWidth="121.0" text="====修改信息===" />
+      <Label layoutX="514.0" layoutY="49.0" prefHeight="35.0" prefWidth="135.0" text="1、请输入玩家的新名字：" />
+      <TextField fx:id="newPlayerName" layoutX="513.0" layoutY="85.0" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="127.0" promptText="名称" />
+      <Button fx:id="updatePlayerNameBtn" layoutX="513.0" layoutY="120.0" mnemonicParsing="false" onAction="#updatePlayerNamerAction" prefHeight="23.0" prefWidth="127.0" text="确定修改名字" />
+      <TextField fx:id="newPlayerEdu" layoutX="513.0" layoutY="182.0" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="127.0" promptText="额度" />
+      <Label layoutX="514.0" layoutY="148.0" prefHeight="35.0" prefWidth="151.0" text="2、请输入玩家的新额度：" />
+      <Button fx:id="newPlayerEduBtn" layoutX="513.0" layoutY="216.0" mnemonicParsing="false" onAction="#updateNewPlayerEduAction" prefHeight="23.0" prefWidth="127.0" text="确定修改额度" />
+      <Label layoutX="506.0" layoutY="251.0" prefHeight="35.0" prefWidth="151.0" text="3、请输入玩家的新团队：" />
+      <TextField fx:id="newTeamId" layoutX="516.0" layoutY="284.0" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="127.0" promptText="团队ID" />
+      <Button fx:id="newPlayerEduBtn1" layoutX="516.0" layoutY="315.0" mnemonicParsing="false" onAction="#updateNewTeamIdAction" prefHeight="23.0" prefWidth="127.0" text="确定修改团队" />
+   </children>
+</AnchorPane>
