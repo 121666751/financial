@@ -611,11 +611,6 @@ public class MyController implements Initializable{
 		initAutoTestMode();
 		
 		
-		
-
-	    
-	    
-		
 	    try {
 	    	FXMLLoader loader = new FXMLLoader();
 			Parent root = loader.load(getClass().getResource("/com/kendy/dialog/LM_Tab_Fram.fxml").openStream());
@@ -753,6 +748,8 @@ public class MyController implements Initializable{
             		QuotaController.eachClubList = LMController.eachClubList;
             		//缓存三个联盟的信息
             		QuotaController.LMTotalList = LMController.LMTotalList;
+            		//自动加载联盟1的数据
+            		QuotaController.autoSelectLM1();
             	}
             }
 		});

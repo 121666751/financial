@@ -39,6 +39,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -57,7 +58,7 @@ public class QuotaController implements Initializable{
 
 	//=====================================================================
 	@FXML private Label currentLMLabels;//当前联盟
-	
+	@FXML private Button LM_Btn1;//联盟1
 	//=====================================================================自动配额表
 	@FXML private TableView<ClubQuota>  tableQuota;     
 	@FXML private TableColumn<ClubQuota,String> quotaClubName;
@@ -88,8 +89,25 @@ public class QuotaController implements Initializable{
 	//引用联盟控制类
 	public  LMController lmController ;
 	
+	private static Button _LM_Btn1;//联盟1
 	//缓存所有俱乐部的银行卡信息
 	public static Map<String, ClubBankModel> allClubBankModels = new HashMap<>();
+	
+	//从数据库中初始化俱乐部
+	static{
+		allClubBankModels = DBUtil.getAllClubBanks();//加载 俱乐部银行卡信息数据
+		if(allClubBankModels.isEmpty()) {
+			LMController.allClubMap.values().forEach(club -> {
+				ClubBankModel model = new ClubBankModel();
+				model.setClubId(club.getClubId());
+				model.setClubName(club.getName());
+				//刷新缓存
+				allClubBankModels.put(club.getClubId(), model);
+				//插入到数据库
+				DBUtil.addClubBank(model);
+			});
+		}
+	}
 	
 	public QuotaController() {
 		super();
@@ -128,8 +146,7 @@ public class QuotaController implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		allClubBankModels = DBUtil.getAllClubBanks();//加载 俱乐部银行卡信息数据
-		
+		_LM_Btn1 = LM_Btn1;
 		lmController = MyController.lmController;
 		
 		//绑定列值属性
@@ -141,6 +158,12 @@ public class QuotaController implements Initializable{
 		quotaJieyu.setStyle("-fx-font-weight: bold;-fx-alignment: CENTER;");
 		
 
+	}
+	
+	public static void autoSelectLM1() {
+		if(_LM_Btn1 != null) {
+			_LM_Btn1.fire();
+		}
 	}
 	
 	/**

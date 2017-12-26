@@ -114,14 +114,14 @@ public class ExportQuotaPayExcel {
 						currentRow.setHeight((short) 400);
 					}
 				}
-				if (colNum == 0 || colNum == 1 || colNum ==2) {
+				if (colNum == 0 || colNum == 1 ) {
 					sheet.setColumnWidth(colNum, (columnWidth + 4) * 500);
 				} else if( colNum == 5 ) {
 					sheet.setColumnWidth(colNum, (columnWidth + 6) * 500);
 				} else if( colNum == 6 ) {
-					sheet.setColumnWidth(colNum, (columnWidth + 12) * 500);
+					sheet.setColumnWidth(colNum, (columnWidth + 10) * 500);
 				} else {
-					sheet.setColumnWidth(colNum, (columnWidth + 1) * 500);
+					sheet.setColumnWidth(colNum, (columnWidth + 1) * 400);
 				}
 			}
 

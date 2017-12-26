@@ -10,20 +10,20 @@ public class ClubBankModel {
 
 
 	//俱乐部ID
-	private String clubId ;
+	private String clubId ="";
 	//俱乐部名称
-	private String ClubName;
+	private String ClubName="";
 
 	//移动支付类型
 	private String mobilePayType = "支付宝";
 	//联系人
-	private String personName; 
+	private String personName=""; 
 	//手机号 
-	private String phoneNumber;
+	private String phoneNumber="";
 	//银行卡类型
 	private String bankType = "银行卡";
 	//银行卡信息
-	private String bankAccountInfo;
+	private String bankAccountInfo="";
 	
 	
 	public String getMobilePayType() {
