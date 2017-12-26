@@ -117,7 +117,7 @@ public class ExportShangmaExcel {
 				switch(colNum) {
 				case 0 :sheet.setColumnWidth(colNum, (columnWidth + 1) * 400);break;
 				case 1 :sheet.setColumnWidth(colNum, (columnWidth + 1) * 400);break;
-				case 2 :sheet.setColumnWidth(colNum, (columnWidth + 2) * 400);break;
+				case 2 :sheet.setColumnWidth(colNum, (columnWidth + 1) * 400);break;
 				case 3 :sheet.setColumnWidth(colNum, (columnWidth + 1) * 400);break;
 				case 4 :sheet.setColumnWidth(colNum, (columnWidth + 1) * 400);break;
 				case 5 :sheet.setColumnWidth(colNum, (columnWidth + 1) * 400);break;
