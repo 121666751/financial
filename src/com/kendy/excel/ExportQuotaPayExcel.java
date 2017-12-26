@@ -78,7 +78,7 @@ public class ExportQuotaPayExcel {
 
 			/************************************* 标题栏 ****************************/
 			for (int n = 0; n < columnNum; n++) {
-				HSSFCell cellRowName = rowRowName.createCell(n + 1); // 创建列头对应个数的单元格
+				HSSFCell cellRowName = rowRowName.createCell(n ); // 创建列头对应个数的单元格
 				cellRowName.setCellType(HSSFCell.CELL_TYPE_STRING); // 设置列头单元格的数据类型
 				HSSFRichTextString text = new HSSFRichTextString(rowName[n]);
 				cellRowName.setCellValue(text); // 设置列头单元格的值
@@ -93,7 +93,7 @@ public class ExportQuotaPayExcel {
 
 				HSSFCell cell = null; // 设置单元格的数据类型
 				for (int j = 0; j < obj.length; j++) {
-					cell = row.createCell(j + 1, HSSFCell.CELL_TYPE_STRING);
+					cell = row.createCell(j , HSSFCell.CELL_TYPE_STRING);
 					if (!"".equals(obj[j]) && obj[j] != null) {
 						cell.setCellValue(obj[j].toString()); // 设置单元格的值
 					}
@@ -114,10 +114,14 @@ public class ExportQuotaPayExcel {
 						currentRow.setHeight((short) 400);
 					}
 				}
-				if (colNum == 2) {
-					sheet.setColumnWidth(colNum, (columnWidth + 12) * 256);
+				if (colNum == 0 || colNum == 1 || colNum ==2) {
+					sheet.setColumnWidth(colNum, (columnWidth + 4) * 500);
+				} else if( colNum == 5 ) {
+					sheet.setColumnWidth(colNum, (columnWidth + 6) * 500);
+				} else if( colNum == 6 ) {
+					sheet.setColumnWidth(colNum, (columnWidth + 12) * 500);
 				} else {
-					sheet.setColumnWidth(colNum, (columnWidth + 4) * 256);
+					sheet.setColumnWidth(colNum, (columnWidth + 1) * 500);
 				}
 			}
 

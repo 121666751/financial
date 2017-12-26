@@ -672,7 +672,7 @@ public class QuotaController implements Initializable{
     		//刷新表
     		convert2ClubBankInfo(model,item);
     		tableQuotaBank.refresh();
-    		ShowUtil.show("添加成功",2);
+    		ShowUtil.show("修改成功",2);
     	}
     }
     
@@ -687,7 +687,7 @@ public class QuotaController implements Initializable{
     	// 标题
 		String title = currentLMLabels.getText() + "俱乐部结账单-"+sdf.format(new Date());
     	// 列名
-    	String[] rowName = new String[]{"转账","俱乐部","支付类型","联系人","手机"};;
+    	String[] rowName = new String[]{"付款方","收款方","转账","支付类型","联系人","手机","银行卡信息"};;
     	// 输出
     	String out = "D:/"+title+System.currentTimeMillis();
     	// 数据
@@ -702,11 +702,13 @@ public class QuotaController implements Initializable{
 	    for(QuotaMoneyInfo info : obList) {
 	    	ClubBankModel model = allClubBankModels.get(info.getQuotaMoneyClubId());
 	        objs = new Object[rowName.length];
-	        objs[0] = "转" + info.getQuotaMoney() + "到";
+	        objs[0] = info.getQuotaMoneyPaytor();
 	        objs[1] = info.getQuotaMoneyGather();
-	        objs[2] = model.getMobilePayType();
-	        objs[3] = model.getPersonName();
-	        objs[4] = model.getPhoneNumber();
+	        objs[2] = "转" + info.getQuotaMoney() + "到";
+	        objs[3] = model.getMobilePayType();
+	        objs[4] = model.getPersonName();
+	        objs[5] = model.getPhoneNumber();
+	        objs[6] = model.getBankAccountInfo();
 	        dataList.add(objs);
 	    }
     	ExportQuotaPayExcel excel = new ExportQuotaPayExcel(title, rowName,  dataList, out);
