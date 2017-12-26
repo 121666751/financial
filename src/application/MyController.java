@@ -2305,6 +2305,16 @@ public class MyController implements Initializable{
 	public void exportExcelAction(ActionEvent event) {
 		TeamProxyService.exportExcel();
 	}
+	
+	/**
+	 * 实时上码导出为Excel
+	 */
+	public void exportSMExcelAction(ActionEvent event) {
+		//ShowUtil.show("未开发",2);
+		ShangmaService.exportShangmaExcel();
+	}
+	
+	
 	/**
 	 * 代理查询刷新按钮 
 	 */

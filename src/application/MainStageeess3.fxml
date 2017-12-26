@@ -495,9 +495,9 @@
             </Tab>
             <Tab text="实时上码系统">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="785.0" prefWidth="1073.0">
+                  <AnchorPane fx:id="exportSM" minHeight="0.0" minWidth="0.0" onDragDetected="#exportSMExcelAction" prefHeight="785.0" prefWidth="1073.0">
                      <children>
-                        <HBox fx:id="ShangmaHBox" layoutX="263.0" layoutY="90.0">
+                        <HBox fx:id="ShangmaHBox" layoutX="286.0" layoutY="90.0">
                            <children>
                               <Label prefHeight="35.0" prefWidth="64.0" text="团队ID：">
                                  <font>
@@ -524,7 +524,7 @@
                                     <Font size="14.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="shangmaZZJ" prefHeight="35.0" prefWidth="204.0" text="0">
+                              <Label fx:id="shangmaZZJ" prefHeight="35.0" prefWidth="179.0" text="0">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -569,6 +569,7 @@
                               <TableColumn fx:id="shangmaShishou" prefWidth="52.0" text="战绩" />
                           </columns>
                         </TableView>
+                        <Button layoutX="197.0" layoutY="96.0" mnemonicParsing="false" onAction="#exportSMExcelAction" text="导出" />
                      </children>
                   </AnchorPane>
                </content>

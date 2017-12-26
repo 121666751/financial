@@ -1,7 +1,9 @@
 package com.kendy.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -20,6 +22,8 @@ import com.kendy.entity.Player;
 import com.kendy.entity.ShangmaDetailInfo;
 import com.kendy.entity.ShangmaInfo;
 import com.kendy.entity.WanjiaInfo;
+import com.kendy.excel.ExportShangmaExcel;
+import com.kendy.util.CollectUtil;
 import com.kendy.util.ErrorUtil;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
@@ -838,6 +842,51 @@ public class ShangmaService {
 		}
 		ShangmaService.cmiMap = lastCMIMap;
 	}
+	
+	
+	/**********************************************************************************
+	 * 
+	 *                                     导出Excel
+	 *  
+	 ***********************************************************************************/
+    public static void exportShangmaExcel() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    	// 标题
+		String title = shangmaTeamIdLabel.getText() + "团队实时上码-"+sdf.format(new Date());
+    	// 列名
+    	String[] rowName = new String[]{"联合额度","玩家ID","玩家名称","可上码额度","额度","已在积分","已上码","战绩总结算"};
+    	// 输出
+    	String out = "D:/"+title+System.currentTimeMillis();
+    	// 数据
+    	ObservableList<ShangmaInfo> obList = tableSM.getItems();
+    	if(CollectUtil.isNullOrEmpty(obList)) {
+    		ShowUtil.show("没有需要导出的数据！");
+    		return;
+    	}
+    	List<Object[]>  dataList = new ArrayList<Object[]>();
+	    Object[] objs = null;
+	    String clubId = "";
+	    for(ShangmaInfo info : obList) {
+	        objs = new Object[rowName.length];
+	        objs[0] = info.getShangmaLianheEdu();
+	        objs[1] = info.getShangmaPlayerId();
+	        objs[2] = info.getShangmaName();
+	        objs[3] = info.getShangmaAvailableEdu();
+	        objs[4] = info.getShangmaEdu();
+	        objs[5] = info.getShangmaYCJF();
+	        objs[6] = info.getShangmaYiSM();
+	        objs[7] = info.getShangmaSumOfZJ();
+	        dataList.add(objs);
+	    }
+    	ExportShangmaExcel excel = new ExportShangmaExcel(title, rowName,  dataList, out);
+    	try {
+    		excel.export();
+			log.info("导出团队实时上码完成！");
+		} catch (Exception e) {
+			ErrorUtil.err("导出团队实时上码失败", e);
+		}
+    	
+    }
 
 	
 	
