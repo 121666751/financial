@@ -11,6 +11,10 @@ public class StringUtil {
 		return str == null || "".equals(str);
 	}
 	
+	public static boolean isNotBlank(String str){
+		return !isBlank(str);
+	}
+	
 	//模拟Oracle的nvl函数
 	public static String nvl(String condition,String ifNullStr) {
 		if(!StringUtil.isBlank(condition)) {

@@ -57,8 +57,10 @@ public class LM_ExcelReaderUtil {
             while (rowIterator.hasNext()) 
             {
                 Row row = rowIterator.next();
+                if(row.getCell(0)== null) {break;}
                 Record record = new Record(); 
                 if(row.getRowNum()!=0){
+                	int count2 = row.getLastCellNum();
                     for(int cn=0;cn<row.getLastCellNum();cn++){
                         Cell cell = row.getCell(cn);
                         record.setTableId(tableId);

@@ -311,7 +311,9 @@ public class ExcelReaderUtil {
 				Row row = rowIterator.next();
 				
 				//add 总手数为空的提示
-				String totalHandCount = row.getCell(6).toString();//总手数
+				Cell ZSScell = row.getCell(6);
+				if(ZSScell == null){break;}
+				String totalHandCount = ZSScell.toString();//总手数
 				Integer _tempCount = 0;
 				if(!"总手数".equals(totalHandCount)) {
 					try {
