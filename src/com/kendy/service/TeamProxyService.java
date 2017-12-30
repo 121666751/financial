@@ -337,8 +337,6 @@ public class TeamProxyService {
 	        refresh_TableTeamProxy_TableProxySum(teamId);
 	        ShowUtil.show("刷新成功",1);
 		}
-		
-		
 	}
 	
 

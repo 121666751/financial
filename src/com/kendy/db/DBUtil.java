@@ -1113,6 +1113,8 @@ public class DBUtil {
 				club.setZhuoFei3(rs.getString(7));
 				club.setYiJieSuan2(rs.getString(8));
 				club.setYiJieSuan3(rs.getString(9));
+				club.setEdu2(rs.getString(10));
+				club.setEdu3(rs.getString(11));
 				map.put(club.getClubId(), club);
 			}
 		} catch (SQLException e) {
@@ -1159,7 +1161,7 @@ public class DBUtil {
 			//数据库中没有则添加
 			con = DBConnection.getConnection();
 			String sql;
-			sql = "insert into club values(?,?,?,?,?,?,?,?,?)";
+			sql = "insert into club values(?,?,?,?,?,?,?,?,?,?,?)";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, club.getClubId());
 			ps.setString(2, club.getName());
@@ -1170,6 +1172,8 @@ public class DBUtil {
 			ps.setString(7, club.getZhuoFei3());
 			ps.setString(8, club.getYiJieSuan2());
 			ps.setString(9, club.getYiJieSuan3());
+			ps.setString(10, club.getEdu2());
+			ps.setString(11, club.getEdu3());
 			ps.execute();
 		}catch (SQLException e) {
 			ErrorUtil.err("添加新俱乐部失败", e);
@@ -1225,7 +1229,7 @@ public class DBUtil {
 		boolean isOK = true;
 		try {
 			con = DBConnection.getConnection();
-			String sql = "update club set name=?,edu=?,zhuoFei=?,yiJieSuan=?,zhuoFei2=?,zhuoFei3=?,yiJieSuan2=?,yiJieSuan3=? where clubId = ?";
+			String sql = "update club set name=?,edu=?,zhuoFei=?,yiJieSuan=?,zhuoFei2=?,zhuoFei3=?,yiJieSuan2=?,yiJieSuan3=?,edu2=?,edu3=?  where clubId = ?";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, club.getName());
 			ps.setString(2, club.getEdu());
@@ -1235,7 +1239,9 @@ public class DBUtil {
 			ps.setString(6, club.getZhuoFei3());
 			ps.setString(7, club.getYiJieSuan2());
 			ps.setString(8, club.getYiJieSuan3());
-			ps.setString(9, club.getClubId());
+			ps.setString(9, club.getEdu2());
+			ps.setString(10, club.getEdu3());
+			ps.setString(11, club.getClubId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			isOK = false;

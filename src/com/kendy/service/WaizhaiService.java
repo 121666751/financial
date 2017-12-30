@@ -344,6 +344,7 @@ public class WaizhaiService {
     				if(isSuperInfo_exist_in_ssje) {//父节点存在于实时金额表，直接删掉子ID
     					log.info("外债：删除子节点("+getPlayerName(playerId)+"),其父节点是"+getSuperPlayerName(playerId));
     					ite.remove();
+    					//特殊情况：此时父节点>=0
     				}
     				//Question:模拟的父节点是否要添加进来？？？？
 					 else {////父节点不存在于实时金额表，直接删掉子ID
@@ -365,12 +366,8 @@ public class WaizhaiService {
 	    					ite.remove();
 	    				}
 	    				if(superInfo !=null && NumUtil.getNum(superInfo.getCmSuperIdSum()) < 0 ) {
-							// String lianheEdu = superInfo.getCmSuperIdSum();
-							// ite.remove();
-							// ite.add(copyAndChangeSumFieldCurrentMoneyInfo(superInfo, tempSuperInfoMap));
 							log.info(String.format("外债：修改父节点%s的实时金额从%s到%s",getPlayerName(superId),
 									superInfo.getShishiJine(),superInfo.getCmSuperIdSum()));
-	    					//superInfo.setColor(superInfo.getShishiJine());//暂时把实时金额暂存在颜色字段（颜色字段没有用到）
 	    					superInfo.setShishiJine(superInfo.getCmSuperIdSum());//核心
 	    					tempSuperInfoMap.put(superId, superInfo);
 	    				}
@@ -382,23 +379,6 @@ public class WaizhaiService {
         } 
 		
 	}
-	
-	/**
-	 * 复制 一个父节点的实时金额记录（这里联合额度代替掉实时金额）
-	 * @time 2017年12月28日
-	 * @param info
-	 * @return
-	 */
-//	private static CurrentMoneyInfo copyAndChangeSumFieldCurrentMoneyInfo(CurrentMoneyInfo info,
-//			Map<String,CurrentMoneyInfo> tempSuperInfoMap) {
-//		
-//		CurrentMoneyInfo copyInfo = new CurrentMoneyInfo(info.getMingzi(),info.getCmSuperIdSum(),
-//				info.getWanjiaId(),info.getCmiEdu());
-//		//copyInfo.setCmiEdu("green");//green代表已经调用过此方法
-//		copyInfo.setCmSuperIdSum(info.getCmSuperIdSum());
-//		tempSuperInfoMap.put(info.getWanjiaId(), copyInfo);//同步
-//		return copyInfo;
-//	}
 	
 	/**
 	 * 复制一个实时金额表的记录

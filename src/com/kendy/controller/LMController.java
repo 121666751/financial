@@ -177,7 +177,8 @@ public class LMController implements Initializable{
 		if(!LMTotalList.isEmpty()) {
 			LMTotalList.get(index-1).keySet().forEach(clubId -> {
 				Club club = allClubMap.get(clubId);
-				obList.add(club.getName()+"=="+club.getClubId()+"=="+club.getEdu());
+//				obList.add(club.getName()+"=="+club.getClubId()+"=="+club.getEdu());
+				obList.add(club.getName()+"=="+club.getClubId()+"=="+get_LM_edu(club, index));
 			});
 		}
 		_clubListView.setItems(obList);
@@ -848,9 +849,7 @@ public class LMController implements Initializable{
 		String clubName = club.getName();
 		String clubId = club.getClubId();
 		
-
-		
-		InputDialog inputDlg = new InputDialog("修改："+clubName,"俱乐部新额度：");
+		InputDialog inputDlg = new InputDialog("修改："+clubName,"联盟"+this.getCurrentLMType()+"的俱乐部新额度：");
     	Optional<String> result = inputDlg.getTextResult();
     	result.ifPresent(newClubEdu -> {
     		
@@ -860,10 +859,12 @@ public class LMController implements Initializable{
     			return;
     		}
     		newClubEdu = newClubEdu.trim();
-    		club.setEdu(newClubEdu);
+    		//club.setEdu(newClubEdu);
+    		set_LM_edu(club, this.getCurrentLMType(), newClubEdu);
     		
     		//重新刷新俱乐部列表
     		refreshClubList();
+    		refreshClubListView(this.getCurrentLMType());
     		
     		//同步到数据库
     		DBUtil.updateClub(club);
@@ -902,6 +903,17 @@ public class LMController implements Initializable{
 		}
 		return yiJiesuan;
 	}
+	public static String get_LM_edu(final Club club,int lmType) {
+		String edu = "0";
+		if ( 1 == lmType ) {
+			edu = club.getEdu();
+		}else if ( 2 == lmType ) {
+			edu = club.getEdu2();
+		}else if ( 3 == lmType ) {
+			edu = club.getEdu3();
+		}
+		return edu;
+	}
 	
 	/**
 	 * 获取不同联盟对应的桌费(已选择俱乐部)
@@ -938,6 +950,20 @@ public class LMController implements Initializable{
 		}
 		return yiJiesuan;
 	}
+	
+	public  String get_LM_edu() {
+		final Club club = this.getSelectedClub();
+		final int lmType = this.getCurrentLMType();
+		String edu = "0";
+		if ( 1 == lmType ) {
+			edu = club.getEdu();
+		}else if ( 2 == lmType ) {
+			edu = club.getEdu2();
+		}else if ( 3 == lmType ) {
+			edu = club.getEdu3();
+		}
+		return edu;
+	}
 	/**
 	 *设置不同联盟对应的桌费
 	 * @time 2017年12月15日
@@ -961,6 +987,15 @@ public class LMController implements Initializable{
 			club.setYiJieSuan2(yiJiesuan);
 		}else if ( 3 == lmType ) {
 			club.setYiJieSuan3(yiJiesuan);
+		}
+	}
+	public static void set_LM_edu(final Club club,int lmType,String edu) {
+		if ( 1 == lmType ) {
+			club.setEdu(edu);
+		}else if ( 2 == lmType ) {
+			club.setEdu2(edu);
+		}else if ( 3 == lmType ) {
+			club.setEdu3(edu);
 		}
 	}
 	

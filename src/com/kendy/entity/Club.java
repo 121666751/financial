@@ -22,11 +22,13 @@ public class Club {
 	//就结算
 	private String yiJieSuan = "0";
 	
-	//附加的联盟2联盟3的桌费和已结算
+	//附加的联盟2联盟3的桌费、已结算、和额度
 	private String zhuoFei2 = "0";	
 	private String zhuoFei3 = "0";
 	private String yiJieSuan2 = "0";	
 	private String yiJieSuan3 = "0";
+	private String edu2 = "0";
+	private String edu3 = "0";
 	
 	
 	public Club() {
@@ -129,13 +131,33 @@ public class Club {
 	}
 
 
+	
+	public String getEdu2() {
+		return edu2;
+	}
+
+
+	public void setEdu2(String edu2) {
+		this.edu2 = edu2;
+	}
+
+
+	public String getEdu3() {
+		return edu3;
+	}
+
+
+	public void setEdu3(String edu3) {
+		this.edu3 = edu3;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Club [clubId=" + clubId + ", name=" + name + ", edu=" + edu + ", zhuoFei=" + zhuoFei + ", yiJieSuan="
 				+ yiJieSuan + ", zhuoFei2=" + zhuoFei2 + ", zhuoFei3=" + zhuoFei3 + ", yiJieSuan2=" + yiJieSuan2
-				+ ", yiJieSuan3=" + yiJieSuan3 + "]";
+				+ ", yiJieSuan3=" + yiJieSuan3 + ", edu2=" + edu2 + ", edu3=" + edu3 + "]";
 	}
-
 
 
 }
