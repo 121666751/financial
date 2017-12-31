@@ -1801,10 +1801,12 @@ public class MyController implements Initializable{
 		MoneyService.setTotalNumOnTable(tablePingzhang, 0d);
 //		MoneyService.setTotalNumOnTable(tableTeam, 0d,4);
 		
-		if("2017-01-01".equals(DBUtil.Load_Date)) {
-			tableTeam.setItems(null);
-			MoneyService.setTotalNumOnTable(tableTeam, 0d,4);
-		}
+		//2017-12-31注释
+		// if("2017-01-01".equals(DBUtil.Load_Date)) {
+		// tableTeam.setItems(null);
+		// MoneyService.setTotalNumOnTable(tableTeam, 0d,4);
+		// }
+		
 		//清空缓存中的数据
 		clearDataConstansCache();
 	}

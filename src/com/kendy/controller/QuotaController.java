@@ -187,10 +187,13 @@ public class QuotaController implements Initializable{
 			allClubSumMap.forEach( (clubId,sumList) -> {
 				Club club = allClubMap.get(clubId);
 				String sumZJ = getSumZJ(sumList);
-				String yiJieshan = lmController.get_LM_YiJiesuan(club, lmType);
-				String zhuoFei = lmController.get_LM_Zhuofei(club, lmType);
+				String yiJieshan = lmController.get_LM_YiJiesuan(club, getCurrentLMType());
+				String zhuoFei = lmController.get_LM_Zhuofei(club, getCurrentLMType());
 				String jieyu = NumUtil.digit0(
 						NumUtil.getNum(sumZJ)+NumUtil.getNum(yiJieshan)+NumUtil.getNum(zhuoFei));
+				// System.out.println(String.format("俱乐部：%s,总战绩：%s,桌费：%s,已结算：%s,===结余：%s",
+				// allClubMap.get(clubId).getName(),sumZJ,zhuoFei,yiJieshan,jieyu
+				// ));
 				List<ClubQuota> list  =  new ArrayList<>();
 				ClubQuota quota = new ClubQuota();
 				quota.setEuotaClubId(clubId);
@@ -320,7 +323,7 @@ public class QuotaController implements Initializable{
 			if(first * second >= 0) {
 				isDone = true;
 				log.info("=====================联盟配额结束！count:"+(count-1));
-				return;
+				break;
 			}
 			//转换（row1永远是绝对值的大数，row2是绝对值的小数	）
 			if( Double.compare(first, second) > 0 ) {
