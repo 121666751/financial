@@ -497,7 +497,6 @@ public class QuotaController implements Initializable{
 		try {
 			for(TableColumn column : colums){
 				String fxId = column.getId();
-				System.out.println("=="+fxId);
 				column.setCellValueFactory(
 						new PropertyValueFactory<Entity,String>(fxId)
 						);

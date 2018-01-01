@@ -698,6 +698,8 @@ public class MyController implements Initializable{
             		String teamId = teamIDCombox.getSelectionModel().getSelectedItem();
             		if(!StringUtil.isBlank(teamId))
             			TeamProxyService.refresh_TableTeamProxy_TableProxySum(teamId);
+            		
+            		//TeamProxyService.allTeamDataMap = TeamProxyService.getTotalTeamHuishuiMap();
             	}
             	if("实时上码系统".equals(tab.getText())) {
             		//刷新上码中的teamWanjiaIdMap
@@ -2252,7 +2254,14 @@ public class MyController implements Initializable{
 		return Integer.parseInt(pageInput.getText());
 	}
 	
-	
+	/**
+	 * 隐藏今日无数据的团队
+	 * @time 2018年1月1日
+	 * @param event
+	 */
+	public void proxyHideNoDataTeamAction(ActionEvent event) {
+		TeamProxyService.proxyHideNoDataTeam();
+	}
 	
 	/**
 	 * 总汇刷新按钮

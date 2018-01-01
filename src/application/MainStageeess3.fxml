@@ -446,7 +446,7 @@
                             <TableColumn fx:id="proxySum" prefWidth="75.0" text="0" />
                           </columns>
                         </TableView>
-                        <Button fx:id="proxyRefreshBtn" layoutX="728.0" layoutY="34.0" mnemonicParsing="false" onAction="#proxyRefreshAction" prefHeight="23.0" prefWidth="65.0" text="刷新" />
+                        <Button fx:id="proxyRefreshBtn" layoutX="688.0" layoutY="34.0" mnemonicParsing="false" onAction="#proxyRefreshAction" prefHeight="23.0" prefWidth="103.0" text="保存团队修改" />
 					            <HBox layoutX="708.0" layoutY="829.0" prefHeight="20.0" prefWidth="612.0" visible="false">
 					               <children>
 					                  <AnchorPane prefHeight="20.0" prefWidth="142.0" />
@@ -489,6 +489,7 @@
                               </HBox>
 					               </children>
 					            </HBox>
+                        <Button fx:id="proxyRefreshBtn1" layoutX="509.0" layoutY="34.0" mnemonicParsing="false" onAction="#proxyHideNoDataTeamAction" prefHeight="23.0" prefWidth="164.0" text="隐藏今日无数据的团队" />
                   	</children>
                   </AnchorPane>
                </content>

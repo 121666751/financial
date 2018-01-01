@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.log4j.Logger;
 
 import com.kendy.entity.Huishui;
@@ -57,6 +60,8 @@ public class TeamProxyService {
 	public static  TextField proxyHBRate;//回保比例
 	public static  TextField proxyFWF;//服务费大于多少有效
 	
+	// 克隆场次信息的团队数据    {团队ID : 团队原始数据列表 }
+	public static Map<String,List<TeamHuishuiInfo>> allTeamDataMap = new HashMap<>();
 	/**
 	 * 初始化代理服务类
 	 */
@@ -161,7 +166,7 @@ public class TeamProxyService {
         //Map<String,List<TeamHuishuiInfo>> teamMap = DataConstans.Total_Team_Huishui_Map;//锁定就保留信息，不减
         Map<String,List<TeamHuishuiInfo>> teamMap = getTotalTeamHuishuiMap();
         if(teamMap != null && teamMap.size() == 0) {
-        	System.out.println("----------------");//这个有问题，后期再看
+        	log.error("----------------");//这个有问题，后期再看
         }
         List<TeamHuishuiInfo> teamList = teamMap.get(newValue.toString().toUpperCase());
         ObservableList<ProxyTeamInfo> obList = FXCollections.observableArrayList();
@@ -405,6 +410,40 @@ public class TeamProxyService {
     	//double csdn = 0.31; 
     	String percentString = num.format(number);
     	return percentString;
+	}
+	
+	/**
+	 * 隐藏今日无数据的团队
+	 * @time 2018年1月1日
+	 * @param event
+	 */
+	public static void proxyHideNoDataTeam() {
+		try {
+			//显示所有团队ID
+			initTeamSelectAndZjManage(teamIDCombox);
+			
+			//过滤掉没有数据的团队ID
+			ObservableList<String> obList = teamIDCombox.getItems();
+			TeamProxyService.allTeamDataMap = TeamProxyService.getTotalTeamHuishuiMap();
+			if(CollectionUtils.isEmpty(obList)) {
+				ShowUtil.show("隐藏成功，但团队列表为空！",2);
+				return;
+			}else if(MapUtils.isEmpty(allTeamDataMap)) {
+				ShowUtil.show("隐藏成功，但所有团队列表为空！",2);
+				return;
+			}
+			ListIterator<String> it = obList.listIterator();
+			while(it.hasNext()) {
+				String teamId = it.next().toUpperCase();
+				if(CollectionUtils.isEmpty(allTeamDataMap.get(teamId))){
+					it.remove();
+					log.info("代理：隐藏团队"+teamId);
+				}
+			}
+			ShowUtil.show("隐藏成功!",2);
+		} catch (Exception e) {
+			ErrorUtil.err("隐藏今日无数据的团队失败", e);
+		}
 	}
 	
 	

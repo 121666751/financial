@@ -218,11 +218,19 @@ public class WaizhaiService {
 		
 		//步骤1：添加玩家
 		for(CurrentMoneyInfo infos : SSJE_obList) {
-			if(StringUtil.isBlank(infos.getShishiJine())
+			boolean isSuperId = DataConstans.Combine_Super_Id_Map.containsKey(infos.getWanjiaId());
+			if(!isSuperId) {//为解决联合ID的问题，在这里把父节点信息加了进来，后面会把父节点的联合额度为0或空的清除掉，问题：能否在此处就过滤过？？
+				if(StringUtil.isBlank(infos.getShishiJine())
 					|| "0".equals(infos.getShishiJine())
 					|| !infos.getShishiJine().contains("-")) {
-				continue;
+					continue;
+				}
 			}
+//			if(StringUtil.isBlank(infos.getShishiJine())
+//					|| "0".equals(infos.getShishiJine())
+//					|| !infos.getShishiJine().contains("-")) {
+//				continue;
+//			}
 			playerId = infos.getWanjiaId();
 			if(!StringUtil.isBlank(playerId)) {
 				player = DataConstans.membersMap.get(playerId);
@@ -235,11 +243,16 @@ public class WaizhaiService {
 						if(gudong.equals(player.getGudong())) {
 							if(gudongMap.get(gudong) == null) {
 								eachGudongList = new ArrayList<>();
-								eachGudongList.add(infos);
+								//eachGudongList.add(infos);
+								
 							}else {
 								eachGudongList = gudongMap.get(gudong);
-								eachGudongList.add(infos);
+								//eachGudongList.add(infos);
 							}
+							/*****2018-01-01 add****/
+							CurrentMoneyInfo tempInfo = copyCurrentMoneyInfo(infos);
+							eachGudongList.add(tempInfo);
+							/*********/
 							gudongMap.put(gudong, eachGudongList);
 							break;
 						}
@@ -256,6 +269,7 @@ public class WaizhaiService {
 		//步骤2：处理个人外债和有联合额度的外债
 		Map<String,CurrentMoneyInfo> ssje_map = get_SSJE_Map(SSJE_obList);
 		handlePersonWaizhai(gudongMap,ssje_map);
+		System.out.println("===============================================以上外债信息为：处理个人外债和有联合额度的外债finishes");
 		
 		//步骤3：添加团队
 		for(TeamInfo infos : teamInfoList) {
@@ -318,6 +332,7 @@ public class WaizhaiService {
 	 */
 	private static void  handlePersonWaizhai(Map<String,List<CurrentMoneyInfo>> gudongMap,Map<String,CurrentMoneyInfo> ssje_map) {
 		
+		
 		if(MapUtil.isNullOrEmpty(gudongMap)) return;
 		
 		Map<String,List<CurrentMoneyInfo>> _gudongMap = new HashMap<>();
@@ -361,7 +376,7 @@ public class WaizhaiService {
     				if(superId != null && tempSuperInfoMap.get(superId) == null) {
 	    				//CurrentMoneyInfo superInfo = ssje_map.get(playerId);
 	    				CurrentMoneyInfo superInfo = cmiInfo;
-	    				if(superInfo !=null && NumUtil.getNum(superInfo.getCmSuperIdSum()) > 0) {
+	    				if(superInfo !=null && NumUtil.getNum(superInfo.getCmSuperIdSum()) >= 0) {
 	    					log.info("外债：删除父节点("+getPlayerName(playerId)+")，其联合ID为正");
 	    					ite.remove();
 	    				}
@@ -379,6 +394,8 @@ public class WaizhaiService {
         } 
 		
 	}
+	
+	
 	
 	/**
 	 * 复制一个实时金额表的记录
