@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.log4j.Logger;
 
 import com.kendy.db.DBUtil;
@@ -693,13 +694,20 @@ public class LMController implements Initializable{
 	
 	/**
 	 * 锁定当局后判断俱乐部额度与结余
+	 * 导入战绩后选择不同的联盟就弹框提示哪个联盟的额度超出情况 
 	 * @time 2017年11月30日
 	 */
-	public  static void checkOverEdu(){
+	public  static void checkOverEdu(String LMType){
 		try {
 			String maxRecordTime = DBUtil.getMaxRecordTime();//最新一天的战绩记录（也可能是昨天的，是否要做个标记）
 			if(!StringUtil.isBlank(maxRecordTime)) {
 				List<Record> list = DBUtil.getRecordsByMaxTime(maxRecordTime);
+				
+				//2018-01-01 add 大概个联盟分别报额度是否超出
+				if(!CollectionUtils.isEmpty(list)) {
+					list = list.stream().filter(record -> LMType.equals(record.getLmType())).collect(Collectors.toList());
+				}
+				
 				//最新的当天所有战绩记录（包含当局记录）
 				Map<String,List<Record>> map = new HashMap<>();
 				if(list == null) list = new ArrayList<>();
@@ -712,6 +720,7 @@ public class LMController implements Initializable{
 					_list.add(record);
 					map.put(clubId, _list);
 				});
+
 				
 				//到这里map
 				boolean isOver = false;
@@ -744,7 +753,7 @@ public class LMController implements Initializable{
 					//结余和额度进行比较
 					if((jieyu+edu) < 0) {
 						isOver = true;
-						ShowUtil.show(allClubMap.get(clubId).getName()+"已经超过额度！！！");
+						ShowUtil.show(LMType+":"+allClubMap.get(clubId).getName()+"已经超过额度！！！");
 						break;
 					}
 				}

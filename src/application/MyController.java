@@ -970,7 +970,11 @@ public class MyController implements Initializable{
 		}
 	}
 	
-	private static String selected_LM_type = "";
+	/**
+	 * 导入战绩后选择联盟
+	 */
+	private static String selected_LM_type = "";//选择后会被清空
+	private static String final_selected_LM_type = "";//选择后不会被清空，用于检测额度是否超出
 	private void selectLM() {
 		Dialog dialog = new Dialog<>();
      	dialog.setTitle("请选择联盟:");
@@ -1014,6 +1018,7 @@ public class MyController implements Initializable{
      	dialog.getDialogPane().getButtonTypes().addAll(loginButtonType);
      	
      	dialog.setOnCloseRequest(event -> {
+     		final_selected_LM_type = StringUtil.nvl(selected_LM_type, "联盟1");
      		if("".equals(selected_LM_type)) {
      			return;
      		}
@@ -1701,7 +1706,7 @@ public class MyController implements Initializable{
 				setLMRecords();
 				DBUtil.addRecordList(LMController.currentRecordList);//是否反回结果？？
 				LMController.refreshClubList();
-				LMController.checkOverEdu();//检查俱乐部额度
+				LMController.checkOverEdu(final_selected_LM_type);//检查俱乐部额度
 				
 				ShowUtil.show("锁定成功！", 2);
 			}else {
