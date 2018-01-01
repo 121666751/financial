@@ -15,6 +15,12 @@ import com.kendy.entity.UserInfos;
 
 import application.DataConstans;
 
+/**
+ * 常用工具类
+ * 
+ * @author 林泽涛
+ * @time 2018年1月1日 下午10:58:04
+ */
 public class ConsUtil {
 
 	/**

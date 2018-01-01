@@ -136,7 +136,7 @@ import javafx.util.Pair;
  * 财务软件主界面的组件控制器
  * 
  * @author 林泽涛
- *
+ * @time 2018年1月1日 下午10:55:48
  */
 public class MyController implements Initializable{
     

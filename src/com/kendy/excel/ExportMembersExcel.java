@@ -23,10 +23,8 @@ import org.apache.poi.hssf.util.HSSFColor;
 
 /**
  * 导出Excel公共方法
- * @version 1.0
- * 
- * @author 小林
- *
+ * @author 林泽涛
+ * @time 2018年1月1日 下午10:52:31
  */
 public class ExportMembersExcel  {
 	

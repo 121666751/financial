@@ -33,8 +33,9 @@ import javafx.scene.input.KeyEvent;
 
 /**
  * 删除控制器
+ * 
  * @author 林泽涛
- *
+ * @time 2018年1月1日 下午10:55:02
  */
 public class DelController implements Initializable{
 

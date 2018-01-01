@@ -19,9 +19,10 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 /**
- * 发送邮件
- * @author 小林
- *
+ * 邮件工具类
+ * 
+ * @author 林泽涛
+ * @time 2018年1月1日 下午10:57:33
  */
 public class MailUtils {
 

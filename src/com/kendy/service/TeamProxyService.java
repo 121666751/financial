@@ -40,8 +40,8 @@ import javafx.scene.layout.HBox;
 /**
  * 代理查询服务类
  * 
- * @author kendy
- *
+ * @author 林泽涛
+ * @time 2018年1月1日 下午10:49:57
  */
 public class TeamProxyService {
 
@@ -148,6 +148,7 @@ public class TeamProxyService {
 	 * @param newValue teamID
 	 */
 	public static void refresh_TableTeamProxy_TableProxySum(Object newValue) {
+		if(newValue == null) return;
 		Huishui hs = DataConstans.huishuiMap.get(newValue);
         if(hs != null) {
             if("否".equals(hs.getZjManaged())) {

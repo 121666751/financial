@@ -30,8 +30,9 @@ import javafx.stage.Stage;
 
 /**
  * 添加团队回水的控制器
- * @author Administrator
- *
+ * 
+ * @author 林泽涛
+ * @time 2018年1月1日 下午10:54:46
  */
 public class AddController implements Initializable{
 	

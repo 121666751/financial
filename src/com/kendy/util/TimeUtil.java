@@ -3,6 +3,12 @@ package com.kendy.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 时间工具类
+ * 
+ * @author 林泽涛
+ * @time 2018年1月1日 下午10:56:51
+ */
 public class TimeUtil {
 
 	public static void main(String[] args) {

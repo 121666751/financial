@@ -24,8 +24,9 @@ import javafx.scene.control.TableView;
 
 /**
  * 总汇信息服务类
+ * 
  * @author 林泽涛
- *
+ * @time 2018年1月1日 下午10:50:55
  */
 public class ZonghuiService {
 	

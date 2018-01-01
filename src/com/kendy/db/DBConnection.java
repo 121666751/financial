@@ -11,6 +11,12 @@ import org.apache.log4j.Logger;
 
 import com.kendy.controller.CombineIDController;
 
+/**
+ * 连接数据库
+ * 
+ * @author 林泽涛
+ * @time 2018年1月1日 下午10:54:27
+ */
 public class DBConnection {
 	
 	private static Logger log = Logger.getLogger(DBConnection.class);

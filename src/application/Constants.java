@@ -1,7 +1,9 @@
 package application;
 /**
  * 配置一些常量
- *
+ * 
+ * @author 林泽涛
+ * @time 2018年1月1日 下午10:55:22
  */
 public class Constants {
 	

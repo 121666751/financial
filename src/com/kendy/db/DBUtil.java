@@ -37,8 +37,9 @@ import application.DataConstans;
 
 /**
  * 数据库操作类
- * @author 小林
- *
+ * 
+ * @author 林泽涛
+ * @time 2018年1月1日 下午10:54:17
  */
 public class DBUtil {
 	private static Logger log = Logger.getLogger(DBUtil.class);

@@ -21,7 +21,7 @@ import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.hssf.util.HSSFColor;
 
 /**
- * 联盟配账单导出
+ * 实时上码导出
  * 
  * @author 林泽涛
  * @time 2017年12月20日 下午9:02:55

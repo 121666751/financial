@@ -1,7 +1,8 @@
 package com.kendy.util;
 
 /**
- * 自制字符串处理类
+ * 字符串处理类
+ * 
  * @author 林泽涛
  * @time 2017年10月7日 下午4:02:08
  */

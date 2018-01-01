@@ -8,7 +8,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
-
+/**
+ * 属性工具类
+ * 
+ * @author 林泽涛
+ * @time 2018年1月1日 下午10:55:57
+ */
 public class PropertiesUtil {
 	
 	public static void main(String[] arss){

@@ -24,8 +24,9 @@ import javafx.scene.control.TextField;
 
 /**
  * 会员查询服务类
- * @author kendy
- *
+ * 
+ * @author 林泽涛
+ * @time 2018年1月1日 下午10:51:39
  */
 public class MemberService {
 	

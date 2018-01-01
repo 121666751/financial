@@ -22,11 +22,10 @@ import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.hssf.util.HSSFColor;
 
 /**
- * 导出Excel公共方法
- * @version 1.0
+ * 导出回水
  * 
- * @author 小林
- *
+ * @author 林泽涛
+ * @time 2018年1月1日 下午10:53:17
  */
 public class ExportTeamhsExcel  {
 	

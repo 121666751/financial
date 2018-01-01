@@ -5,6 +5,12 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+/**
+ * IP工具类
+ * 
+ * @author 林泽涛
+ * @time 2018年1月1日 下午10:57:48
+ */
 public class IPUtil {
 
 	public static void main(String[] args) throws SocketException, UnknownHostException {
