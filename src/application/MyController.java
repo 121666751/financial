@@ -75,9 +75,11 @@ import com.kendy.util.InputDialog;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
 import com.kendy.util.StringUtil;
+import com.kendy.util.TableUtil;
 import com.kendy.util.Text2ImageUtil;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -170,6 +172,9 @@ public class MyController implements Initializable{
     @FXML private Hyperlink delCurrentMoneyBtn;
     
     @FXML private TextField combineIdDir;
+    
+    @FXML private RadioButton whiteVersionOld;
+    @FXML private RadioButton whiteVersionNew;
     
     @FXML private RadioButton radio_autoTest_yes;
     @FXML private RadioButton radio_autoTest_no;
@@ -372,9 +377,13 @@ public class MyController implements Initializable{
 	
 	public static LMController lmController = new LMController();
 	
-//	public ObservableList<TotalInfo> tableTotalInfoList = FXCollections.observableArrayList(
-//			new TotalInfo("测试列1","测试列2","测试列3")
-//			);
+	/* 每点击结算按钮就往这个静态变更累加（只针对当局）
+	 * 撤销时清空为0
+	 * 锁定时清空为0
+	 * 平帐时与上场的总团队服务费相加
+	 */
+	public static Double current_Jiesuaned_team_fwf_sum = 0d;
+	
     /**
      * The constructor.
      * The constructor is called before the initialize() method.
@@ -610,6 +619,9 @@ public class MyController implements Initializable{
 		//是否启动测试模式
 		initAutoTestMode();
 		
+		//选择导入白名单的版本
+		initWhiteVersion();
+		
 		
 	    try {
 	    	FXMLLoader loader = new FXMLLoader();
@@ -644,28 +656,62 @@ public class MyController implements Initializable{
 	}
 		
 	/**
+	 * 初始化白名单版本
+	 * 
+	 * @time 2018年1月4日
+	 */
+	private void initWhiteVersion() {
+	    ToggleGroup group = new ToggleGroup();
+	    whiteVersionOld.setToggleGroup(group);
+	    whiteVersionNew.setToggleGroup(group);
+		whiteVersionOld.setUserData(0);//"旧名单"
+		whiteVersionNew.setUserData(1);//"新名单"
+		whiteVersionOld.setSelected(true);
+		log.info("默认导入版本：新名单");
+		group.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
+		    public void changed(ObservableValue<? extends Toggle> ov,
+		        Toggle toggle, Toggle new_toggle) {
+		    	Integer version =  (Integer)group.getSelectedToggle().getUserData();
+		    	if(version == 1) {
+		    		log.info("导入版本：新名单");
+		    	}else {
+		    		log.info("导入版本：旧名单");
+		    	}
+		    }
+		});
+	}
+	
+	/**
+	 * 获取版本类型 0：旧版本  1：新版本
+	 * @time 2018年1月5日
+	 * @return
+	 */
+	private int getVersionType() {
+		return whiteVersionOld.isSelected() ? 0 : 1;
+	}
+	/**
 	 * 启动测试模式
 	 * 
 	 * @time 2017年11月11日
 	 */
 	private void initAutoTestMode() {
 		hbox_autoTestMode.setVisible(false);
-	    ToggleGroup group = new ToggleGroup();
+		ToggleGroup group = new ToggleGroup();
 		radio_autoTest_yes.setToggleGroup(group);
 		radio_autoTest_no.setToggleGroup(group);
 		radio_autoTest_yes.setUserData("是");
 		radio_autoTest_no.setUserData("否");
 		radio_autoTest_no.setSelected(true);
 		group.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
-		    public void changed(ObservableValue<? extends Toggle> ov,
-		        Toggle toggle, Toggle new_toggle) {
-		        String autoTestMode =  (String)group.getSelectedToggle().getUserData();
-		    	if("是".equals(autoTestMode)) {
-		    		hbox_autoTestMode.setVisible(true);
-		    	}else {
-		    		hbox_autoTestMode.setVisible(false);
-		    	}
-		    }
+			public void changed(ObservableValue<? extends Toggle> ov,
+					Toggle toggle, Toggle new_toggle) {
+				String autoTestMode =  (String)group.getSelectedToggle().getUserData();
+				if("是".equals(autoTestMode)) {
+					hbox_autoTestMode.setVisible(true);
+				}else {
+					hbox_autoTestMode.setVisible(false);
+				}
+			}
 		});
 	}
 	
@@ -1448,8 +1494,14 @@ public class MyController implements Initializable{
 		                setText(null);
 		            } else {
 		                btn.setOnAction(event -> {
+		                	//
+		                	if(!importZJBtn.isDisabled()) {
+		                		ShowUtil.show("只能在导入战绩后才能结算！");
+		                		return;
+		                	}
 		                	TeamInfo teamInfo = getTableView().getItems().get(getIndex());
 		                    if(getTableRow() != null && teamInfo != null && "0".equals(teamInfo.getHasJiesuaned())){  
+		                    	TeamInfo tempTeamInfo = copyTeamInfo(teamInfo);
 //		                    	log.debug(teamInfo.toString());
 		                    	btn.setText("已结算");
 		                    	String rowTeamSum = teamInfo.getTeamSum();
@@ -1467,6 +1519,9 @@ public class MyController implements Initializable{
 		                    	//缓存中清空之前所加的团队回水，以便下次团队累计重新从0开始
 		                    	DataConstans.Team_Huishui_Map.remove(teamInfo.getTeamID());
 		                    	DataConstans.Team_Info_Pre_Map.remove(teamInfo.getTeamID());
+		                    	
+		                    	//2018-01-04 在实时金额栏中新增该团队减去团队服务费的记录
+		                    	add2SSJE(tempTeamInfo);
                             } 
 		                });
 		                //解决不时本应支付确显示成已支付的bug
@@ -1482,6 +1537,79 @@ public class MyController implements Initializable{
 		    return cell;
 		}
 	};
+	
+	public TeamInfo copyTeamInfo(TeamInfo info) {
+		TeamInfo temp = new TeamInfo(info.getTeamID(),info.getTeamZJ(),info.getTeamHS(),info.getTeamBS(),info.getTeamSum());
+		return temp;
+	}
+	
+	/**
+	 * 点击结算按钮后往实时金额新增一条团队记录（减去该团队服务费）
+	 * @time 2018年1月4日
+	 * @param teamInfo
+	 */
+	public void add2SSJE(TeamInfo teamInfo) {
+		Platform.runLater(new Runnable() { //更新JavaFX的主线程的代码放在此处
+				@Override
+				public void run() {
+					String teamID = teamInfo.getTeamID();
+					String teamName = "团队#"+teamID;
+					String teamSum = teamInfo.getTeamSum();
+					Double _teamSum = NumUtil.getNum(teamSum);
+					if( _teamSum == 0) {
+						//这里是否直接返回？？......
+						//return;
+					}
+					//获取代理查询中该团队的服务费
+					String fwfString = TeamProxyService.get_TeamFWF_byTeamId(teamID);
+					Double teamFWF = NumUtil.getNum(fwfString);//团队服务费  : 待累加到总团队服务费中
+					Double _tempSSJE = _teamSum - teamFWF;//此处已减去该 团队服务费
+					String tempSSJE = NumUtil.digit0(_tempSSJE);//此处已减去该 团队服务费
+					current_Jiesuaned_team_fwf_sum += teamFWF;
+					//获取新记录
+					CurrentMoneyInfo cmiInfo = MoneyService.getInfoByName(teamName);
+					if(cmiInfo == null) {//cmiInfo为null表示该团队不存在于实时金额表中
+						cmiInfo = new CurrentMoneyInfo(teamName,tempSSJE,"","");//玩家ID和额度为空
+						MoneyService.addInfo(cmiInfo);
+						log.info(String.format("点击结算按钮:新增一条团队记录进金额表,团队ID=%s,团队服务费=%s,金额=%s",teamID,fwfString,tempSSJE));
+					}else {
+						//如果在实时金额中已经存在该团队记录，则更新该条实时金额
+						String oldTeamSSJE = cmiInfo.getShishiJine();
+						Double _newTeamSSJE = NumUtil.getNum(oldTeamSSJE) + _tempSSJE;//此处已减去该 团队服务费
+						String newTeamSSJE = NumUtil.digit0(_newTeamSSJE);
+						cmiInfo.setShishiJine(newTeamSSJE);
+						log.info(String.format("点击结算按钮:修改金额表原团队记录,团队ID=%s,团队服务费=%s,金额=%s",teamID,fwfString,newTeamSSJE));
+					}
+					//并刷新表
+					MoneyService.refreshRecord();
+					//利润表修改总团队服务费(累积该团队的服务费)
+					//add2AllTeamFWF_from_tableProfit(tableProfit,teamFWF);//由于改用current_Jiesuaned_team_fwf_sum，故此方法不调用
+				}
+			}	
+		);
+		
+		
+	}
+	
+	
+	/**
+	 * 利润表修改总团队服务费(累积该团队的服务费)
+	 * @time 2018年1月5日
+	 * @param teamFWF
+	 */
+	public static void add2AllTeamFWF_from_tableProfit(TableView<ProfitInfo> table,Double teamFWF) {
+		try {
+			ProfitInfo profitInfo = TableUtil.getItem(table)
+					.filtered(info -> "总团队服务费".equals(info.getProfitType())).get(0);
+			String allTeamFWF = NumUtil.digit0(NumUtil.getNum(profitInfo.getProfitAccount()) + teamFWF);
+			profitInfo.setProfitAccount(allTeamFWF);
+			table.refresh();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	
     
     
@@ -1707,6 +1835,9 @@ public class MyController implements Initializable{
 				DBUtil.addRecordList(LMController.currentRecordList);//是否反回结果？？
 				LMController.refreshClubList();
 				LMController.checkOverEdu(final_selected_LM_type);//检查俱乐部额度
+				
+				//当局已结算的团队服务费之和 要置为0
+				current_Jiesuaned_team_fwf_sum = 0d;
 				
 				ShowUtil.show("锁定成功！", 2);
 			}else {
@@ -2106,6 +2237,8 @@ public class MyController implements Initializable{
 		    		ShowUtil.show("您还没有导入数据", 1);
 		    		return;
 		    	}
+		    	//当局已结算的团队服务费之和  要置为0
+		    	current_Jiesuaned_team_fwf_sum = 0d;
 		    	
 			    if(DataConstans.All_Locked_Data_Map.size() == 0) {
 			    	LMLabel.setText(getLMValFirstTime());
@@ -2144,6 +2277,10 @@ public class MyController implements Initializable{
 	 * 清空联盟对帐的信息
 	 */
 	public void openLMDialogAction(ActionEvent event){
+		// if(!importZJBtn.isDisabled()) {
+		// ShowUtil.show("只能在导入战绩后才能清空联盟对帐！");
+		// return;
+		// }
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("提示");
 		alert.setHeaderText(null);
@@ -2151,10 +2288,10 @@ public class MyController implements Initializable{
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK){
 			LMLabel.setText("0.00");
-			log.debug("确定清空联盟对帐信息");
+			log.info("确定清空联盟对帐信息");
 			
 		} else {
-			log.debug("取消清空联盟对帐信息");
+			log.info("取消清空联盟对帐信息");
 		}
 	}
 	

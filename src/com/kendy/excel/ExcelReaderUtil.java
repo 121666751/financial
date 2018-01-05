@@ -442,7 +442,7 @@ public class ExcelReaderUtil {
 		Map<String,String> presentMoneyMap = getMapByPosition_SSJE(sheet,3,6,1500);
 		
 		//昨日利润
-		Map<String,String> yesterdayProfitMap = getMapByPosition(sheet,3,11,9);
+		Map<String,String> yesterdayProfitMap = getMapByPosition(sheet,3,11,10);//增加了总服务费
 		//联盟对帐
 		Map<String,String> LMMap = getMapByPosition(sheet,15,11,16);
 		

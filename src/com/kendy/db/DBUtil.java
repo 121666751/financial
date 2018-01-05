@@ -594,6 +594,37 @@ public class DBUtil {
 	}
 	
 	/**
+	 * 团队回水修改
+	 * 
+	 * @time 2018年1月5日
+	 * @param hs
+	 */
+	public static void updateTeamHS(final Huishui hs) {
+		try {
+			con = DBConnection.getConnection();
+			String sql = "update teamhs set teamName=?,huishuiRate=?,insuranceRate=?,"
+					+ "gudong=?,zjManaged=?,beizhu=?,proxyHSRate=?,proxyHBRate=?,proxyFWF=?,jifenInput=? where teamId = ?";//11列
+			ps = con.prepareStatement(sql);
+			ps.setString(1, hs.getTeamName());
+			ps.setString(2, hs.getHuishuiRate());
+			ps.setString(3, hs.getInsuranceRate());
+			ps.setString(4, hs.getGudong());
+			ps.setString(5, hs.getZjManaged());
+			ps.setString(6, hs.getBeizhu());
+			ps.setString(7, hs.getProxyHSRate());
+			ps.setString(8, hs.getProxyHBRate());
+			ps.setString(9, hs.getProxyFWF());
+			ps.setString(10, hs.getJifenInput());
+			ps.setString(11, hs.getTeamId());
+			ps.execute();
+			log.info("团队回水修改");
+		}catch (SQLException e) {
+			ErrorUtil.err("团队回水修改失败",e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	/**
 	 * 团队回水入库
 	 * 
 	 * @time 2017年11月19日

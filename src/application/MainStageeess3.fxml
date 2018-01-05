@@ -105,6 +105,13 @@
                         <RadioButton fx:id="radio_autoTest_yes" layoutX="742.0" layoutY="133.0" mnemonicParsing="false" text="是" />
                         <RadioButton fx:id="radio_autoTest_no" layoutX="789.0" layoutY="133.0" mnemonicParsing="false" selected="true" text="否" />
                         <Button fx:id="checkCombineIdButton" layoutX="686.0" layoutY="554.0" mnemonicParsing="false" onAction="#checkCombineIdAction" prefHeight="23.0" prefWidth="57.0" text="检测" />
+                        <Label fx:id="label_clubId211" layoutX="678.0" layoutY="79.0" prefHeight="19.0" prefWidth="59.0" text="白名单：">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <RadioButton fx:id="whiteVersionOld" layoutX="737.0" layoutY="79.0" mnemonicParsing="false" text="旧版本" />
+                        <RadioButton fx:id="whiteVersionNew" layoutX="801.0" layoutY="79.0" mnemonicParsing="false" selected="true" text="新版本" />
                      </children>
                   </AnchorPane>
             </content>
@@ -254,14 +261,14 @@
                                              </columns>
                                           </TableView>
                                           <AnchorPane prefHeight="24.0" prefWidth="159.0" />
-                                          <TableView fx:id="tableProfit" layoutX="899.0" layoutY="244.0" prefHeight="217.0" prefWidth="159.0">
+                                          <TableView fx:id="tableProfit" layoutX="899.0" layoutY="244.0" prefHeight="245.0" prefWidth="142.0">
                                              <columns>
-                                                <TableColumn fx:id="profitType" prefWidth="75.0" text="利润" />
-                                                <TableColumn fx:id="profitAccount" prefWidth="64.0" />
+                                                <TableColumn fx:id="profitType" prefWidth="59.0" text="利润" />
+                                                <TableColumn fx:id="profitAccount" prefWidth="77.0" />
                                              </columns>
                                           </TableView>
                                           <AnchorPane prefHeight="24.0" prefWidth="159.0" />
-                                          <TableView fx:id="tableDangju" prefHeight="152.0" prefWidth="159.0">
+                                          <TableView fx:id="tableDangju" prefHeight="130.0" prefWidth="142.0">
                                              <columns>
                                                 <TableColumn fx:id="type" prefWidth="75.0" text="当局" />
                                                 <TableColumn fx:id="money" prefWidth="64.0" />

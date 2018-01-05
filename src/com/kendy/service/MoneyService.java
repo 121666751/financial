@@ -42,6 +42,7 @@ import com.kendy.util.ErrorUtil;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
 import com.kendy.util.StringUtil;
+import com.kendy.util.TableUtil;
 
 import application.Constants;
 import application.DataConstans;
@@ -75,7 +76,7 @@ public class MoneyService {
 
 	/**
 	 * 导入战绩成功后
-	 * 自动填充玩家信息表、牌局表以及当局
+	 * 自动填充玩家信息表、牌局表、团队表以及当局
 	 * 备注：这些表数据在当局范围内是固定不变的
 	 * 
 	 * @param table 玩家信息表
@@ -844,6 +845,40 @@ public class MoneyService {
 	}
 	
 	/**
+	 * 在加载上一场或从昨天加载利润表时（点击平帐按钮）先缓存总团队服务费的值
+	 * @time 2018年1月5日
+	 * @param table
+	 * @return
+	 */
+	private static String getAllTeamFWF(TableView<ProfitInfo> table) {
+		String allTeamFWF = "0";
+		try {
+			ProfitInfo profitInfo = TableUtil.getItem(table).filtered(info-> "总团队服务费".equals(info.getProfitType())).get(0);
+			allTeamFWF = profitInfo.getProfitAccount();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return allTeamFWF;
+	}
+	
+	/**
+	 * 利润表修改总团队服务费(累积该团队的服务费)
+	 * @time 2018年1月5日
+	 * @param teamFWF
+	 */
+	public static void add2AllTeamFWF_from_tableProfit(TableView<ProfitInfo> table,Double teamFWF) {
+		try {
+			ProfitInfo profitInfo = TableUtil.getItem(table)
+					.filtered(info -> "总团队服务费".equals(info.getProfitType())).get(0);
+			String allTeamFWF = NumUtil.digit0(NumUtil.getNum(profitInfo.getProfitAccount()) + teamFWF);
+			profitInfo.setProfitAccount(allTeamFWF);
+			table.refresh();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * 点击刷新同步按钮时计算各面板总金额
 	 */
 	public static void refreshSumPane(
@@ -857,7 +892,10 @@ public class MoneyService {
 			) {
 		//log.info(JSON.toJSONString(DataConstans.SumMap));
 		//0 重新初始化利润表(避免重复计算)
+		//String allTeamFWF = getAllTeamFWF(tableProfit);//缓存总团队服务费
+		
 		updatetTableProfitFirst(tableProfit);
+		add2AllTeamFWF_from_tableProfit(tableProfit,MyController.current_Jiesuaned_team_fwf_sum);//修改总团队服务费表
 		
 		//1 计算开销总和
 		double sumOfKaixiao = getSumOfTableKaixiao(tableKaixiao);

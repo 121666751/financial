@@ -14,6 +14,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.log4j.Logger;
 
+import com.kendy.db.DBUtil;
 import com.kendy.entity.Huishui;
 import com.kendy.entity.ProxySumInfo;
 import com.kendy.entity.ProxyTeamInfo;
@@ -140,6 +141,25 @@ public class TeamProxyService {
 	        }
 	    });
 
+	}
+	
+	/**
+	 * 获取最新的团队服务费(点击结算时)
+	 * @time 2018年1月4日
+	 * @param teamId
+	 * @return
+	 */
+	public static String get_TeamFWF_byTeamId(String teamId) {
+		String fwf = "0";
+		try {
+			refresh_TableTeamProxy_TableProxySum(teamId);
+			fwf = tableProxySum.getItems().filtered(info -> "服务费".equals(info.getProxySumType())).get(0).getProxySum();
+		} catch (Exception e) {
+			fwf = "0";
+			e.printStackTrace();
+			log.error("获取最新的团队服务费(点击结算时)失败!");
+		}
+		return fwf;
 	}
 	
 	/**
@@ -306,7 +326,7 @@ public class TeamProxyService {
 		return teamMap;
 	}
 	/**
-	 * 刷新按钮
+	 * 刷新按钮(保存团队修改)
 	 */
 	public static void proxyRefresh() {
 		//先同步缓存
@@ -334,6 +354,8 @@ public class TeamProxyService {
 	            hs.setProxyHBRate(HBRateStr);
 	            hs.setProxyFWF(FWFStr);
 	            DataConstans.huishuiMap.put(teamId,hs);//更新到缓存中
+	            //更新到数据库
+	            DBUtil.updateTeamHS(hs);
 	        }else {
 	        	ShowUtil.show("刷新失败，没有"+teamId+"的相关信息!");
 	        	return;
