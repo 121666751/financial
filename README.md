@@ -9,7 +9,7 @@
     Excel能做的，财务软件也要能做：如总汇、个人当天结算、团队回水、前后表的衔接。
 ## 功能迁移
     Excel能做的，财务软件也要能做：如总汇、个人当天结算、团队回水、前后表的衔接。
-## 效果
+## 部分效果
 ![](https://github.com/greatkendy123/financial/raw/master/resource/images/1.png)
 ![](https://github.com/greatkendy123/financial/raw/master/resource/images/2.png)
 ![](https://github.com/greatkendy123/financial/raw/master/resource/images/3.png)
