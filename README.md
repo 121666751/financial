@@ -15,8 +15,8 @@
 ![](https://github.com/greatkendy123/financial/raw/master/resource/images/3.png)
 
 ## 代码示例（自动配额）
-    /**
-     * 联盟自动配额
+	/**
+	* 联盟自动配额
      * 这是本控制类最核心的代码
      * 算法：找剩余值中的两个最大最小值进行一方清零，不断循环
      * 
@@ -134,16 +134,37 @@
     	tableQuotaPay.refresh();
     }
     
-    /**
-     * 往结账表新增一条记录
-     * 应用场景：自动配额时，每配额一次就产生一条记录
-     * @time 2017年12月18日
-     * @param info
-     */
+   /**
+    * 往结账表新增一条记录
+    * 应用场景：自动配额时，每配额一次就产生一条记录
+    * @time 2017年12月18日
+    * @param info
+    */
     private void addRecord2TableQuotaPay(QuotaMoneyInfo info) {
     	ObservableList<QuotaMoneyInfo> obList = tableQuotaPay.getItems();
     	if(obList == null)  obList = FXCollections.observableArrayList();
     	obList.add(info);
     	tableQuotaPay.setItems(obList);
     }
- 
+ 	/**
+	 * 获取剩余最大和最小的两行
+	 * @time 2017年12月16日
+	 * @param type 0:最小值  1：最大值 
+	 * @return
+	 */
+    private ClubQuota getRecord(int type) {
+    	if(1 ==  type )
+	    	return tableQuota.getItems().parallelStream().max(new Comparator<ClubQuota>() {  
+	            @Override  
+	            public int compare(ClubQuota o1, ClubQuota o2) {  
+	                 return NumUtil.getNum(o1.getQuotaRest()).compareTo(NumUtil.getNum(o2.getQuotaRest()));  
+	            }  
+	        }).get();  
+    	else
+	    	return tableQuota.getItems().parallelStream().min(new Comparator<ClubQuota>() {  
+	            @Override  
+	            public int compare(ClubQuota o1, ClubQuota o2) {  
+	                 return NumUtil.getNum(o1.getQuotaRest()).compareTo(NumUtil.getNum(o2.getQuotaRest()));  
+	            }  
+	        }).get();  
+    }
