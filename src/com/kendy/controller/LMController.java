@@ -695,6 +695,11 @@ public class LMController implements Initializable{
 	/**
 	 * 锁定当局后判断俱乐部额度与结余
 	 * 导入战绩后选择不同的联盟就弹框提示哪个联盟的额度超出情况 
+	 * 
+	 * !!!!可能存在的问题：如果中途两次结算同一个团队，可能服务费会累加
+	 * 如KK团队在导入01场后点击结算，然后又在导入02场后点击结算
+	 * 解决方法：建议在Record表中新增一个字段标志是否已经计算过
+	 * 
 	 * @time 2017年11月30日
 	 */
 	public  static void checkOverEdu(String LMType){
@@ -740,20 +745,27 @@ public class LMController implements Initializable{
 
 					//结余=sum（当天总账+已结算+桌费）
 					Club tempClub = allClubMap.get(clubId);
-//					String zhuoFei = tempClub.getZhuoFei();
-					double zhuoFei = NumUtil.getNum(tempClub.getZhuoFei())
-							+NumUtil.getNum(tempClub.getZhuoFei2())
-							+NumUtil.getNum(tempClub.getZhuoFei3());
-//					String yiJiesuan = tempClub.getYiJieSuan();
-					double yiJiesuan = NumUtil.getNum(tempClub.getYiJieSuan())
-							+NumUtil.getNum(tempClub.getYiJieSuan2())
-							+NumUtil.getNum(tempClub.getYiJieSuan3());
+					int LMTYPE = Integer.valueOf(LMType.replace("联盟", ""));
+					double zhuoFei = NumUtil.getNum(get_LM_Zhuofei(tempClub,LMTYPE));
+//							NumUtil.getNum(tempClub.getZhuoFei())
+//							+NumUtil.getNum(tempClub.getZhuoFei2())
+//							+NumUtil.getNum(tempClub.getZhuoFei3());
+
+					double yiJiesuan = NumUtil.getNum(get_LM_YiJiesuan(tempClub,LMTYPE));
+//							NumUtil.getNum(tempClub.getYiJieSuan())
+//							+NumUtil.getNum(tempClub.getYiJieSuan2())
+//							+NumUtil.getNum(tempClub.getYiJieSuan3());
+					
 					double jieyu = sumOfZJ + yiJiesuan + zhuoFei;
-					double edu = NumUtil.getNum(tempClub.getEdu());
+
+					double edu = NumUtil.getNum(get_LM_edu(tempClub,Integer.valueOf(LMType.replace("联盟", ""))));
 					//结余和额度进行比较
 					if((jieyu+edu) < 0) {
 						isOver = true;
-						ShowUtil.show(LMType+":"+allClubMap.get(clubId).getName()+"已经超过额度！！！");
+						String msg = String.format("%s:%s超过额度！额度：%s,结余%s", LMType,allClubMap.get(clubId).getName(),
+								NumUtil.digit0(edu),NumUtil.digit0(jieyu));
+						ShowUtil.show(msg);
+						log.info(msg);
 						break;
 					}
 				}

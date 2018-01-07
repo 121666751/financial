@@ -674,8 +674,9 @@ public class MyController implements Initializable{
 		    	Integer version =  (Integer)group.getSelectedToggle().getUserData();
 		    	if(version == 1) {
 		    		log.info("导入版本：新名单");
+		    		ShowUtil.show("新名单版本未开发！！！");
 		    	}else {
-		    		log.info("导入版本：旧名单");
+		    		//log.info("导入版本：旧名单");
 		    	}
 		    }
 		});
@@ -1553,7 +1554,7 @@ public class MyController implements Initializable{
 				@Override
 				public void run() {
 					String teamID = teamInfo.getTeamID();
-					String teamName = "团队#"+teamID;
+					String teamName = "团队#"+teamID;//自定义添加到金额表中的名称
 					String teamSum = teamInfo.getTeamSum();
 					Double _teamSum = NumUtil.getNum(teamSum);
 					if( _teamSum == 0) {
@@ -1584,6 +1585,8 @@ public class MyController implements Initializable{
 					MoneyService.refreshRecord();
 					//利润表修改总团队服务费(累积该团队的服务费)
 					//add2AllTeamFWF_from_tableProfit(tableProfit,teamFWF);//由于改用current_Jiesuaned_team_fwf_sum，故此方法不调用
+					//自动平帐按钮
+					refreshBtn.fire();//这个是为了让当局的团队总服务费能累加到利润表中的总团队服务费中
 				}
 			}	
 		);
