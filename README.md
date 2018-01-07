@@ -12,4 +12,5 @@
 ## 效果
 ![](https://github.com/greatkendy123/financial/raw/master/resource/images/1.png)
 ![](https://github.com/greatkendy123/financial/raw/master/resource/images/2.png)
+![](https://github.com/greatkendy123/financial/raw/master/resource/images/3.png)
  
