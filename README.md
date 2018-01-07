@@ -14,5 +14,5 @@ https://raw.githubusercontent.com/taylorchen709/markdown-images/master/vueadmin/
 https://github.com/greatkendy123/financial/tree/master/resource/images/1.png
 https://github.com/greatkendy123/financial/tree/master/resource/images/2.png
 ![baidu](http://www.baidu.com/img/bdlogo.gif "百度logo")
-![][https://github.com/greatkendy123/financial/tree/master/resource/images/1.png]
+![](https://github.com/greatkendy123/financial/tree/master/resource/images/1.png)
  
