@@ -17,11 +17,11 @@
 ## 代码示例（自动配额）
 	/**
 	* 联盟自动配额
-     * 这是本控制类最核心的代码
-     * 算法：找剩余值中的两个最大最小值进行一方清零，不断循环
-     * 
-     * @time 2017年12月18日
-     */
+	* 这是本控制类最核心的代码
+	* 算法：找剩余值中的两个最大最小值进行一方清零，不断循环
+	* 
+	* @time 2017年12月18日
+	*/
     public void autoQuota() {
     	
     	if(tableQuota.getItems() == null || tableQuota.getItems().size()==0) {
@@ -134,19 +134,20 @@
     	tableQuotaPay.refresh();
     }
     
-   /**
-    * 往结账表新增一条记录
-    * 应用场景：自动配额时，每配额一次就产生一条记录
-    * @time 2017年12月18日
-    * @param info
-    */
+    /**
+     * 往结账表新增一条记录
+     * 应用场景：自动配额时，每配额一次就产生一条记录
+     * @time 2017年12月18日
+     * @param info
+     */
     private void addRecord2TableQuotaPay(QuotaMoneyInfo info) {
     	ObservableList<QuotaMoneyInfo> obList = tableQuotaPay.getItems();
     	if(obList == null)  obList = FXCollections.observableArrayList();
     	obList.add(info);
     	tableQuotaPay.setItems(obList);
     }
- 	/**
+    
+	/**
 	 * 获取剩余最大和最小的两行
 	 * @time 2017年12月16日
 	 * @param type 0:最小值  1：最大值 
