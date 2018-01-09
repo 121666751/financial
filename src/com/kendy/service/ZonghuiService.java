@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
@@ -12,10 +13,13 @@ import com.alibaba.fastjson.TypeReference;
 import com.kendy.entity.DangjuInfo;
 import com.kendy.entity.DangtianHuizongInfo;
 import com.kendy.entity.KaixiaoInfo;
+import com.kendy.entity.ProfitInfo;
 import com.kendy.entity.ZonghuiInfo;
 import com.kendy.entity.ZonghuiKaixiaoInfo;
+import com.kendy.util.ErrorUtil;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
+import com.kendy.util.TableUtil;
 
 import application.DataConstans;
 import javafx.collections.FXCollections;
@@ -38,7 +42,7 @@ public class ZonghuiService {
 	 * 刷新汇总信息表
 	 */
 	public static void refreHuizongTable(TableView<ZonghuiInfo> tableZonghui,TableView<DangtianHuizongInfo> tableDangtianHuizong,
-			TableView<ZonghuiKaixiaoInfo> tableZonghuiKaixiao) {
+			TableView<ZonghuiKaixiaoInfo> tableZonghuiKaixiao,TableView<ProfitInfo> tableProfit) {
 		Map<String,Map<String,String>> lockedMap = DataConstans.All_Locked_Data_Map;
 		ZonghuiInfo zonghuiInfo = new ZonghuiInfo();
 		ObservableList<ZonghuiInfo> obList = FXCollections.observableArrayList();
@@ -70,8 +74,11 @@ public class ZonghuiService {
 			//开销表赋值并返回总值 
 			String sumOfKaixiao = initTableKaixiaoAndGetSum(tableZonghuiKaixiao);
 			
+			//添加总团队服务费
+			Double teamSumFWF = getTeamSumFWF(tableProfit);
+			
 			//计算总和
-			sumOfTotal = sumOfFuwufei+sumOfBaoxian+sumOfTeamHuishui+sumOfTeamHuibao+Double.valueOf(sumOfKaixiao);
+			sumOfTotal = sumOfFuwufei+sumOfBaoxian+sumOfTeamHuishui+sumOfTeamHuibao+Double.valueOf(sumOfKaixiao) + teamSumFWF;
 			//创建实体2(当天汇总)
 			obSumList.addAll(
 					new DangtianHuizongInfo("总服务费",NumUtil.digit1(sumOfFuwufei+"")),
@@ -79,6 +86,7 @@ public class ZonghuiService {
 					new DangtianHuizongInfo("总团队回水",NumUtil.digit1(sumOfTeamHuishui+"")),
 					new DangtianHuizongInfo("总团队回保",NumUtil.digit1(sumOfTeamHuibao+"")),
 					new DangtianHuizongInfo("总开销",sumOfKaixiao)
+					//new DangtianHuizongInfo("总团队服务费",NumUtil.digit0(teamSumFWF))
 					);
 			
 			
@@ -94,6 +102,28 @@ public class ZonghuiService {
 		tableDangtianHuizong.setItems(obSumList);
 		tableDangtianHuizong.getColumns().get(1).setText(MoneyService.digit2(sumOfTotal+""));
 		tableDangtianHuizong.refresh();
+	}
+	
+	/**
+	 * 获取场次信息中利润表的总团队服务费
+	 * @time 2018年1月9日
+	 * @param tableProfit 利润表
+	 * @return
+	 */
+	public static Double getTeamSumFWF(TableView<ProfitInfo> tableProfit) {
+		Double teamSumFWF = 0d;
+		if(TableUtil.isHasValue(tableProfit)) {
+			try {
+				String fwf = tableProfit.getItems()
+						.stream().filter(info -> "总团队服务费".equals(info.getProfitType()))
+						.collect(Collectors.toList()).get(0)
+						.getProfitAccount();
+				teamSumFWF = NumUtil.getNum(fwf);
+			} catch (Exception e) {
+				ErrorUtil.err("总团队服务费不存在于昨日留底中!");
+			}
+		}
+		return teamSumFWF;
 	}
 	
 	/**

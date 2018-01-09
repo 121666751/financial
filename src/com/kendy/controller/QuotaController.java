@@ -391,7 +391,6 @@ public class QuotaController implements Initializable{
 		tableQuota.refresh();
 		//配额最后还有剩余为负数的则全部结转到银河ATM
 		addNegativeRest2ATM();
-    	
     }
     
     /**
@@ -399,12 +398,16 @@ public class QuotaController implements Initializable{
      * @time 2017年12月18日
      */
     private void addNegativeRest2ATM() {
+    	Club winnerClub = allClubMap.get("555551");//555551为银河ATM的俱乐部ID
+    	if(winnerClub == null) {
+    		ErrorUtil.err("银河ATM不存在！！！请添加！！");
+    		return;
+    	}
     	tableQuota.getItems()
     		.parallelStream()
     		.filter( info -> NumUtil.getNum(info.getQuotaRest()) < 0)
     		.forEach( info -> {
     			String from , to , money = "";
-    			Club winnerClub = allClubMap.get("555551");//555551为银河ATM的俱乐部ID
     			to = winnerClub.getName();		
     			money = NumUtil.digit0((-1) * NumUtil.getNum(info.getQuotaRest()));
     			from = info.getQuotaClubName();

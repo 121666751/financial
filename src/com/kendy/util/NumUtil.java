@@ -139,4 +139,19 @@ public class NumUtil {
 		System.out.println(isNumeric(s2));
 		System.out.println(isNumeric(s3));
 	}
+	
+	/**
+	 * 获取总和（可变参数）
+	 * @time 2018年1月9日
+	 * @param strings
+	 * @return
+	 */
+	public static String getSum(String... strings) {
+		Double sum = 0d;
+		if(strings.length > 0)
+			for(String str : strings) 
+				sum += NumUtil.getNum(str);
+			
+		return NumUtil.digit0(sum)+"";
+	}
 }

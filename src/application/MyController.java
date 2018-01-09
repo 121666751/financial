@@ -2412,7 +2412,7 @@ public class MyController implements Initializable{
 	 * 总汇刷新按钮
 	 */
 	public void zonghuiRefreshAction(ActionEvent event) {
-		ZonghuiService.refreHuizongTable(tableZonghui,tableDangtianHuizong,tableZonghuiKaixiao);
+		ZonghuiService.refreHuizongTable(tableZonghui,tableDangtianHuizong,tableZonghuiKaixiao,tableProfit);
 	}
 	/**
 	 * 外债刷新按钮
