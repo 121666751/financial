@@ -33,7 +33,9 @@ import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
 import com.kendy.util.StringUtil;
 
+import application.DataConstans;
 import application.MyController;
+import application.PropertiesUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -389,18 +391,20 @@ public class QuotaController implements Initializable{
 		}
     	tableQuotaPay.refresh();
 		tableQuota.refresh();
-		//配额最后还有剩余为负数的则全部结转到银河ATM
-		addNegativeRest2ATM();
+		//配额最后还有剩余为负数的则全部结转到当前俱乐部
+		addNegativeRest2CurrentClub();
     }
     
     /**
-     * 配额最后还有剩余为负数的则全部结转到银河ATM
+     * 配额最后还有剩余为负数的则全部结转到当前俱乐部
      * @time 2017年12月18日
      */
-    private void addNegativeRest2ATM() {
-    	Club winnerClub = allClubMap.get("555551");//555551为银河ATM的俱乐部ID
+    private void addNegativeRest2CurrentClub() {
+    	String currentClubId = PropertiesUtil.readProperty("clubId");
+//    	Club winnerClub = allClubMap.get("555551");//555551为银河ATM的俱乐部ID
+    	Club winnerClub = allClubMap.get(currentClubId);//555551为银河ATM的俱乐部ID
     	if(winnerClub == null) {
-    		ErrorUtil.err("银河ATM不存在！！！请添加！！");
+    		ErrorUtil.err("当前俱乐部"+currentClubId+"不存在！！！请添加！！");
     		return;
     	}
     	tableQuota.getItems()

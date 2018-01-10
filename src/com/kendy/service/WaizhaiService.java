@@ -307,31 +307,31 @@ public class WaizhaiService {
 		if(MapUtil.isHavaValue(gudongMap)) {
 			Iterator<Map.Entry<String, List<CurrentMoneyInfo>>> it = gudongMap.entrySet().iterator();  
 		    while(it.hasNext()){  
-		            Map.Entry<String, List<CurrentMoneyInfo>> entry = it.next();  
-		            List<CurrentMoneyInfo> eachList = entry.getValue();
-		            //过滤掉没有负数团队的股东,过滤掉没有联合ID的股东
-		            if(CollectUtil.isNullOrEmpty(eachList)) continue;
-		            if(eachList.stream().filter(cmi->cmi.getMingzi().startsWith("团队")).count() == 0) continue;
-		            if(eachList.stream().filter(cmi->DataConstans.Combine_Super_Id_Map.containsKey(cmi.getWanjiaId())).count() == 0) continue;
-		            //处理包含有负数团队的股东（既有联合ID,又有负数团队）
-		            ListIterator<CurrentMoneyInfo> ite = eachList.listIterator();
-		            while(ite.hasNext()) {
-		            	CurrentMoneyInfo cmi = ite.next();
-		            	String pId= cmi.getWanjiaId();
-		            	boolean isSuperId = DataConstans.Combine_Super_Id_Map.containsKey(pId);
-		            	//将联合ID的金额设置到对应的团队里
-		            	if(isSuperId) {
-		            		String _teamId = DataConstans.membersMap.get(pId).getTeamName();
-		            		Optional<CurrentMoneyInfo> teamInfoOpt = eachList.stream().filter(info->info.getMingzi().equals("团队"+_teamId)).findFirst();
-		            		if(teamInfoOpt.isPresent()) {
-		            			CurrentMoneyInfo teamInfo = teamInfoOpt.get();
-		            			teamInfo.setShishiJine(NumUtil.getSum(teamInfo.getShishiJine(),cmi.getShishiJine()));
-		            			log.info(String.format("外债：有联合ID的父节点%s将%s转移到%s", pId,cmi.getShishiJine(),teamInfo.getMingzi()));
-		            			//删除该联合ID(是否需要再来一个循环)
-		            			ite.remove();
-		            		}
-		            	}
-		            }
+	            Map.Entry<String, List<CurrentMoneyInfo>> entry = it.next();  
+	            List<CurrentMoneyInfo> eachList = entry.getValue();
+	            //过滤掉没有负数团队的股东,过滤掉没有联合ID的股东
+	            if(CollectUtil.isNullOrEmpty(eachList)) continue;
+	            if(eachList.stream().filter(cmi->cmi.getMingzi().startsWith("团队")).count() == 0) continue;
+	            if(eachList.stream().filter(cmi->DataConstans.Combine_Super_Id_Map.containsKey(cmi.getWanjiaId())).count() == 0) continue;
+	            //处理包含有负数团队的股东（既有联合ID,又有负数团队）
+	            ListIterator<CurrentMoneyInfo> ite = eachList.listIterator();
+	            while(ite.hasNext()) {
+	            	CurrentMoneyInfo cmi = ite.next();
+	            	String pId= cmi.getWanjiaId();
+	            	boolean isSuperId = DataConstans.Combine_Super_Id_Map.containsKey(pId);
+	            	//将联合ID的金额设置到对应的团队里
+	            	if(isSuperId) {
+	            		String _teamId = DataConstans.membersMap.get(pId).getTeamName();
+	            		Optional<CurrentMoneyInfo> teamInfoOpt = eachList.stream().filter(info->info.getMingzi().equals("团队"+_teamId)).findFirst();
+	            		if(teamInfoOpt.isPresent()) {
+	            			CurrentMoneyInfo teamInfo = teamInfoOpt.get();
+	            			teamInfo.setShishiJine(NumUtil.getSum(teamInfo.getShishiJine(),cmi.getShishiJine()));
+	            			log.info(String.format("外债：有联合ID的父节点%s将%s转移到%s", pId,cmi.getShishiJine(),teamInfo.getMingzi()));
+	            			//删除该联合ID(是否需要再来一个循环)
+	            			ite.remove();
+	            		}
+	            	}
+	            }
 		    }
 		}
 		return gudongMap;

@@ -674,9 +674,9 @@ public class MyController implements Initializable{
 		    	Integer version =  (Integer)group.getSelectedToggle().getUserData();
 		    	if(version == 1) {
 		    		log.info("导入版本：新名单");
-		    		ShowUtil.show("新名单版本未开发！！！");
+		    		//ShowUtil.show("新名单版本未开发！！！");
 		    	}else {
-		    		//log.info("导入版本：旧名单");
+		    		log.info("导入版本：旧名单");
 		    	}
 		    }
 		});
@@ -998,7 +998,7 @@ public class MyController implements Initializable{
 			}
 			
 			//将人员名单文件缓存起来
-			Wrap wrap = ExcelReaderUtil.readZJRecord(new File(zjFilePath),lable_currentClubId.getText(),selected_LM_type);
+			Wrap wrap = ExcelReaderUtil.readZJRecord(new File(zjFilePath),lable_currentClubId.getText(),selected_LM_type,getVersionType());
 			dateLabel.setText(DataConstans.Date_Str);
 			if(wrap.resultSuccess){
 				indexLabel.setText("第"+tableId+"局");
