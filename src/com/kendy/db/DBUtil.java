@@ -145,7 +145,7 @@ public class DBUtil {
 				ps = con.prepareStatement(sql);
 				ps.setString(1, hr.getPlayerId());
 				ps.setString(2, hr.getPlayerName());
-				ps.setString(3, hr.getTeamId());
+				ps.setString(3, hr.getTeamId().toUpperCase());
 				ps.setString(4, hr.getYszj());
 				ps.setString(5, hr.getShishou());
 				ps.setString(6, hr.getChuHuishui());
@@ -190,7 +190,7 @@ public class DBUtil {
 			con = DBConnection.getConnection();
 			String sql;
 			if(!StringUtil.isBlank(teamId)) {
-				sql = "delete from members where teamId = '"+teamId+"'";
+				sql = "delete from members where teamId = '"+teamId.toUpperCase()+"'";
 				ps = con.prepareStatement(sql);
 				ps.execute();
 			}
@@ -207,7 +207,7 @@ public class DBUtil {
 			con = DBConnection.getConnection();
 			String sql;
 			if(!StringUtil.isBlank(teamId)) {
-				sql = "delete from teamhs where teamId = '"+teamId+"'";
+				sql = "delete from teamhs where teamId = '"+teamId.toUpperCase()+"'";
 				ps = con.prepareStatement(sql);
 				ps.execute();
 			}
@@ -545,7 +545,7 @@ public class DBUtil {
 			String sql;
 			sql = "insert into teamhs values(?,?,?,?,?,?,?,?,?,?,?)";//11列
 			ps = con.prepareStatement(sql);
-			ps.setString(1, hs.getTeamId());
+			ps.setString(1, hs.getTeamId().toUpperCase());
 			ps.setString(2, hs.getTeamName());
 			ps.setString(3, hs.getHuishuiRate());
 			ps.setString(4, hs.getInsuranceRate());
@@ -575,6 +575,7 @@ public class DBUtil {
 	 * @return
 	 */
 	public static boolean updateTeamHsRate(String teamId,String teamHsRate) {
+		teamId=teamId.toUpperCase();
 		boolean isOK = false;
 		try {
 			con = DBConnection.getConnection();
@@ -615,7 +616,7 @@ public class DBUtil {
 			ps.setString(8, hs.getProxyHBRate());
 			ps.setString(9, hs.getProxyFWF());
 			ps.setString(10, hs.getJifenInput());
-			ps.setString(11, hs.getTeamId());
+			ps.setString(11, hs.getTeamId().toUpperCase());
 			ps.execute();
 			log.info("团队回水修改");
 		}catch (SQLException e) {
@@ -647,7 +648,7 @@ public class DBUtil {
 					hs = entry.getValue();
 					sql = "insert into teamhs values(?,?,?,?,?,?,?,?,?,?,?)";//11列
 					ps = con.prepareStatement(sql);
-					ps.setString(1, hs.getTeamId());
+					ps.setString(1, hs.getTeamId().toUpperCase());
 					ps.setString(2, hs.getTeamName());
 					ps.setString(3, hs.getHuishuiRate());
 					ps.setString(4, hs.getInsuranceRate());

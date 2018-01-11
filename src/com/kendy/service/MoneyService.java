@@ -1743,7 +1743,7 @@ public class MoneyService {
 	        for(String subId : subIdSet){
 	        	sb.append(subId).append("#");
 	        }
-	        String subIdString = sb.substring(0, sb.lastIndexOf("#")-1);
+	        String subIdString = sb.substring(0, sb.lastIndexOf("#"));
 			objs = new Object[rowsName.length];
 			if(!StringUtil.isBlank(parentId) && !StringUtil.isBlank(subIdString)) {
 			objs[0] = parentId;

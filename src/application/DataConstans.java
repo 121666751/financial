@@ -284,7 +284,7 @@ public class DataConstans {
 			List<Huishui> teamHSList = DBUtil.getAllTeamHS();
 			huishuiMap = new HashMap<>();
 			teamHSList.forEach(hs -> {
-				huishuiMap.put(hs.getTeamId(), hs);
+				huishuiMap.put(hs.getTeamId().toUpperCase(), hs);
 			});
 			
 			//初始化合并ID关系
