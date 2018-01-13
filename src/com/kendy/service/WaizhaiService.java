@@ -14,6 +14,8 @@ import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.kendy.controller.LMController;
+import com.kendy.entity.Club;
 import com.kendy.entity.CurrentMoneyInfo;
 import com.kendy.entity.Huishui;
 import com.kendy.entity.Player;
@@ -30,6 +32,7 @@ import com.kendy.util.StringUtil;
 
 import application.DataConstans;
 import application.MyController;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -309,9 +312,11 @@ public class WaizhaiService {
 		    while(it.hasNext()){  
 	            Map.Entry<String, List<CurrentMoneyInfo>> entry = it.next();  
 	            List<CurrentMoneyInfo> eachList = entry.getValue();
+				List<CurrentMoneyInfo> tempEachList = copyListCurrentMoneyInfo(eachList);//深层复制
+				List<CurrentMoneyInfo> tempSuperList = new ArrayList<>();
 	            //过滤掉没有负数团队的股东,过滤掉没有联合ID的股东
 	            if(CollectUtil.isNullOrEmpty(eachList)) continue;
-	            if(eachList.stream().filter(cmi->cmi.getMingzi().startsWith("团队")).count() == 0) continue;
+	            //if(eachList.stream().filter(cmi->cmi.getMingzi().startsWith("团队")).count() == 0) continue;
 	            if(eachList.stream().filter(cmi->DataConstans.Combine_Super_Id_Map.containsKey(cmi.getWanjiaId())).count() == 0) continue;
 	            //处理包含有负数团队的股东（既有联合ID,又有负数团队）
 	            ListIterator<CurrentMoneyInfo> ite = eachList.listIterator();
@@ -322,13 +327,18 @@ public class WaizhaiService {
 	            	//将联合ID的金额设置到对应的团队里
 	            	if(isSuperId) {
 	            		String _teamId = DataConstans.membersMap.get(pId).getTeamName();
-	            		Optional<CurrentMoneyInfo> teamInfoOpt = eachList.stream().filter(info->info.getMingzi().equals("团队"+_teamId)).findFirst();
+	            		Optional<CurrentMoneyInfo> teamInfoOpt = tempEachList.stream().filter(info->info.getMingzi().equals("团队"+_teamId)).findFirst();
 	            		if(teamInfoOpt.isPresent()) {
 	            			CurrentMoneyInfo teamInfo = teamInfoOpt.get();
 	            			teamInfo.setShishiJine(NumUtil.getSum(teamInfo.getShishiJine(),cmi.getShishiJine()));
-	            			log.info(String.format("外债：有联合ID的父节点%s将%s转移到%s", pId,cmi.getShishiJine(),teamInfo.getMingzi()));
-	            			//删除该联合ID(是否需要再来一个循环)
 	            			ite.remove();
+	            			log.info(String.format("外债：有联合ID的父节点%s将%s转移到%s，并删除父节点", pId,cmi.getShishiJine(),teamInfo.getMingzi()));
+	            		}else {
+	            			//新增一个所属团队信息
+	            			Club club = LMController.allClubMap.get(_teamId);
+	            			CurrentMoneyInfo cmiInfo = new CurrentMoneyInfo("团队"+club.getName(),cmi.getCmSuperIdSum(),"","");
+	            			ite.add(cmiInfo);
+	            			log.info(String.format("外债：根据父点新建团队外债信息（%s），联合额度（团队的实时金额）为%s，并删除父节点", club.getName(),cmi.getCmSuperIdSum()));
 	            		}
 	            	}
 	            }
@@ -337,6 +347,24 @@ public class WaizhaiService {
 		return gudongMap;
 	}
 	
+	
+	
+	/**
+	 * 复制一个列表
+	 * @time 2018年1月13日
+	 * @param sourceList
+	 * @return
+	 */
+	private static List<CurrentMoneyInfo> copyListCurrentMoneyInfo(List<CurrentMoneyInfo> sourceList){
+		List<CurrentMoneyInfo> list = new ArrayList<>();
+		if(CollectUtil.isHaveValue(sourceList)) {
+			sourceList.forEach(cmi -> {
+				list.add(copyCurrentMoneyInfo(cmi));
+			});
+		}
+		return list;
+		
+	}
 	/**
 	 * 获取实时金额表中的映射{玩家ID ： 金额信息}
 	 * @time 2017年12月28日
@@ -357,7 +385,7 @@ public class WaizhaiService {
 	 * @time 2017年12月28日
 	 * @param playerId
 	 * @param ssje_map
-	 * @return
+	 * @return 
 	 */
 	private static boolean isExistIn_SSJE(String playerId,Map<String,CurrentMoneyInfo> ssje_map) {
 		return ssje_map.containsKey(playerId);
