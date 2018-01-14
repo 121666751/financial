@@ -308,9 +308,12 @@ public class WaizhaiService {
 		
 		//步骤4：将属于负数的负数个人加载到团队中
 		if(MapUtil.isHavaValue(gudongMap)) {
+			//LMController.allClubMap.keySet().forEach(clubID -> log.info(LMController.allClubMap.keySet()));
 			Iterator<Map.Entry<String, List<CurrentMoneyInfo>>> it = gudongMap.entrySet().iterator();  
 		    while(it.hasNext()){  
 	            Map.Entry<String, List<CurrentMoneyInfo>> entry = it.next();  
+	            String gudongName = entry.getKey();
+	            //if(!"B".equals(gudongName)) continue;//只测试股东B
 	            List<CurrentMoneyInfo> eachList = entry.getValue();
 				List<CurrentMoneyInfo> tempEachList = copyListCurrentMoneyInfo(eachList);//深层复制
 				List<CurrentMoneyInfo> tempSuperList = new ArrayList<>();
@@ -326,19 +329,20 @@ public class WaizhaiService {
 	            	boolean isSuperId = DataConstans.Combine_Super_Id_Map.containsKey(pId);
 	            	//将联合ID的金额设置到对应的团队里
 	            	if(isSuperId) {
-	            		String _teamId = DataConstans.membersMap.get(pId).getTeamName();
-	            		Optional<CurrentMoneyInfo> teamInfoOpt = tempEachList.stream().filter(info->info.getMingzi().equals("团队"+_teamId)).findFirst();
+	            		String playerName = DataConstans.membersMap.get(pId).getPlayerName();
+	            		final String _teamId = "团队"+ DataConstans.membersMap.get(pId).getTeamName();
+	            		Optional<CurrentMoneyInfo> teamInfoOpt = eachList.stream().filter(info->info.getMingzi().equals(_teamId)).findFirst();
 	            		if(teamInfoOpt.isPresent()) {
 	            			CurrentMoneyInfo teamInfo = teamInfoOpt.get();
 	            			teamInfo.setShishiJine(NumUtil.getSum(teamInfo.getShishiJine(),cmi.getShishiJine()));
 	            			ite.remove();
-	            			log.info(String.format("外债：有联合ID的父节点%s将%s转移到%s，并删除父节点", pId,cmi.getShishiJine(),teamInfo.getMingzi()));
+	            			log.info(String.format("外债：股东%s--有联合ID的父节点%s(%s)将%s转移到%s，并删除父节点", gudongName,playerName,pId,cmi.getShishiJine(),teamInfo.getMingzi()));
 	            		}else {
 	            			//新增一个所属团队信息
-	            			Club club = LMController.allClubMap.get(_teamId);
-	            			CurrentMoneyInfo cmiInfo = new CurrentMoneyInfo("团队"+club.getName(),cmi.getCmSuperIdSum(),"","");
+	            			ite.remove();
+	            			CurrentMoneyInfo cmiInfo = new CurrentMoneyInfo(_teamId,cmi.getCmSuperIdSum(),"","");
 	            			ite.add(cmiInfo);
-	            			log.info(String.format("外债：根据父点新建团队外债信息（%s），联合额度（团队的实时金额）为%s，并删除父节点", club.getName(),cmi.getCmSuperIdSum()));
+	            			log.info(String.format("外债：股东%s--根据父点(%s)新建团队外债信息（%s），联合额度（团队的实时金额）为%s，并删除父节点", gudongName, playerName,_teamId,cmi.getCmSuperIdSum()));
 	            		}
 	            	}
 	            }
