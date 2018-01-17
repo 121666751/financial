@@ -307,6 +307,11 @@ public class WaizhaiService {
 		}
 		
 		//步骤4：将属于负数的负数个人加载到团队中
+		/*
+		 * A、负数个人（若其父节点的联合额度为正则不显示 ）
+		 * B、公司（不显示团队；若其父节点的联合额度为正则不显示，否则不显示子ID,只显示联合额度；其他节点不变
+		 * C、非公司团队（全部累加到相应团队；若其父节点的联合额度为正则只累加联合额度；其他节点累加实时金额)
+		 */
 		if(MapUtil.isHavaValue(gudongMap)) {
 			//LMController.allClubMap.keySet().forEach(clubID -> log.info(LMController.allClubMap.keySet()));
 			Iterator<Map.Entry<String, List<CurrentMoneyInfo>>> it = gudongMap.entrySet().iterator();  

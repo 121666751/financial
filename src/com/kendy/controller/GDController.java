@@ -1,8 +1,11 @@
 package com.kendy.controller;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import com.kendy.entity.Record;
 import com.kendy.entity.TypeValueInfo;
 
 import javafx.event.ActionEvent;
@@ -28,6 +31,10 @@ public class GDController implements Initializable{
 	
 	//1人次等于多少利润
 	@FXML TextField personTime_ProfitRate_Text;
+	
+	
+	//数据来源:当天某俱乐部的数据
+	private static List<Record> dataList = new ArrayList();
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

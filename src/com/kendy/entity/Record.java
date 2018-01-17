@@ -13,11 +13,15 @@ public class Record {
 	private String clubId;
 	private String playerId;
 	private String score;
-	private String insurance;
+	private String insurance;//俱乐部保险
 	private String blind;
 	private String day;
 	private String clubName;
 	private String lmType;
+	private String teamId;
+	private String insuranceEach;//保险合计
+	private String isJiesuaned = "0";//是否已经结算过，默认为“0”未结算
+	
 	//临时数据
 	private String personCount;
 
@@ -44,7 +48,7 @@ public class Record {
 	 * @param clubName
 	 */
 	public Record(String id, String tableId, String clubId, String playerId, String score, String insurance,
-			String blind, String day, String clubName,String lmType) {
+			String blind, String day, String clubName,String lmType,String teamId,String insuranceEach, String isJiesuaned) {
 		super();
 		this.id = id;
 		this.tableId = tableId;
@@ -56,6 +60,9 @@ public class Record {
 		this.day = day;
 		this.clubName = clubName;
 		this.lmType = lmType;
+		this.teamId = teamId;
+		this.insuranceEach = insuranceEach;
+		this.isJiesuaned = isJiesuaned;
 	}
 
 
@@ -151,15 +158,44 @@ public class Record {
 	}
 
 
+	public String getTeamId() {
+		return teamId;
+	}
+
+
+	public void setTeamId(String teamId) {
+		this.teamId = teamId;
+	}
+
+
+	public String getInsuranceEach() {
+		return insuranceEach;
+	}
+
+
+	public void setInsuranceEach(String insuranceEach) {
+		this.insuranceEach = insuranceEach;
+	}
+	
+	
+
+
+	public String getIsJiesuaned() {
+		return isJiesuaned;
+	}
+
+
+	public void setIsJiesuaned(String isJiesuaned) {
+		this.isJiesuaned = isJiesuaned;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Record [id=" + id + ", tableId=" + tableId + ", clubId=" + clubId + ", playerId=" + playerId
 				+ ", score=" + score + ", insurance=" + insurance + ", blind=" + blind + ", day=" + day + ", clubName="
-				+ clubName + ", lmType=" + lmType + ", personCount=" + personCount + "]";
+				+ clubName + ", lmType=" + lmType + ", teamId=" + teamId + ", insuranceEach=" + insuranceEach
+				+ ", isJiesuaned=" + isJiesuaned + ", personCount=" + personCount + "]";
 	}
-
-
-	
-
 
 }

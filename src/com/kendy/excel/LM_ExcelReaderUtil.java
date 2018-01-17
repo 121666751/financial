@@ -81,6 +81,8 @@ public class LM_ExcelReaderUtil {
                         		break;
                         	case 10: record.setClubName(cell.getStringCellValue());
                     			break;
+                        	case 15: record.setInsuranceEach(cell.getStringCellValue());
+                        		break;
                         	case 16: record.setInsurance(cell.getStringCellValue());
                         		break;
                         	case 18: record.setScore(cell.getStringCellValue());
@@ -107,6 +109,7 @@ public class LM_ExcelReaderUtil {
                     //数据库 key: 时间#第次#俱乐部ID#玩家ID
                     String id = record.getDay()+"#"+record.getTableId()+"#"+record.getClubId()+"#"+record.getPlayerId();
                     record.setId(id);
+                    record.setTeamId(DataConstans.membersMap.get(record.getPlayerId()).getTeamName());
                     result.add(record);
                 }
             }
@@ -165,6 +168,8 @@ public class LM_ExcelReaderUtil {
 							break;
 							case 11: record.setClubName(cell.getStringCellValue());
 							break;
+							case 16: record.setInsuranceEach(cell.getStringCellValue());
+							break;
 							case 17: record.setInsurance(cell.getStringCellValue());
 							break;
 							case 19: record.setScore(cell.getStringCellValue());
@@ -193,6 +198,7 @@ public class LM_ExcelReaderUtil {
 					//数据库 key: 时间#第次#俱乐部ID#玩家ID
 					String id = record.getDay()+"#"+record.getTableId()+"#"+record.getClubId()+"#"+record.getPlayerId();
 					record.setId(id);
+					record.setTeamId(DataConstans.membersMap.get(record.getPlayerId()).getTeamName());
 					result.add(record);
 				}
 			}
