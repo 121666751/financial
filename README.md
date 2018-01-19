@@ -170,3 +170,18 @@
 	            }  
 	        }).get();  
     }
+
+	/**
+	 * 将原始数据转换成特定的数据结构
+	 * {俱乐部ID:{团队ID:List<Record}}
+	 * 
+	 * @time 2018年1月19日
+	 */
+	private static void initClubTeamMap() {
+		if(CollectUtil.isNullOrEmpty(dataList)) return;
+		clubTeamMap = 
+		dataList.stream()
+			    .collect(Collectors.groupingBy(
+			    		Record::getClubId, //先按俱乐部分
+			    		Collectors.groupingBy(Record::getTeamId)));//再按团队分
+	}
