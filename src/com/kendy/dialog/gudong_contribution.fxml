@@ -22,10 +22,10 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="847.0" prefWidth="1799.0">
                <children>
-                  <TableView fx:id="tableGDSum" layoutX="19.0" layoutY="145.0" prefHeight="239.0" prefWidth="152.0">
+                  <TableView fx:id="tableGDSum" layoutX="21.0" layoutY="177.0" prefHeight="239.0" prefWidth="152.0">
                      <columns>
-                        <TableColumn fx:id="waizhaiType" prefWidth="75.0" text="股东" />
-                        <TableColumn fx:id="waizhaiMoney" prefWidth="75.0" text="贡献值" />
+                        <TableColumn fx:id="gudongName" prefWidth="75.0" text="股东" />
+                        <TableColumn fx:id="gudongProfitRate" prefWidth="75.0" text="贡献值" />
                      </columns>
                   </TableView>
                   <Button fx:id="GDRefreshBtn" layoutX="117.0" layoutY="41.0" mnemonicParsing="false" onAction="#GDContributeRefreshAction" prefHeight="34.0" prefWidth="107.0" text="即时刷新" />
@@ -36,8 +36,18 @@
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="personTime_ProfitRate_Text" layoutX="372.0" layoutY="47.0" prefHeight="23.0" prefWidth="57.0" />
+                  <TextField fx:id="personTime_ProfitRate_Text" layoutX="372.0" layoutY="47.0" onDragEntered="#renciEnterAction" prefHeight="23.0" prefWidth="57.0" />
                   <Label contentDisplay="CENTER" layoutX="439.0" layoutY="41.0" prefHeight="35.0" prefWidth="70.0" text="利润  ">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label contentDisplay="CENTER" layoutX="21.0" layoutY="137.0" prefHeight="30.0" prefWidth="98.0" text="  当日总利润：">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="dangtianProfits" contentDisplay="CENTER" layoutX="122.0" layoutY="137.0" prefHeight="30.0" prefWidth="74.0" text="0.0">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>

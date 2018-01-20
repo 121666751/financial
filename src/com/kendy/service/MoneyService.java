@@ -445,7 +445,7 @@ public class MoneyService {
 		return cacheMap;
 	}
 	
-	private static Double getSum(List<String> list) {
+	public static Double getSum(List<String> list) {
 		double sum = 0.0;
 		for(String value : list) {
 			sum += getNum(value);
@@ -457,7 +457,7 @@ public class MoneyService {
 	 * 不要参考Excel上的公式！！
 	 * 新公式：保险 * 团队保险比例 * (-1)
 	 */
-	private static String getHuiBao(String baoxian,String teamId) {
+	public static String getHuiBao(String baoxian,String teamId) {
 		if(StringUtil.isBlank(baoxian) || "0".equals(baoxian))
 			return "0";
 		Huishui hs = DataConstans.huishuiMap.get(teamId);
@@ -475,7 +475,7 @@ public class MoneyService {
 	 * 公式：战绩>0,则乘以0.95，若小于0，则直接返回原战绩
 	 * 若是12.63则直接取整数
 	 */
-	private static String getShiShou(String zhanji){
+	public static String getShiShou(String zhanji){
 		Double zj = Double.valueOf(zhanji);
 		if(zj > 0){
 			String shishou = zj * 0.95 +"";
@@ -493,7 +493,7 @@ public class MoneyService {
 	 * 公式：相应团的回水比例 乘以|原始战绩|，若回水比例为无（如公司），则直接返回
 	 * 
 	 */
-	private static String getChuhuishui(String zhanji,String teamId){
+	public static String getChuhuishui(String zhanji,String teamId){
 		Huishui hs = DataConstans.huishuiMap.get(teamId);
 		if(hs == null){
 			return "";
@@ -509,7 +509,7 @@ public class MoneyService {
 	 * 公式：IF(收回水>0,收回水+出回水+保回+水后检,0)
 	 * 
 	 */
-	private static String getHeLirun(String shouHuishui,String chuHuishui,String baohui,String shuihouxian){
+	public static String getHeLirun(String shouHuishui,String chuHuishui,String baohui,String shuihouxian){
 		double _shouHushui = getNum(shouHuishui);
 		if(_shouHushui > 0){
 			return _shouHushui + getNum(chuHuishui) + getNum(baohui) + getNum(shuihouxian) + "";

@@ -59,7 +59,7 @@ public class ExportLMExcel  {
         this.rowName2 = rowName2;
         this.dataList2 = dataList2;
         this.out = out;
-        this.out = out.replace("/", "");
+        this.out = out.replace("/", "").replace("?", "");
     }
             
     /*
@@ -69,7 +69,7 @@ public class ExportLMExcel  {
 	public void export() throws Exception{
         	
             HSSFWorkbook workbook = new HSSFWorkbook();                        // 创建工作簿对象
-            String _title = title.replace("/", "");
+            String _title = title.replace("/", "").replace("?", "");
             HSSFSheet sheet = workbook.createSheet(_title);                     // 创建工作表
             
             // 产生表格标题行

@@ -30,6 +30,8 @@ public class Club {
 	private String edu2 = "0";
 	private String edu3 = "0";
 	
+	private String gudong = "";
+	
 	
 	public Club() {
 		super();
@@ -152,12 +154,26 @@ public class Club {
 	}
 
 
+	
+	public String getGudong() {
+		return gudong;
+	}
+
+
+	public void setGudong(String gudong) {
+		this.gudong = gudong;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Club [clubId=" + clubId + ", name=" + name + ", edu=" + edu + ", zhuoFei=" + zhuoFei + ", yiJieSuan="
 				+ yiJieSuan + ", zhuoFei2=" + zhuoFei2 + ", zhuoFei3=" + zhuoFei3 + ", yiJieSuan2=" + yiJieSuan2
-				+ ", yiJieSuan3=" + yiJieSuan3 + ", edu2=" + edu2 + ", edu3=" + edu3 + "]";
+				+ ", yiJieSuan3=" + yiJieSuan3 + ", edu2=" + edu2 + ", edu3=" + edu3 + ", gudong=" + gudong + "]";
 	}
+
+
+	
 
 
 }

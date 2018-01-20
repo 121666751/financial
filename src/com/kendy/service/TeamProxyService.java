@@ -18,6 +18,7 @@ import com.kendy.db.DBUtil;
 import com.kendy.entity.Huishui;
 import com.kendy.entity.ProxySumInfo;
 import com.kendy.entity.ProxyTeamInfo;
+import com.kendy.entity.Record;
 import com.kendy.entity.TeamHuishuiInfo;
 import com.kendy.excel.ExportExcel;
 import com.kendy.util.ErrorUtil;
@@ -176,6 +177,8 @@ public class TeamProxyService {
             }else {
             	isZjManage.setSelected(true);
             }
+        }else {
+        	return;//add 2018-01-20
         }
         //加载数据{teamId={}}
         double sumYSZJ = 0d;
@@ -253,6 +256,40 @@ public class TeamProxyService {
         tableProxySum.setItems(ob_Heji_List);
         tableProxySum.getColumns().get(1).setText(NumUtil.digit1(proxyHeji+""));
         tableProxySum.refresh();
+	}
+	
+	/**
+	 * 股东贡献值用到（根据团队ID获取团队服务费）
+	 * 
+	 * @time 2018年1月20日
+	 * @param teamId
+	 * @param list
+	 * @return
+	 */
+	public static String getTeamFWF_GD(String teamId, List<Record> list) {
+		if(StringUtil.isBlank(teamId)) return "0";
+		Huishui hs = DataConstans.huishuiMap.get(teamId);
+		if(hs == null) {
+			ErrorUtil.err(String.format("根据团队ID%s获取团队服务费出错！",teamId));
+			hs = new Huishui();
+		}
+		//加载数据{teamId={}}
+		double sumHS = 0d;
+		double sumHB = 0d;
+		for(Record info : list) {
+			String yszj = info.getScore();
+			String chuHuishui = NumUtil.digit1(MoneyService.getChuhuishui(yszj, teamId));
+			String baohui = NumUtil.digit1(MoneyService.getHuiBao(info.getInsuranceEach(),teamId));
+			sumHS += (MoneyService.getNum(chuHuishui))*(-1);
+			sumHB += MoneyService.getNum(baohui);
+		}
+		double HSRate = getNumByPercent(hs.getProxyHSRate());
+		double HBRate = getNumByPercent(hs.getProxyHBRate());
+		double FWFValid = NumUtil.getNum(hs.getProxyFWF());//服务费有效值
+		//计算服务费
+		double proxyFWFVal = calculateProxSumFWF(sumHS,HSRate,sumHB,HBRate,FWFValid);
+	
+		return NumUtil.digit0(proxyFWFVal);
 	}
 	
 	

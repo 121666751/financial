@@ -829,7 +829,7 @@ public class MyController implements Initializable{
 	 * @param colums TableColumn 可变参数
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void bindCellValue(TableColumn<? extends Entity,String>... colums){
+	public static  void bindCellValue(TableColumn<? extends Entity,String>... colums){
 		try {
 			for(TableColumn column : colums){
 				String fxId = column.getId();

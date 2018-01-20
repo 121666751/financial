@@ -225,6 +225,79 @@ public class InputDialog {
     	    return map;
     	});
 	}
+	
+	/**
+	 * 下拉框(后面修改和测试)
+	 * 
+	 * @time 2018年1月21日
+	 * @param title
+	 * @param paramMap
+	 */
+	public void selectionDialog(String title,Map<String,String> paramMap) {
+		
+		this.multyDialog = new Dialog<>();
+		multyDialog.setTitle(title);
+		multyDialog.setHeaderText(null);
+		
+		// Set the button types.
+		ButtonType loginButtonType = new ButtonType("确定", ButtonData.OK_DONE);
+		
+		multyDialog.getDialogPane().getButtonTypes().addAll(loginButtonType);
+		
+		// Create the username and password labels and fields.
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(20, 15, 10, 10));
+		
+		TextField teamId = new TextField();
+		teamId.setPromptText("");
+//    	TextField hsRate = new TextField();
+//    	hsRate.setPromptText("");
+//
+//    	grid.add(new Label(keyText1), 0, 0);
+//    	grid.add(teamId, 1, 0);
+//    	grid.add(new Label(keyText2), 0, 1);
+//    	grid.add(hsRate, 1, 1);
+		
+		List<String> paramList = new ArrayList<>();
+		paramMap.forEach((leftName,defaultValue) -> {
+			paramList.add(leftName);
+		});
+		
+		int size = paramMap.size();
+		TextField[] textFieldArr = new TextField[size];
+		for(int row=0 ; row< size ; row++) {
+			String leftName = paramList.get(row);
+			textFieldArr[row] = new TextField();
+			textFieldArr[row].setText(paramMap.get(leftName));
+			grid.add(new Label(leftName), 0, row);
+			grid.add(textFieldArr[row], 1, row);
+		}
+		
+		
+		
+		// Enable/Disable login button depending on whether a username was entered.
+		Node loginButton = multyDialog.getDialogPane().lookupButton(loginButtonType);
+		
+		multyDialog.getDialogPane().setContent(grid);
+		
+		// Request focus on the username field by default.
+		Platform.runLater(() -> teamId.requestFocus());
+		
+		// Convert the result to a username-password-pair when the login button is clicked.
+		multyDialog.setResultConverter(dialogButton -> {
+			Map<String,String> map = new HashMap<>();
+			if (dialogButton == loginButtonType) {
+				for(int row=0 ; row< size ; row++) {
+					String leftName = paramList.get(row);
+					String val = textFieldArr[row].getText();
+					map.put(leftName, val);
+				}
+			}
+			return map;
+		});
+	}
 	/**
 	 * 一个输入文字的对话框
 	 * 

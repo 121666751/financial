@@ -44,14 +44,18 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
@@ -61,6 +65,7 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 
 /**
@@ -1102,20 +1107,31 @@ public class LMController implements Initializable{
 	}
 	
 	/**
-	 * 查看每一局（用于核对数据）
+	 * 修改俱乐部的股东
 	 * 
-	 * @time 2017年11月22日
+	 * @time 2018年1月20日
 	 * @param event
 	 */
-	public void view_detail_Action(ActionEvent event) {
+	public void change_club_gudong_Action(ActionEvent event) {
 		Club club = getSelectedClub();
 		String clubId = club.getClubId();
 		if(StringUtil.isBlank(clubId)) {
 			ShowUtil.show("请先选择俱乐部！");
 			return;
 		}
-		//详情表重新赋值
-    	setDataTableLMDetail(clubId,false);//false表示不进行求和，只看每一场
+		//输入框
+		String title = StringUtil.isBlank(club.getGudong())? "修改" : "修改（当前股东是"+club.getGudong()+"）" ;
+		Optional<String> result= new InputDialog(title,"俱乐部"+club.getName()+"的新股东").getTextResult();
+		if(result.isPresent()) {
+			String newGudong = result.get();
+			if(StringUtil.isBlank(newGudong)) {
+				ShowUtil.show("股东不能为空，修改失败！",2);
+			}else {
+				club.setGudong(newGudong.trim().toUpperCase());
+				DBUtil.updateClub(club);
+				ShowUtil.show("修改成功！",2);
+			}
+		}
 	}
 	
 	/**
@@ -1516,6 +1532,28 @@ public class LMController implements Initializable{
 		//赋值
 		LMTotalList.clear();
 		LMTotalList = tempTotalList;
+	}
+	
+	/**
+	 * 获取联盟1的所有桌费
+	 * 
+	 * @time 2018年1月20日
+	 * @return
+	 */
+	public static Double getLM1TotalZhuofei(String gudong) {
+		Optional<Double> totalZhuofei = 
+		allClubMap.values()
+			.stream()
+			.filter(info -> gudong.equals(info.getGudong()))
+			.map(Club::getZhuoFei)
+			.map(NumUtil::getNum)
+			.reduce(Double::sum);
+		totalZhuofei.orElse(0d);
+		if(totalZhuofei.isPresent()) {
+			return  totalZhuofei.get();
+		}else {
+			return 0d;
+		}
 	}
 	
 	/**
