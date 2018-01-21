@@ -354,8 +354,8 @@ public class GDController implements Initializable{
 	
 	/**
 	 * 设置单个动态表的数据(团队部分)
-	 * 		1、公司的计入C客；
-	 * 		2、团队服务费问题：目前是直接引用代理查询表的数据，但最好重新计算！！！TODO
+	 * 		1、公司的计入X客，如股东A,就计入A客
+	 * 		2、团队服务费问题：目前是直接引用代理查询表的数据，但最好重新计算！！！（已经重算了）
 	 * 
 	 * @time 2018年1月20日
 	 * @param table
@@ -372,15 +372,20 @@ public class GDController implements Initializable{
 		Double teamRenci = teamList.size() * NumUtil.getNum(getRenci());
 		Double teamRate_Double = ( teamRenci + NumUtil.getNum(teamFWF)) / NumUtil.getNum(dangtianProfits.getText()); 
 		String teamRateStr = NumUtil.getPercentStr(teamRate_Double);
-		table.getItems().add(new GudongRateInfo(getFinalTeamId(teamId),teamRateStr));
+		table.getItems().add(new GudongRateInfo(getFinalTeamId(teamId,gudong),teamRateStr));
 		
 		table.refresh();
 	}
 	
-	
-	private String getFinalTeamId(String teamId) {
-		Huishui hs = DataConstans.huishuiMap.get(teamId);
-		String gudong = StringUtil.nvl(hs.getGudong(), "未知");
+	/**
+	 * 获取最终的团队名称
+	 * 
+	 * @time 2018年1月21日
+	 * @param teamId
+	 * @param gudong
+	 * @return
+	 */
+	private String getFinalTeamId(String teamId,String gudong) {
 		return "团队"+("公司".equals(teamId) ? gudong+"客" : teamId);
 	}
 	
