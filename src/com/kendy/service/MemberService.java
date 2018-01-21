@@ -52,8 +52,8 @@ public class MemberService {
 		            	String newVal = (String)newValue;
 		            	if(!StringUtil.isBlank(newVal)) {
 		            		//玩家ID和玩家名称赋值
-		            		String wanjiaName = newVal.trim().split(" ")[0];
-		            		memberPlayerId.setText(newVal.trim().split(" ")[1]);
+		            		String wanjiaName = getIdFromStr(newVal);
+		            		memberPlayerId.setText(getNameFromStr(newVal));
 		            		memberPlayerName.setText(wanjiaName);
 		            		//根据玩家名称去查询数据
 		            		updateMemberTable(tableMemberZJ,memberPlayerId.getText(),memberSumOfZJ);
@@ -65,6 +65,21 @@ public class MemberService {
 		            }
 				});
 	}
+	
+	
+    /**
+     * 获取玩家ID
+     * 备注：名称可能含有空格，名称与ID也是用空格隔开。所以单独成方法。
+     * @param nameAndId 名称和ID 传过来肯定是不为空的，固不作空判断
+     */
+    public static String getIdFromStr(String nameAndId) {
+    	String[] arr = nameAndId.split(" ");
+    	return arr[arr.length-1];
+    }
+    
+    public static String getNameFromStr(String nameAndId) {
+    	return nameAndId.substring(0, nameAndId.lastIndexOf(" "));
+    }
 	
 	/**
 	 * 更新人员表
