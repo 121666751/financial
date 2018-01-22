@@ -331,8 +331,13 @@ public class WaizhaiService {
 	            while(ite.hasNext()) {
 	            	CurrentMoneyInfo cmi = ite.next();
 	            	String pId= cmi.getWanjiaId();
+	            	// TODO 对下面的特殊情况进行分析
+	            	if(pId == null && cmi.getMingzi() != null && cmi.getMingzi().startsWith("团队")) {
+	            		continue;
+	            	}
 	            	boolean isSuperId = DataConstans.Combine_Super_Id_Map.containsKey(pId);
-	            	String teamID = DataConstans.membersMap.get(pId).getTeamName();//如ST,公司
+	            	Player _player = DataConstans.membersMap.get(pId);//1528833636
+	            	String teamID = _player.getTeamName();//如ST,公司
 	            	//将联合ID的金额设置到对应的团队里
 	            	if(isSuperId) {
 	            		String playerName = DataConstans.membersMap.get(pId).getPlayerName();

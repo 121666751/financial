@@ -12,10 +12,10 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.kendy.entity.Player;
 import com.kendy.entity.Record;
 import com.kendy.util.ErrorUtil;
 import com.kendy.util.StringUtil;
@@ -109,7 +109,9 @@ public class LM_ExcelReaderUtil {
                     //数据库 key: 时间#第次#俱乐部ID#玩家ID
                     String id = record.getDay()+"#"+record.getTableId()+"#"+record.getClubId()+"#"+record.getPlayerId();
                     record.setId(id);
-                    record.setTeamId(DataConstans.membersMap.get(record.getPlayerId()).getTeamName());
+                    Player _p = DataConstans.membersMap.get(record.getPlayerId());
+                    if(_p == null)
+                    record.setTeamId(_p == null ? "" : _p.getTeamName());
                     result.add(record);
                 }
             }
@@ -198,7 +200,9 @@ public class LM_ExcelReaderUtil {
 					//数据库 key: 时间#第次#俱乐部ID#玩家ID
 					String id = record.getDay()+"#"+record.getTableId()+"#"+record.getClubId()+"#"+record.getPlayerId();
 					record.setId(id);
-					record.setTeamId(DataConstans.membersMap.get(record.getPlayerId()).getTeamName());
+                    Player _p = DataConstans.membersMap.get(record.getPlayerId());
+                    if(_p == null)
+                    record.setTeamId(_p == null ? "" : _p.getTeamName());
 					result.add(record);
 				}
 			}
