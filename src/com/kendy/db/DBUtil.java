@@ -267,7 +267,7 @@ public class DBUtil {
 				player.setEdu(rs.getString(5));
 				break;
 			}
-			log.info("================插入一条人员名单进数据库...finishes");
+			log.info("================根据玩家ID("+playerId+")查询玩家信息，获得玩家是否为空："+StringUtil.isBlank(player.getgameId()));
 			return player;
 		}catch (SQLException e) {
 			ErrorUtil.err("根据玩家ID查询玩家信息失败", e);
@@ -1535,6 +1535,40 @@ public class DBUtil {
 	}
 	
 	
+	public static List<Record> getRecordsByClubId(String clubId) {
+		List<Record> list = new ArrayList<>();
+		try {
+			con = DBConnection.getConnection();
+			String sql = "select * from  record where  clubId = ?";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, clubId);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				Record record = new Record();
+				record.setId(rs.getString(1));
+				record.setTableId(rs.getString(2));
+				record.setClubId(rs.getString(3));
+				record.setPlayerId(rs.getString(4));
+				record.setScore(rs.getString(5));
+				record.setInsurance(rs.getString(6));
+				record.setBlind(rs.getString(7));
+				record.setDay(rs.getString(8));
+				record.setClubName(rs.getString(9));
+				record.setLmType(rs.getString(10));
+				record.setTeamId(rs.getString(11));
+				record.setInsuranceEach(rs.getString(12));
+				record.setIsJiesuaned(rs.getString(13));
+				list.add(record);
+			}
+		} catch (SQLException e) {
+			ErrorUtil.err("获取最新的战绩记录（单位：当天俱乐部）失败",e);
+		}finally{
+			close(con,ps);
+		}
+		return list;
+	}
+	
+	
 	/**
 	 * 获取最新的所有战绩记录列表（单位：天）
 	 * 由于前面的会被删掉，帮只取最最后一天的数据
@@ -1559,6 +1593,10 @@ public class DBUtil {
 				record.setBlind(rs.getString(7));
 				record.setDay(rs.getString(8));
 				record.setClubName(rs.getString(9));
+				record.setLmType(rs.getString(10));
+				record.setTeamId(rs.getString(11));
+				record.setInsuranceEach(rs.getString(12));
+				record.setIsJiesuaned(rs.getString(13));
 				list.add(record);
 			}
 		} catch (SQLException e) {
