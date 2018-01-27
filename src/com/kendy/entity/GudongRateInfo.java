@@ -25,6 +25,12 @@ public class GudongRateInfo implements Entity{
 		this.gudongName = new SimpleStringProperty(gudongName);
 		this.gudongProfitRate = new SimpleStringProperty(gudongProfitRate);
 	}
+	public GudongRateInfo(String gudongName, String gudongProfitRate, String description) {
+		super();
+		this.gudongName = new SimpleStringProperty(gudongName);
+		this.gudongProfitRate = new SimpleStringProperty(gudongProfitRate);
+		this.description = new SimpleStringProperty(description);
+	}
 	 
 	//=======================
 	public SimpleStringProperty gudongNameProperty() {

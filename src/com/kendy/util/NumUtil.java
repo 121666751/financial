@@ -154,4 +154,14 @@ public class NumUtil {
 			
 		return NumUtil.digit0(sum)+"";
 	}
+	
+	/**
+	 * 获取乘积
+	 * @time 2018年1月28日
+	 * @param strings
+	 * @return
+	 */
+	public static Double getNumTimes(String str1, String str2) {
+		return NumUtil.getNum(str1) * NumUtil.getNum(str2);
+	}
 }

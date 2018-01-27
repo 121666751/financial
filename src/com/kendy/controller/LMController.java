@@ -1555,6 +1555,26 @@ public class LMController implements Initializable{
 			return 0d;
 		}
 	}
+	/**
+	 * 获取联盟1的所有桌费
+	 * 
+	 * @time 2018年1月20日
+	 * @return
+	 */
+	public static Double getLM1TotalZhuofei() {
+		Optional<Double> totalZhuofei = 
+				allClubMap.values()
+				.stream()
+				.map(Club::getZhuoFei)
+				.map(NumUtil::getNum)
+				.reduce(Double::sum);
+		totalZhuofei.orElse(0d);
+		if(totalZhuofei.isPresent()) {
+			return  totalZhuofei.get();
+		}else {
+			return 0d;
+		}
+	}
 	
 	/**
 	 * 联盟1按钮
