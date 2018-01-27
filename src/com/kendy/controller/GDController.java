@@ -14,6 +14,7 @@ import com.kendy.entity.GDInputInfo;
 import com.kendy.entity.GudongRateInfo;
 import com.kendy.entity.Player;
 import com.kendy.entity.Record;
+import com.kendy.interfaces.Entity;
 import com.kendy.service.MoneyService;
 import com.kendy.service.TeamProxyService;
 import com.kendy.util.CollectUtil;
@@ -27,15 +28,18 @@ import application.PropertiesUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 
 /**
@@ -169,8 +173,9 @@ public class GDController implements Initializable{
 	 */
 	public void refreshDifTatalValue() {
 		String computeTotalProfitVal = computeTotalProfit.getText();
-		//TODO 获取场次信息中的总利润(从锁定的数据中获取)
+		//获取场次信息中的总利润(从锁定的数据中获取)
 		String changciTotalProfitVal = getLastProfit();
+		changciTotalProfit.setText(NumUtil.digit0(changciTotalProfitVal));
 		//计算差值 
 		Double difProfitVal = NumUtil.getNum(changciTotalProfitVal) - NumUtil.getNum(computeTotalProfitVal);
 		difTotalProfit.setText(NumUtil.digit0(difProfitVal));
@@ -183,9 +188,8 @@ public class GDController implements Initializable{
 	 * @return
 	 */
 	private String getLastProfit() {
-		//TODO 
-		
-		return "0";
+		String lockedProfit = MyController.getChangciTotalProfit();
+		return StringUtil.nvl(lockedProfit, "0.0");
 	}
 	
 	
@@ -275,9 +279,108 @@ public class GDController implements Initializable{
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
-		MyController.bindCellValue(gudongName,gudongProfitRate);
+		//主表
+		KF_gudongName.setEditable(true);
+		MyController.bindCellValue(gudongName, gudongProfitRate);
 		gudongProfitRate.setCellFactory(MyController.getColorCellFactory(new GudongRateInfo()));
+		
+		//股东原始股表
+		tableYSGu.setEditable(true);
+		YS_gudongName.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("type") );
+		YS_gudongName.setCellFactory(TextFieldTableCell.forTableColumn());
+		YS_rate.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("rate") );
+		YS_rate.setCellFactory(TextFieldTableCell.forTableColumn());
+		YS_value.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("value") );
+		
+		//股东奖励股表
+		tableEncourageGu.setEditable(true);
+		Encourage_gudongName.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("type") );
+		//Encourage_gudongName.setCellFactory(TextFieldTableCell.forTableColumn());
+		Encourage_rate.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("rate") );
+		//Encourage_rate.setCellFactory(TextFieldTableCell.forTableColumn());
+		Encourage_value.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("value") );
+		
+		//客服占股表
+		tablekfGu.setEditable(true);
+		KF_gudongName.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("type") );
+		KF_gudongName.setCellFactory(TextFieldTableCell.forTableColumn());
+		KF_rate.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("rate") );
+		KF_rate.setCellFactory(TextFieldTableCell.forTableColumn());
+		KF_value.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("value") );
+
+		
+		//三个股东表设置模拟的空行数据
+		setTableMockData(tableYSGu, 12);//12表示前多少行是模拟数据，可以编辑
+		setTableMockData(tableEncourageGu,12);
+		setTableMockData(tablekfGu,20);
+		
+	}
+	
+	/**
+	 * 三个表模拟数据
+	 * 
+	 * @time 2018年1月26日
+	 * @param tables
+	 */
+	private void setTableMockData(TableView<GDInputInfo> table,int mockRows) {
+		ObservableList<GDInputInfo> obList = FXCollections.observableArrayList();
+		if(table.getItems() !=null && !table.getItems().isEmpty()) 
+			return;
+		for(int i=1; i<=mockRows; i++) {
+			obList.add(new GDInputInfo("股东"+i,""));
+		}
+		table.setItems(obList);
+		table.refresh();
+	}
+	
+	/**
+	 * 修改列数据时设置到单元格
+	 * @time 2018年1月27日
+	 * @param column
+	 * @param type
+	 */
+	private void setEditData(TableColumn<GDInputInfo,String> column,int type) {
+		column.setOnEditCommit(t ->  {
+			String oldValue = t.getOldValue();
+			//修改原值
+			GDInputInfo info = (GDInputInfo) t.getTableView().getItems().get(
+					t.getTablePosition().getRow());
+			if(type == 1) {
+				info.setType(t.getNewValue());
+			}else if(type ==2) {
+				info.setRate(t.getNewValue());
+			}
+		}
+				
+	);
+	}
+	
+	/**
+	 * 表格列绑定
+	 * 详见参考：MyController中的代码：shishiJine.setOnEditCommit
+	 * 
+	 * @time 2018年1月26日
+	 * @param table
+	 * @param columns
+	 */
+	private void setTableEditAndSetData(int type,TableView<GDInputInfo> table,TableColumn<GDInputInfo,String>... columns) {
+		table.setEditable(true);
+		for(TableColumn<GDInputInfo,String> column : columns ) {
+			//column.setStyle("-fx-alignment: CENTER;-fx-font-weight: bold;");
+			column.setCellFactory(TextFieldTableCell.forTableColumn());
+			column.setOnEditCommit(t ->  {
+				String oldValue = t.getOldValue();
+				//修改原值
+				GDInputInfo info = (GDInputInfo) t.getTableView().getItems().get(
+						t.getTablePosition().getRow());
+				if(type == 1) {
+					info.setType(t.getNewValue());
+				}else if(type ==2) {
+					info.setRate(t.getNewValue());
+				}
+			});
+		}
+		
 	}
 	
 	
@@ -475,6 +578,12 @@ public class GDController implements Initializable{
 		setDataToSumTable();
 		//生成动态股东表
 		dynamicGenerateGDTable();
+		//刷新总利润对比数据
+		refreshDifTatalValue();
+		
+		//TODO 股东奖励值设置数据
+		
+		
 		
 	}
 	

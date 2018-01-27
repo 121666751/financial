@@ -12,9 +12,9 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class GDInputInfo implements Entity{
 
-	private SimpleStringProperty type = new SimpleStringProperty();//股东
-	private SimpleStringProperty rate = new SimpleStringProperty();//占比
-	private SimpleStringProperty value = new SimpleStringProperty();//数值
+	private SimpleStringProperty type = new SimpleStringProperty("");//股东
+	private SimpleStringProperty rate = new SimpleStringProperty("");//占比
+	private SimpleStringProperty value = new SimpleStringProperty("");//数值
 	private SimpleStringProperty id = new SimpleStringProperty("");//ID(备选项)
 	private SimpleStringProperty description = new SimpleStringProperty("");//描述（备选项）
 	

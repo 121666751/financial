@@ -289,7 +289,7 @@ public class WaizhaiService {
 			String gudong = hsInfo.getGudong();
 			String hasJiesuan = infos.getHasJiesuaned();
 			String zhanji = infos.getTeamZJ();
-			if(//!"是".equals(isManaged) && //战绩非管理的团队
+			if(!"是".equals(isManaged) && //战绩非管理的团队
 					!"1".equals(hasJiesuan) //未结算的团队
 					&& zhanji.contains("-")) {//战绩为负数的团队
 				CurrentMoneyInfo cmi = new CurrentMoneyInfo();

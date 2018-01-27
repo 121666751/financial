@@ -1934,6 +1934,18 @@ public class MyController implements Initializable{
 		return MoneyService.digit0(dangjuLMVal);
 	}
 	
+	//获取最新的利润总和
+	public static String getChangciTotalProfit() {
+		String totalProfit = "0";
+		int paijuIndex = DataConstans.All_Locked_Data_Map.size();
+		if(paijuIndex == 0) return totalProfit;
+		Map<String,String> lastLockedMap = DataConstans.All_Locked_Data_Map.get(paijuIndex+"");
+		if(lastLockedMap != null ) {
+			totalProfit = lastLockedMap.get("利润总和");
+		}
+		return totalProfit;
+	}
+	
 	
 	public void clearDataConstansCache() {
 		//DataConstans.SumMap.clear();
