@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.kendy.db.DBUtil;
+import com.kendy.entity.GDDetailInfo;
 import com.kendy.entity.GDInputInfo;
 import com.kendy.entity.GudongRateInfo;
 import com.kendy.entity.Player;
@@ -84,6 +85,13 @@ public class GDController implements Initializable{
 	@FXML private TableColumn<GDInputInfo,String> KF_gudongName;//股东名称
 	@FXML private TableColumn<GDInputInfo,String> KF_rate;//占比
 	@FXML private TableColumn<GDInputInfo,String> KF_value;//数值
+	//*************************************************************************//明细表
+	@FXML private TableView<GDDetailInfo> tableGDDetail;
+	@FXML private TableColumn<GDDetailInfo,String> name;
+	@FXML private TableColumn<GDDetailInfo,String> ysgu;
+	@FXML private TableColumn<GDDetailInfo,String> jl3;
+	@FXML private TableColumn<GDDetailInfo,String> jl7;
+	@FXML private TableColumn<GDDetailInfo,String> total;
 	
 	
 	private static final String UN_KNOWN = "未知";
@@ -104,6 +112,9 @@ public class GDController implements Initializable{
 	private static Map<String,String> gudongProfitsRateMap = new HashMap<>();
 	//{股东ID:股东利润值} 注意：找不到股东的放在股东未知中
 	private static Map<String,String> gudongProfitsValueMap = new HashMap<>();
+	
+	//明细数据表中的缓存数据
+	private static Map<String,GDDetailInfo> detailMap = new HashMap<>();
 	
 	public static void initData() {
 		//初始化dataList,根据当前的俱乐部去取是否有问题？
@@ -335,6 +346,9 @@ public class GDController implements Initializable{
 		setTableMockData(tableYSGu, 9);//12表示前多少行是模拟数据，可以编辑
 		setTableMockData(tableEncourageGu,9);
 		setTableMockData(tablekfGu,10);
+		
+		//明细表
+		MyController.bindCellValue(name, ysgu, jl3, jl7, total);
 		
 	}
 	
@@ -643,6 +657,8 @@ public class GDController implements Initializable{
 	 * @param event
 	 */
 	public void GDContributeRefreshAction(ActionEvent event) {
+		detailMap.clear();
+		
 		//清空数据
 		clearBtn.fire();
 		//准备数据
@@ -674,6 +690,54 @@ public class GDController implements Initializable{
 		
 		//3、设置股东奖励股数据
 		setTable_JLGu_data();
+		
+		//4、设置第二次股东原始股数据
+		setTable_YSGu_data_Second();
+		
+		//5、将缓存中的数据设置到明细表中  TODO
+		setTable_detail();
+	}
+	
+	
+	/**
+	 * 将缓存中的数据设置到明细表中
+	 * 
+	 * @time 2018年1月28日
+	 */
+	private void setTable_detail() {
+		ObservableList<GDDetailInfo> obList = FXCollections.observableArrayList();
+		detailMap.values().forEach(info -> {
+			if(StringUtil.isBlank(info.getTotal())){
+				info.setTotal(NumUtil.getSum(info.getYsgu(),info.getJl3(),info.getJl7()));
+			}
+			obList.add(info);
+		});
+		tableGDDetail.setItems(obList);
+		tableGDDetail.refresh();
+	}
+	
+	/**
+	 * 设置第二次股东原始股数据
+	 */
+	private void setTable_YSGu_data_Second() {
+		//获取剩下的30%
+		Double currage_poor_rest = getJLPoolAvailable() * (1 - getCurrageRate());
+		//获取原始股比例
+		tableYSGu.getItems().forEach(info-> {
+			String oldVal = info.getValue();
+			String rateString = StringUtil.nvl(info.getRate(),"0%");
+			Double rate = NumUtil.getNumByPercent(rateString);
+			//与第一次计算结果进行累积
+			Double newVal = currage_poor_rest * rate;
+			info.setValue(NumUtil.digit0(NumUtil.getNum(oldVal)+newVal));
+			
+			//缓存明细数据
+			GDDetailInfo detail = detailMap.get(info.getType());
+			detail.setJl3(NumUtil.digit0(newVal));
+		});
+		
+		//设置数据并刷新表
+		tableYSGu.refresh();
 	}
 	
 	/**
@@ -695,6 +759,10 @@ public class GDController implements Initializable{
 			.map(info -> {
 				Double rate =  NumUtil.getNum(info.getGudongProfit()) / sum ;
 				Double currageMoney = curragePool * rate;
+				//明细缓存
+				GDDetailInfo gdDetailInfo = detailMap.get(info.getGudongName());
+				gdDetailInfo.setJl7(NumUtil.digit0(currageMoney));
+				//返回
 				return new GDInputInfo(
 						info.getGudongName(), 
 						NumUtil.getPercentStr(rate),
@@ -785,6 +853,11 @@ public class GDController implements Initializable{
 		
 		//刷新表
 		tableYSGu.refresh();
+		
+		//缓存明细数据
+		tableYSGu.getItems().forEach(info-> {
+			detailMap.put(info.getType(), new GDDetailInfo(info.getType(),info.getValue()));
+		});
 	}
 	
 	/**
@@ -806,9 +879,12 @@ public class GDController implements Initializable{
 	private void setTable_KFGu_data() {
 		tablekfGu.getItems().stream()
 			.forEach(info->{
-				if(!StringUtil.isAnyBlank(info.getType(),info.getRate()))
+				if(!StringUtil.isAnyBlank(info.getType(),info.getRate())) {
 					info.setValue(NumUtil.digit0(NumUtil.getNumByPercent(info.getRate()) * getComputeTotalProfit()));
-				else {
+					//缓存明细数据
+					GDDetailInfo detail = new GDDetailInfo(info.getType(),info.getValue(),info.getValue());
+					detailMap.put(info.getType(), detail);
+				}else {
 					info.setType("");
 					info.setRate("");
 					info.setValue("");

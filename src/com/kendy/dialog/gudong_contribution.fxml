@@ -104,18 +104,18 @@
                      </font>
                   </Label>
                   <TextField fx:id="gd_currage_money" layoutX="140.0" layoutY="467.0" onDragEntered="#renciEnterAction" prefHeight="23.0" prefWidth="66.0" text="70%" />
-                  <Label contentDisplay="CENTER" layoutX="57.0" layoutY="461.0" prefHeight="35.0" prefWidth="86.0" text="股东奖励值：">
+                  <Label contentDisplay="CENTER" layoutX="57.0" layoutY="461.0" prefHeight="35.0" prefWidth="86.0" text="奖励池占比：">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <TableView fx:id="tableYSGu1" layoutX="257.0" layoutY="756.0" prefHeight="393.0" prefWidth="855.0">
+                  <TableView fx:id="tableGDDetail" layoutX="257.0" layoutY="756.0" prefHeight="393.0" prefWidth="855.0">
                      <columns>
-                        <TableColumn fx:id="YS_gudongName1" prefWidth="164.0" text="人员分配" />
-                        <TableColumn fx:id="YS_rate1" prefWidth="143.0" text="原始股" />
-                        <TableColumn fx:id="YS_value1" prefWidth="188.0" text="奖励30%" />
-                        <TableColumn fx:id="YS_rate11" prefWidth="201.0" text="奖励70%" />
-                        <TableColumn fx:id="YS_rate111" prefWidth="140.0" text="合计" />
+                        <TableColumn fx:id="name" prefWidth="164.0" text="人员分配" />
+                        <TableColumn fx:id="ysgu" prefWidth="143.0" text="原始股" />
+                        <TableColumn fx:id="jl3" prefWidth="188.0" text="奖励30%" />
+                        <TableColumn fx:id="jl7" prefWidth="201.0" text="奖励70%" />
+                        <TableColumn fx:id="total" prefWidth="140.0" text="合计" />
                      </columns>
                   </TableView>
                </children>
