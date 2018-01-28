@@ -25,7 +25,7 @@
                   <TableView fx:id="tableGDSum" layoutX="58.0" layoutY="163.0" prefHeight="161.0" prefWidth="152.0">
                      <columns>
                         <TableColumn fx:id="gudongName" prefWidth="75.0" text="股东" />
-                        <TableColumn fx:id="gudongProfitRate" prefWidth="75.0" text="贡献值" />
+                        <TableColumn fx:id="gudongProfit" prefWidth="75.0" text="贡献值" />
                      </columns>
                   </TableView>
                   <Button fx:id="GDRefreshBtn" layoutX="58.0" layoutY="47.0" mnemonicParsing="false" onAction="#GDContributeRefreshAction" prefHeight="34.0" prefWidth="154.0" text="即时刷新" />

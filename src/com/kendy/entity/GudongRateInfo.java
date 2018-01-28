@@ -5,7 +5,7 @@ import com.kendy.interfaces.Entity;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- * Key-gudongProfitRate类型的TableView实体
+ * Key-gudongProfit类型的TableView实体
  * 
  * @author 林泽涛
  * @time 2018年1月14日 下午6:36:24
@@ -13,22 +13,22 @@ import javafx.beans.property.SimpleStringProperty;
 public class GudongRateInfo implements Entity{
 
 	private SimpleStringProperty gudongName = new SimpleStringProperty();//类型
-	private SimpleStringProperty gudongProfitRate = new SimpleStringProperty();//值
+	private SimpleStringProperty gudongProfit = new SimpleStringProperty();//值
 	private SimpleStringProperty id = new SimpleStringProperty("");//ID(备选项)
 	private SimpleStringProperty description = new SimpleStringProperty("");//描述（备选项）
 	
 	public GudongRateInfo() {
 		super();
 	}
-	public GudongRateInfo(String gudongName, String gudongProfitRate) {
+	public GudongRateInfo(String gudongName, String gudongProfit) {
 		super();
 		this.gudongName = new SimpleStringProperty(gudongName);
-		this.gudongProfitRate = new SimpleStringProperty(gudongProfitRate);
+		this.gudongProfit = new SimpleStringProperty(gudongProfit);
 	}
-	public GudongRateInfo(String gudongName, String gudongProfitRate, String description) {
+	public GudongRateInfo(String gudongName, String gudongProfit, String description) {
 		super();
 		this.gudongName = new SimpleStringProperty(gudongName);
-		this.gudongProfitRate = new SimpleStringProperty(gudongProfitRate);
+		this.gudongProfit = new SimpleStringProperty(gudongProfit);
 		this.description = new SimpleStringProperty(description);
 	}
 	 
@@ -43,14 +43,14 @@ public class GudongRateInfo implements Entity{
 		this.gudongNameProperty().set(gudongName);
 	}
 	//============================
-	public SimpleStringProperty gudongProfitRateProperty() {
-		return this.gudongProfitRate;
+	public SimpleStringProperty gudongProfitProperty() {
+		return this.gudongProfit;
 	}
-	public String getGudongProfitRate() {
-		return this.gudongProfitRateProperty().get();
+	public String getGudongProfit() {
+		return this.gudongProfitProperty().get();
 	}
-	public void setGudongProfitRate(final String gudongProfitRate) {
-		this.gudongProfitRateProperty().set(gudongProfitRate);
+	public void setGudongProfit(final String gudongProfit) {
+		this.gudongProfitProperty().set(gudongProfit);
 	}
 	//============================
 	public SimpleStringProperty idProperty() {

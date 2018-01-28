@@ -26,6 +26,12 @@ public class GDInputInfo implements Entity{
 		this.type = new SimpleStringProperty(type);
 		this.rate = new SimpleStringProperty(rate);
 	}
+	public GDInputInfo(String type, String rate, String value) {
+		super();
+		this.type = new SimpleStringProperty(type);
+		this.rate = new SimpleStringProperty(rate);
+		this.value = new SimpleStringProperty(value);
+	}
 	 
 	public SimpleStringProperty rateProperty() {
 		return this.rate;

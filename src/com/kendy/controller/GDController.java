@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,7 +16,6 @@ import com.kendy.entity.GDInputInfo;
 import com.kendy.entity.GudongRateInfo;
 import com.kendy.entity.Player;
 import com.kendy.entity.Record;
-import com.kendy.interfaces.Entity;
 import com.kendy.service.MoneyService;
 import com.kendy.service.TeamProxyService;
 import com.kendy.util.CollectUtil;
@@ -30,14 +30,12 @@ import application.PropertiesUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -57,7 +55,7 @@ public class GDController implements Initializable{
 	//股东贡献值主表
 	@FXML private TableView<GudongRateInfo> tableGDSum;
 	@FXML private TableColumn<GudongRateInfo,String> gudongName;//股东名称
-	@FXML private TableColumn<GudongRateInfo,String> gudongProfitRate;//股东利润占比
+	@FXML private TableColumn<GudongRateInfo,String> gudongProfit;//股东利润占比
 	
 	//*************************************************************************//
 	@FXML private Label computeTotalProfit;//计算总利润
@@ -140,10 +138,11 @@ public class GDController implements Initializable{
 	 */
 	private static void initGudongTeamMap() {
 		if(CollectUtil.isNullOrEmpty(dataList)) return;
-		teamMap = 
-		dataList.stream()
-			    .collect(
-			    		Collectors.groupingBy(info -> StringUtil.nvl(info.getTeamId(),UN_KNOWN)));//按团队分
+		gudongTeamMap = 
+				dataList.stream()
+				.collect(Collectors.groupingBy(//先按股东分
+						record -> getGudongByPlayerId((Record)record),
+						Collectors.groupingBy(info -> StringUtil.nvl(info.getTeamId(),UN_KNOWN))));//再按团队分
 	}
 	
 	/**
@@ -154,11 +153,11 @@ public class GDController implements Initializable{
 	 */
 	private static void initTeamMap() {
 		if(CollectUtil.isNullOrEmpty(dataList)) return;
-		gudongTeamMap = 
-				dataList.stream()
-				.collect(Collectors.groupingBy(//先按股东分
-						record -> getGudongByPlayerId((Record)record),
-						Collectors.groupingBy(info -> StringUtil.nvl(info.getTeamId(),UN_KNOWN))));//再按团队分
+		teamMap = 
+		dataList.stream()
+			    .collect(
+			    		Collectors.groupingBy(info -> StringUtil.nvl(info.getTeamId(),UN_KNOWN)));//按团队分
+
 	}
 	
 	/**
@@ -251,7 +250,8 @@ public class GDController implements Initializable{
 		Double totalProfits = 0d;
 		
 		//获取人次利润
-		Double renciProfit = NumUtil.getNumTimes(teamMap.values().size()+"", getRenci());
+		int size = teamMap.values().stream().map(List::size).reduce(Integer::sum).get();
+		Double renciProfit = NumUtil.getNumTimes(size+"", getRenci());
 		totalProfits += renciProfit;
 		
 		//获取团队(服务费) and 获取股东客
@@ -325,15 +325,15 @@ public class GDController implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		//主表
 		KF_gudongName.setEditable(true);
-		MyController.bindCellValue(gudongName, gudongProfitRate);
-		gudongProfitRate.setCellFactory(MyController.getColorCellFactory(new GudongRateInfo()));
+		MyController.bindCellValue(gudongName, gudongProfit);
+		gudongProfit.setCellFactory(MyController.getColorCellFactory(new GudongRateInfo()));
 		
 		//绑定数据（股东原始股表\股东奖励股表\客服占股表）
 		bind3TableColumns();
 		
 		//三个股东表设置模拟的空行数据
-		setTableMockData(tableYSGu, 10);//12表示前多少行是模拟数据，可以编辑
-		setTableMockData(tableEncourageGu,10);
+		setTableMockData(tableYSGu, 9);//12表示前多少行是模拟数据，可以编辑
+		setTableMockData(tableEncourageGu,9);
 		setTableMockData(tablekfGu,10);
 		
 	}
@@ -378,11 +378,19 @@ public class GDController implements Initializable{
 		ObservableList<GDInputInfo> obList = FXCollections.observableArrayList();
 		if(table.getItems() !=null && !table.getItems().isEmpty()) 
 			return;
-		for(int i=1; i<=mockRows; i++) {
-			obList.add(new GDInputInfo("股东"+i,""));
+		if(mockRows != 9) {
+			for(int i=1; i<=mockRows; i++) {
+				obList.add(new GDInputInfo("股东"+i,getRandomRate()));
+			}
 		}
 		table.setItems(obList);
 		table.refresh();
+	}
+	
+	private String getRandomRate() {
+		Random random = new Random();
+		String randomString = random.nextInt(10)+"%";
+		return randomString;
 	}
 	
 	
@@ -395,21 +403,7 @@ public class GDController implements Initializable{
 		return renci;
 	}
 	
-	/**
-	 * 设置主表数据
-	 * 
-	 * @time 2018年1月20日
-	 */
-	public  void setDataToSumTable() {
-		
-		
-		ObservableList<GudongRateInfo> obList = FXCollections.observableArrayList();
-		gudongProfitsValueMap.forEach((gudongName,gudongRate) -> {
-			obList.add(new GudongRateInfo(gudongName,gudongRate));
-		});
-		tableGDSum.setItems(obList);
-		tableGDSum.refresh();
-	}
+
 	
 	/**
 	 * 生成动态股东表
@@ -438,7 +432,7 @@ public class GDController implements Initializable{
 	        lastNameCol.setStyle("-fx-alignment: CENTER;");
 	        lastNameCol.setPrefWidth(95);
 	        lastNameCol.setCellValueFactory(
-	        		new PropertyValueFactory<GudongRateInfo, String>("gudongProfitRate"));
+	        		new PropertyValueFactory<GudongRateInfo, String>("gudongProfit"));
 	        lastNameCol.setCellFactory(MyController.getColorCellFactory(new GudongRateInfo()));
 	        table.setPrefWidth(210);
 	        
@@ -456,11 +450,28 @@ public class GDController implements Initializable{
 	        //{团队ID:List<Record}
 	        Map<String,List<Record>> teamMap = gudongTeamMap.get(gudongName);
 	        setDynamicTableData(table,teamMap,gudongName);
+	        //往左边的股东表中添加记录
+	        setDataToSumTable(table);
 	        
 	        contributionHBox.setSpacing(5);
 	        contributionHBox.setPadding(new Insets(0, 0, 0, 0));
 	        contributionHBox.getChildren().addAll(table);
         }
+	}
+	
+	/**
+	 * 设置主表数据
+	 * 每生成一个动态表就往左边的股东表中添加记录
+	 * 
+	 * @time 2018年1月20日
+	 */
+	public  void setDataToSumTable(TableView<GudongRateInfo> dynamicTable) {
+		String gudongName = dynamicTable.getColumns().get(0).getText();
+		String gudongValue = dynamicTable.getColumns().get(2).getText();
+		String gudongRate = dynamicTable.getColumns().get(1).getText();
+		
+		tableGDSum.getItems().add(new GudongRateInfo(gudongName,gudongValue,gudongRate));
+		tableGDSum.refresh();
 	}
 	
 	/**
@@ -509,7 +520,7 @@ public class GDController implements Initializable{
 		}
 		//占比总和
 		Double rateSum = table.getItems().stream()
-			.map(GudongRateInfo::getGudongProfitRate)
+			.map(GudongRateInfo::getGudongProfit)
 			.map(rate -> { System.out.println(rate+"==="+NumUtil.getNumByPercent(rate)); return NumUtil.getNumByPercent(rate);})
 			.reduce(Double::sum)
 			.get();
@@ -636,17 +647,174 @@ public class GDController implements Initializable{
 		clearBtn.fire();
 		//准备数据
 		prepareAllData();
-		//设置表数据
-		setDataToSumTable();
+
 		//生成动态股东表
 		dynamicGenerateGDTable();
+		
 		//刷新总利润对比数据
 		refreshDifTatalValue();
 		
-		//TODO 股东奖励值设置数据
+		//股东奖励值设置数据
+		setGudongMoneyBelow();
 		
 		
+	}
+	
+	/**
+	 * 股东奖励值设置数据
+	 * 
+	 * @time 2018年1月28日
+	 */
+	private void setGudongMoneyBelow() {
+		//1、设置客服股数据
+		setTable_KFGu_data();
 		
+		//2、设置第一次股东原始股数据
+		setTable_YSGu_data_first();
+		
+		//3、设置股东奖励股数据
+		setTable_JLGu_data();
+	}
+	
+	/**
+	 * 设置股东奖励股数据
+	 */
+	private void setTable_JLGu_data() {
+		ObservableList<GDInputInfo> obList = FXCollections.observableArrayList();
+		//股东列表总和：除了银河股东,用于获取各股东的比例（比拼值）
+		Double sum = tableGDSum.getItems().stream().filter(info->!info.getGudongName().contains("银河"))
+				.map(info->NumUtil.getNum(info.getGudongProfit())).reduce(Double::sum).get();
+				
+		//获取可分配的奖励池
+		Double curragePool = getJLPoolAvailable();
+		
+		//
+		//计算各股东的奖励金额
+		tableGDSum.getItems().stream()
+			.filter(info->!info.getGudongName().contains("银河"))
+			.map(info -> {
+				Double rate =  NumUtil.getNum(info.getGudongProfit()) / sum ;
+				Double currageMoney = curragePool * rate;
+				return new GDInputInfo(
+						info.getGudongName(), 
+						NumUtil.getPercentStr(rate),
+						NumUtil.digit0(currageMoney)
+						);
+			}).forEach(info -> obList.add(info));
+		
+		//设置数据并刷新表
+		tableEncourageGu.setItems(obList);
+		tableEncourageGu.refresh();
+	}
+	
+	/**
+	 * 获取可分配的奖励池
+	 * 奖励池 = （总利润 - 原始股 — 客服股）* 可分配比例
+	 * 奖励池=（总利润 - 财物分红 - 奖罚 - 银河股东）*70%
+	 * 可分配比例默认是70%
+	 * 
+	 * @time 2018年1月28日
+	 * @return
+	 */
+	private Double getJLPoolAvailable() {
+		//总利润
+		Double totalProfit = getComputeTotalProfit();
+		//原始股
+		Double totalYSGu = tableYSGu.getItems().stream().map(info->NumUtil.getNum(info.getValue())).reduce(Double::sum).get();
+		//客服股
+		Double totalKFGu = tablekfGu.getItems().stream().map(info->NumUtil.getNum(info.getValue())).reduce(Double::sum).get();
+		//可分配比例,即股东奖励值
+		Double currageRate = getCurrageRate();
+		//奖励池
+		Double curragePool = (totalProfit - totalYSGu - totalKFGu) * currageRate;
+		
+		return curragePool;
+	}
+	
+	/**
+	 * 可分配比例,即股东奖励值比
+	 * @time 2018年1月28日
+	 * @return
+	 */
+	private Double getCurrageRate() {
+		String currageRate = gd_currage_money.getText();
+		if(StringUtil.isBlank(currageRate)) {
+			return 0.7d;
+		}else {
+			if(currageRate.contains("%"))
+				return NumUtil.getNumByPercent(currageRate);
+			else
+				return 0.7d;
+		}
+	}
+	
+	/**
+	 * 设置第一次股东原始股
+	 * 
+	 * @time 2018年1月28日
+	 */
+	private void setTable_YSGu_data_first() {
+		ObservableList<GDInputInfo> obList = FXCollections.observableArrayList();
+		
+		//获取银河股东的利润
+		Double yinheProfit = getYinheProfit();
+		
+		//股东列表：除了银河股东
+		if(tableYSGu.getItems()==null || tableYSGu.getItems().size() == 0 || StringUtil.isBlank(tableYSGu.getItems().get(0).getType())) {
+			tableGDSum.getItems().stream()
+					.filter(info->!info.getGudongName().contains("银河"))
+					.map(info -> new GDInputInfo(info.getGudongName(),"",""))
+					.forEach(info-> {
+						obList.add(info);
+					});
+			tableYSGu.setItems(obList);
+			tableYSGu.refresh();
+		}
+		
+		
+		//根据股东比例计算各股东的原始利润
+		tableYSGu.getItems().forEach(info -> {
+			if(!StringUtil.isAnyBlank(info.getType(),info.getRate()))
+				info.setValue(NumUtil.digit0(NumUtil.getNumByPercent(info.getRate()) * yinheProfit));
+			else {
+				//info.setType("");
+				//info.setRate("");
+				info.setValue("");
+			}
+		});
+		
+		//刷新表
+		tableYSGu.refresh();
+	}
+	
+	/**
+	 * 获取银河股东的利润
+	 * 
+	 * @time 2018年1月28日
+	 * @return
+	 */
+	private Double getYinheProfit() {
+		GudongRateInfo gudongRateInfo = tableGDSum.getItems().stream().filter(info->info.getGudongName().contains("银河")).findFirst().get();
+		return NumUtil.getNum(gudongRateInfo.getGudongProfit());
+	}
+	
+	/**
+	 * 设置客服股数据
+	 * 
+	 * @time 2018年1月28日
+	 */
+	private void setTable_KFGu_data() {
+		tablekfGu.getItems().stream()
+			.forEach(info->{
+				if(!StringUtil.isAnyBlank(info.getType(),info.getRate()))
+					info.setValue(NumUtil.digit0(NumUtil.getNumByPercent(info.getRate()) * getComputeTotalProfit()));
+				else {
+					info.setType("");
+					info.setRate("");
+					info.setValue("");
+				}
+			});
+		tablekfGu.refresh();
 	}
 	
 	/**
@@ -668,6 +836,8 @@ public class GDController implements Initializable{
 		
 		//清空其他数据
 		computeTotalProfit.setText("0.0");
+		changciTotalProfit.setText("0.0");
+		difTotalProfit.setText("0.0");
 		gudongProfitsRateMap.clear();
 		gudongProfitsValueMap.clear();
 	}
