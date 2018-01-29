@@ -110,7 +110,6 @@ public class LM_ExcelReaderUtil {
                     String id = record.getDay()+"#"+record.getTableId()+"#"+record.getClubId()+"#"+record.getPlayerId();
                     record.setId(id);
                     Player _p = DataConstans.membersMap.get(record.getPlayerId());
-                    if(_p == null)
                     record.setTeamId(_p == null ? "" : _p.getTeamName());
                     result.add(record);
                 }
