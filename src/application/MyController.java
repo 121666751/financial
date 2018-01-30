@@ -155,6 +155,7 @@ public class MyController implements Initializable{
 	@FXML private TextField preDataDir; //回水Excel路径
     @FXML private TextField excelDir; //excel文件夹路径
     @FXML private Label lable_currentClubId; //当前俱乐部ID
+    @FXML public static Label currentClubId; //当前俱乐部ID
     @FXML private TextField teamIdField; //新增团队ID
     @FXML private TextField teamNameField; //新增团队名称 
     @FXML  private TextField huishui; //新增团队回水
@@ -401,6 +402,7 @@ public class MyController implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		//第一次打开主窗口时设置当前俱乐部ID值
 		String clubIdValue = PropertiesUtil.readProperty("clubId");
+		currentClubId = lable_currentClubId;
 		if(clubIdValue != null)
 			lable_currentClubId.setText(clubIdValue);
 		
@@ -1231,8 +1233,6 @@ public class MyController implements Initializable{
 	    	}
 		});
     }
-    
-    
     
     /**
      * 增加股东

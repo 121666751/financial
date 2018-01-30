@@ -11,6 +11,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
+
 import com.kendy.db.DBUtil;
 import com.kendy.entity.GDDetailInfo;
 import com.kendy.entity.GDInputInfo;
@@ -51,6 +53,7 @@ import javafx.scene.layout.HBox;
  */
 public class GDController implements Initializable{
 
+	private static Logger log = Logger.getLogger(GDController.class);
 	
 	
 	//股东贡献值主表
@@ -95,6 +98,7 @@ public class GDController implements Initializable{
 	
 	
 	private static final String UN_KNOWN = "未知";
+	public static String _clubID = UN_KNOWN;
 	
 	
 	//数据来源:当天某俱乐部的数据
@@ -132,7 +136,9 @@ public class GDController implements Initializable{
 	 * @time 2018年1月18日
 	 */
 	private static void initDataList() {
-		String currentClubId = PropertiesUtil.readProperty("clubId");
+		//String currentClubId = PropertiesUtil.readProperty("clubId");
+		String currentClubId = MyController.currentClubId.getText();
+		log.info("GDController's clubId:"+currentClubId);
 		if(!StringUtil.isAnyBlank(currentClubId)) {
 			List<Record> list = DBUtil.getRecordsByClubId(currentClubId);
 			if(CollectUtil.isHaveValue(list)) {
@@ -438,13 +444,13 @@ public class GDController implements Initializable{
         	//设置列
 	        TableColumn firstNameCol = new TableColumn("股东"+gudongName);
 	        firstNameCol.setStyle("-fx-alignment: CENTER;");
-	        firstNameCol.setPrefWidth(110);
+	        firstNameCol.setPrefWidth(100);
 	        firstNameCol.setCellValueFactory(
 	                new PropertyValueFactory<GudongRateInfo, String>("gudongName"));
 	 
 	        TableColumn lastNameCol = new TableColumn("0%");
 	        lastNameCol.setStyle("-fx-alignment: CENTER;");
-	        lastNameCol.setPrefWidth(95);
+	        lastNameCol.setPrefWidth(92);
 	        lastNameCol.setCellValueFactory(
 	        		new PropertyValueFactory<GudongRateInfo, String>("gudongProfit"));
 	        lastNameCol.setCellFactory(MyController.getColorCellFactory(new GudongRateInfo()));
@@ -867,8 +873,11 @@ public class GDController implements Initializable{
 	 * @return
 	 */
 	private Double getYinheProfit() {
-		GudongRateInfo gudongRateInfo = tableGDSum.getItems().stream().filter(info->info.getGudongName().contains("银河")).findFirst().get();
-		return NumUtil.getNum(gudongRateInfo.getGudongProfit());
+		Optional<GudongRateInfo> gudongRateInfoOpt = tableGDSum.getItems().stream().filter(info->info.getGudongName().contains("银河")).findFirst();
+		if(gudongRateInfoOpt.isPresent())
+			return NumUtil.getNum(gudongRateInfoOpt.get().getGudongProfit());
+		else
+			return 0d;
 	}
 	
 	/**

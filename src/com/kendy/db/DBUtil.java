@@ -1747,6 +1747,166 @@ public class DBUtil {
 		return map;
 	}
 	
+	/***************************************************************************
+	 * 
+	 * 				others表
+	 * 
+	 **************************************************************************/
+//	public static Map<String,String> getAllClub(){
+//		Map<String,Club> map = new HashMap<>();
+//		try {
+//			con = DBConnection.getConnection();
+//			String sql = "select * from club";
+//			ps = con.prepareStatement(sql);
+//			ResultSet rs = ps.executeQuery();
+//			while(rs.next()){
+//				Club club = new Club();
+//				club.setClubId(rs.getString(1));
+//				club.setName(rs.getString(2));
+//				club.setEdu(rs.getString(3));
+//				club.setZhuoFei(rs.getString(4));
+//				club.setYiJieSuan(rs.getString(5));
+//				club.setZhuoFei2(rs.getString(6));
+//				club.setZhuoFei3(rs.getString(7));
+//				club.setYiJieSuan2(rs.getString(8));
+//				club.setYiJieSuan3(rs.getString(9));
+//				club.setEdu2(rs.getString(10));
+//				club.setEdu3(rs.getString(11));
+//				club.setGudong(rs.getString(12));
+//				map.put(club.getClubId(), club);
+//			}
+//		} catch (SQLException e) {
+//			ErrorUtil.err("从数据库获取所有俱乐部信息失败",e);
+//		} finally{
+//			close(con,ps);
+//		}
+//		return map;
+//	}
+//	
+	
+	/**
+	 * 根据key删除value
+	 * 
+	 * @time 2018年1月29日
+	 * @param key
+	 */
+	public static void delValueByKey(final String key) {
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			if(!StringUtil.isBlank(key)) {
+				sql = "delete from others where key = '"+key+"'";
+				ps = con.prepareStatement(sql);
+				ps.execute();
+			}
+		}catch (SQLException e) {
+			ErrorUtil.err("others表根据key("+key+")删除失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+
+	/**
+	 * others表添加记录
+	 * 
+	 * @time 2018年1月30日
+	 * @param key
+	 * @param value
+	 */
+	public static void addValue(final String key, final String value) {
+		try {
+			//数据库中没有则添加
+			con = DBConnection.getConnection();
+			String sql;
+			sql = "insert into others values(?,?)";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, key);
+			ps.setString(2, value);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("others表添加记录（key:"+key+",value:"+value+"）失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+
+//	public static boolean isHasClub(String id) throws Exception {
+//		if(StringUtil.isBlank(id))  return false;
+//		
+//		boolean hsRecord = false;
+//		try {
+//			//获取数据
+//			con = DBConnection.getConnection();
+//			String sql = "select count(*) from club  where clubId = ?";
+//			ps = con.prepareStatement(sql);
+//			ps.setString(1, id);
+//			ResultSet rs = ps.executeQuery();
+//			while(rs.next()){
+//				if(rs.getInt(1) == 1) {
+//					hsRecord = true;
+//					break;
+//				}
+//			}
+//		}catch(Exception e) {
+//			log.error(id+"查询俱乐部是否存在失败",e);
+//			throw e;
+//		}finally{
+//			close(con,ps);
+//		}
+//		return hsRecord;
+//	}
+	
+//	
+//	/**
+//	 * 更新俱乐部额度
+//	 * 
+//	 * @time 2017年11月22日
+//	 * @param club
+//	 * @return
+//	 */
+//	public static boolean updateClub(final Club club) {
+//		boolean isOK = true;
+//		try {
+//			con = DBConnection.getConnection();
+//			String sql = "update club set name=?,edu=?,zhuoFei=?,yiJieSuan=?,zhuoFei2=?,zhuoFei3=?,yiJieSuan2=?,yiJieSuan3=?,edu2=?,edu3=?,gudong=?  where clubId = ?";
+//			ps = con.prepareStatement(sql);
+//			ps.setString(1, club.getName());
+//			ps.setString(2, club.getEdu());
+//			ps.setString(3, club.getZhuoFei());
+//			ps.setString(4, club.getYiJieSuan());
+//			ps.setString(5, club.getZhuoFei2());
+//			ps.setString(6, club.getZhuoFei3());
+//			ps.setString(7, club.getYiJieSuan2());
+//			ps.setString(8, club.getYiJieSuan3());
+//			ps.setString(9, club.getEdu2());
+//			ps.setString(10, club.getEdu3());
+//			ps.setString(11, club.getGudong());
+//			ps.setString(12, club.getClubId());
+//			ps.executeUpdate();
+//		} catch (SQLException e) {
+//			isOK = false;
+//			ErrorUtil.err("更新俱乐部额度失败",e);
+//		}finally{
+//			close(con,ps);
+//		}
+//		return isOK;
+//	}
+//	
+//
+//	/**
+//	 * 新增或修改俱乐部信息
+//	 * @time 2017年11月22日
+//	 * @param club
+//	 * @throws Exception 
+//	 */
+//	public static void saveOrUpdateClub(final Club club) throws Exception {
+//		if(isHasClub(club.getClubId())) {
+//			updateClub(club);
+//		}else {
+//			addClub(club);
+//		}
+//	}
 	
 	
 	
