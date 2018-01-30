@@ -98,7 +98,6 @@ public class GDController implements Initializable{
 	
 	
 	private static final String UN_KNOWN = "未知";
-	public static String _clubID = UN_KNOWN;
 	
 	
 	//数据来源:当天某俱乐部的数据
@@ -916,6 +915,13 @@ public class GDController implements Initializable{
 		if(tableGDSum.getItems() != null)
 			tableGDSum.getItems().clear();
 		
+		//清空三个表
+		setTableDataEmpty(tableYSGu, tableEncourageGu, tablekfGu);
+		
+		//清空明细表
+		if(tableGDDetail.getItems() != null)
+			tableGDDetail.getItems().clear();
+		
 		//清空动态表
 		contributionHBox.getChildren().clear();
 		
@@ -925,6 +931,29 @@ public class GDController implements Initializable{
 		difTotalProfit.setText("0.0");
 		gudongProfitsRateMap.clear();
 		gudongProfitsValueMap.clear();
+	}
+	
+	/**
+	 * 清空三个表
+	 * 
+	 * @time 2018年1月30日
+	 * @param tables
+	 */
+	private void setTableDataEmpty(TableView<GDInputInfo>... tables) {
+		for(TableView<GDInputInfo> table : tables) {
+			if(TableUtil.isNullOrEmpty(table)) {
+				
+			}else {
+				table.getItems().forEach(info->{
+					info.setDescription("");
+					info.setId("");
+					info.setRate("");
+					info.setType("");
+					info.setValue("");
+				});
+			}
+			
+		}
 	}
 	
 	/**

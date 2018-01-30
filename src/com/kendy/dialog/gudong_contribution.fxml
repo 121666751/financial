@@ -71,21 +71,21 @@
                      <columns>
                         <TableColumn fx:id="YS_gudongName" prefWidth="91.0" text="股东" />
                         <TableColumn fx:id="YS_rate" prefWidth="82.0" text="占比" />
-                        <TableColumn fx:id="YS_value" prefWidth="88.0" text="数值" />
+                        <TableColumn fx:id="YS_value" prefWidth="88.0" text="利润" />
                      </columns>
                   </TableView>
                   <TableView fx:id="tableEncourageGu" layoutX="559.0" layoutY="467.0" prefHeight="272.0" prefWidth="257.0">
                      <columns>
                         <TableColumn fx:id="Encourage_gudongName" prefWidth="92.0" text="股东" />
-                        <TableColumn fx:id="Encourage_rate" prefWidth="75.0" text="占比" />
-                        <TableColumn fx:id="Encourage_value" prefWidth="87.0" text="数值" />
+                        <TableColumn fx:id="Encourage_rate" prefWidth="75.0" text="比拼值" />
+                        <TableColumn fx:id="Encourage_value" prefWidth="87.0" text="利润" />
                      </columns>
                   </TableView>
                   <TableView fx:id="tablekfGu" layoutX="869.0" layoutY="466.0" prefHeight="273.0" prefWidth="244.0">
                      <columns>
                         <TableColumn fx:id="KF_gudongName" prefWidth="90.0" text="股东" />
                         <TableColumn fx:id="KF_rate" prefWidth="74.0" text="占比" />
-                        <TableColumn fx:id="KF_value" prefWidth="76.0" text="数值" />
+                        <TableColumn fx:id="KF_value" prefWidth="76.0" text="利润" />
                      </columns>
                   </TableView>
                   <Label contentDisplay="CENTER" layoutX="346.0" layoutY="436.0" prefHeight="30.0" prefWidth="93.0" text="股东原始股">
@@ -104,7 +104,7 @@
                      </font>
                   </Label>
                   <TextField fx:id="gd_currage_money" layoutX="140.0" layoutY="467.0" onDragEntered="#renciEnterAction" prefHeight="23.0" prefWidth="66.0" text="70%" />
-                  <Label contentDisplay="CENTER" layoutX="57.0" layoutY="461.0" prefHeight="35.0" prefWidth="86.0" text="奖励池占比：">
+                  <Label contentDisplay="CENTER" layoutX="32.0" layoutY="461.0" prefHeight="35.0" prefWidth="108.0" text="奖励股彩池分配：">
                      <font>
                         <Font size="13.0" />
                      </font>
