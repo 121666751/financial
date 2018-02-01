@@ -478,6 +478,9 @@ public class WaizhaiService {
     			}
     			//删除联合额度为正数的父节点（合并id总和为正，不提取进外债菜单显示）
     			if(isSuperId) {
+    				if(isSubId) {
+    					ErrorUtil.err(String.format("玩家ID(%s)既是子ID,又是父ID", playerId));
+    				}
     				String superId = playerId;
     				if(superId != null && tempSuperInfoMap.get(superId) == null) {
 	    				//CurrentMoneyInfo superInfo = ssje_map.get(playerId);

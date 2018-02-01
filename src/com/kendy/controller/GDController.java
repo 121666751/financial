@@ -29,7 +29,6 @@ import com.kendy.util.TableUtil;
 
 import application.DataConstans;
 import application.MyController;
-import application.PropertiesUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -260,15 +259,10 @@ public class GDController implements Initializable{
 	
 	/**
 	 * 获取总利润
-	 * 股东的总利润 = 人次 + 团队+股东客 + 联盟桌费
+	 * 股东的总利润 =  团队(团队利润+团队服务费)+股东客 + 联盟桌费
 	 */
 	public  Double getTotalProfits() {
 		Double totalProfits = 0d;
-		
-		//获取人次利润
-		int size = teamMap.values().stream().map(List::size).reduce(Integer::sum).get();
-		Double renciProfit = NumUtil.getNumTimes(size+"", getRenci());
-		totalProfits += renciProfit;
 		
 		//获取团队(服务费) and 获取股东客
 		for(Map.Entry<String, List<Record>> entry : teamMap.entrySet()) {
@@ -279,7 +273,7 @@ public class GDController implements Initializable{
 				totalProfits += companyProfit;
 			}else {
 				String teamFWF = TeamProxyService.getTeamFWF_GD(teamId,teamList);//获取服务费（根据锁定的存到数据库中的数据）
-				totalProfits += NumUtil.getNum(teamFWF);
+				totalProfits += (NumUtil.getNum(teamFWF) + getTeamProfit(teamList));
 			}
 		} 
 		
@@ -322,6 +316,29 @@ public class GDController implements Initializable{
 		String baohui = NumUtil.digit1(MoneyService.getHuiBao(baoxian,teamId));
 		String heLirun = NumUtil.digit2(MoneyService.getHeLirun(shouHuishui,chuHuishui,shuihouxian,baohui));
 		return  NumUtil.getNum(heLirun);
+	}
+	
+	/**
+	 * 获取团队（非公司）的个人利润（区别于合利润）
+	 * 团队个人利润= 收回水+出回水 + 水后险 - 回保 
+	 * 
+	 * @time 2018年1月31日
+	 * @param record
+	 * @return
+	 */
+	public static Double getTeamPersonProfit(final Record record) {
+		String playerId = record.getPlayerId();
+		String teamId = getTeamIdWithUperCase(playerId);
+		String zhanji = record.getScore();
+		String baoxian = record.getInsuranceEach();
+		String shishou = MoneyService.getShiShou(record.getScore());
+		String chuHuishui = NumUtil.digit1(MoneyService.getChuhuishui(zhanji, teamId));
+		String shuihouxian = NumUtil.digit1((-1)*Double.valueOf(baoxian)*0.975+"");
+		String shouHuishui = NumUtil.digit1(Math.abs(Double.valueOf(zhanji))*0.025+"");
+		String baohui = NumUtil.digit1(MoneyService.getHuiBao(baoxian,teamId));
+//		Double personProfit = NumUtil.getNum(NumUtil.getSum(shouHuishui , chuHuishui , shuihouxian )) - Math.abs(NumUtil.getNum(baohui));
+		Double personProfit = NumUtil.getNum(NumUtil.getSum(shouHuishui , chuHuishui , shuihouxian )) - (NumUtil.getNum(baohui));
+		return  personProfit;
 	}
 	
 	/**
@@ -497,8 +514,8 @@ public class GDController implements Initializable{
 	 * 设置单个动态表的数据
 	 * 注意：
 	 * 		1、公司的计入对应的股东客；
-	 * 		2、团队服务费问题：目前是直接引用代理查询表的数据，但最好重新计算！！！TODO
-	 * 		3、后期加入联盟桌费！！！！TODO
+	 * 		2、团队服务费问题：目前是直接引用代理查询表的数据，但最好重新计算！！！已经重新算了
+	 * 		3、后期加入联盟桌费！！！！已经加入了
 	 * 
 	 * @time 2018年1月20日
 	 * @param table  单个动态表
@@ -540,7 +557,7 @@ public class GDController implements Initializable{
 		//占比总和
 		Double rateSum = table.getItems().stream()
 			.map(GudongRateInfo::getGudongProfit)
-			.map(rate -> { System.out.println(rate+"==="+NumUtil.getNumByPercent(rate)); return NumUtil.getNumByPercent(rate);})
+			.map(rate -> { return NumUtil.getNumByPercent(rate);})
 			.reduce(Double::sum)
 			.get();
 		table.getColumns().get(1).setText(NumUtil.getPercentStr(rateSum));
@@ -603,15 +620,31 @@ public class GDController implements Initializable{
 	private  void setDynamicTableData_team_not_comanpy_part(TableView<GudongRateInfo> table,String teamId, List<Record> teamList,String gudong) {
 		//获取团队服务费
 		String teamFWF = TeamProxyService.getTeamFWF_GD(teamId,teamList);//获取服务费（根据锁定的存到数据库中的数据）
+		//获取团队利润
+		Double teamPersonProfit = getTeamProfit(teamList);
+		Double teamProfits = NumUtil.getNum(teamFWF) + teamPersonProfit;
 		
 		//计算团队占比      公式 = (人次 + 团队服务费) / 当天总利润 
-		Double teamRate_Double =  NumUtil.getNum(teamFWF) / getComputeTotalProfit(); 
+		Double teamRate_Double =  teamProfits / getComputeTotalProfit(); 
 		String teamRateStr = NumUtil.getPercentStr(teamRate_Double);
-		table.getItems().add(new GudongRateInfo(getFinalTeamId(teamId,gudong),teamRateStr,teamFWF));
+		table.getItems().add(new GudongRateInfo(getFinalTeamId(teamId,gudong),teamRateStr,NumUtil.digit0(teamProfits)));
 		
 		table.refresh();
 		
 		
+	}
+	
+	/**
+	 * 获取团队利润
+	 * 备注：小胖新增
+	 * 团队个人利润= 收回水+出回水 + 水后险 - 回保 
+	 * @time 2018年1月31日
+	 * @param teamList
+	 * @return
+	 */
+	private Double getTeamProfit(List<Record> teamList) {
+		return CollectUtil.isNullOrEmpty(teamList) ? 0d : 
+			teamList.stream().mapToDouble(item->getTeamPersonProfit(item)).sum();
 	}
 	
 	
@@ -699,7 +732,7 @@ public class GDController implements Initializable{
 		//4、设置第二次股东原始股数据
 		setTable_YSGu_data_Second();
 		
-		//5、将缓存中的数据设置到明细表中  TODO
+		//5、将缓存中的数据设置到明细表中 
 		setTable_detail();
 	}
 	
@@ -745,15 +778,43 @@ public class GDController implements Initializable{
 		tableYSGu.refresh();
 	}
 	
+	
+	/**
+	 * 获取非银河的股东的所有人次利润
+	 * 
+	 * @time 2018年2月2日
+	 * @return
+	 */
+	private Double getRenciTotalProfit_not_yinhe() {
+		
+		//获取非银河的股东的所有人次
+		Long count_not_company = dataList.stream().filter(info->{
+				Player p = DataConstans.membersMap.get(info.getPlayerId());
+				return (p != null && !p.getGudong().contains("银河")) ? true : false;
+			}).count();
+		
+		Double renciProfit = NumUtil.getNumTimes(count_not_company.toString(), getRenci());
+		return renciProfit;
+	}
+	
 	/**
 	 * 设置股东奖励股数据
 	 */
 	private void setTable_JLGu_data() {
+		//股东及股东的记录数，一个记录数就是一个人次
+		Map<String,List<Record>> gudongSizeMap = 
+				dataList.stream()
+				.collect(Collectors.groupingBy(//按股东分
+						record -> getGudongByPlayerId((Record)record)));
+		
+		//获取非银河的股东的所有人次利润
+		Double renciProfit = getRenciTotalProfit_not_yinhe();
+		
 		ObservableList<GDInputInfo> obList = FXCollections.observableArrayList();
-		//股东列表总和：除了银河股东,用于获取各股东的比例（比拼值）
+		//股东列表总和：除了银河股东,用于获取各股东的比例（比拼值）,加上了总人次利润（除去银河股东）
 		Double sum = tableGDSum.getItems().stream().filter(info->!info.getGudongName().contains("银河"))
-				.map(info->NumUtil.getNum(info.getGudongProfit())).reduce(Double::sum).get();
-				
+				.map(info->NumUtil.getNum(info.getGudongProfit())).reduce(Double::sum).get() + renciProfit;
+		
 		//获取可分配的奖励池
 		Double curragePool = getJLPoolAvailable();
 		
@@ -762,7 +823,13 @@ public class GDController implements Initializable{
 		tableGDSum.getItems().stream()
 			.filter(info->!info.getGudongName().contains("银河"))
 			.map(info -> {
-				Double rate =  NumUtil.getNum(info.getGudongProfit()) / sum ;
+				/********************************************************添加相应股东的人次总利润**********/
+				String gudongId = info.getGudongName().replace("股东", "");
+				Integer size = gudongSizeMap.get(gudongId).size();
+				Double gudongTotalRenciProfit = NumUtil.getNumTimes(size.toString(), getRenci());
+				/******************************************************************/
+				
+				Double rate =  (NumUtil.getNum(info.getGudongProfit()) + gudongTotalRenciProfit ) / sum ;
 				Double currageMoney = curragePool * rate;
 				//明细缓存
 				GDDetailInfo gdDetailInfo = detailMap.get(info.getGudongName());
@@ -947,8 +1014,8 @@ public class GDController implements Initializable{
 				table.getItems().forEach(info->{
 					info.setDescription("");
 					info.setId("");
-					info.setRate("");
-					info.setType("");
+					//info.setRate("");
+					//info.setType("");
 					info.setValue("");
 				});
 			}

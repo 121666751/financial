@@ -400,7 +400,7 @@ public class QuotaController implements Initializable{
      * @time 2017年12月18日
      */
     private void addNegativeRest2CurrentClub() {
-    	String currentClubId = PropertiesUtil.readProperty("clubId");
+    	String currentClubId = MyController.currentClubId.getText();
 //    	Club winnerClub = allClubMap.get("555551");//555551为银河ATM的俱乐部ID
     	Club winnerClub = allClubMap.get(currentClubId);//555551为银河ATM的俱乐部ID
     	if(winnerClub == null) {
