@@ -20,5 +20,6 @@ public class Constants {
 	
 	public static final String GU_DONG = "gudong";
 	
+	
 	public static final String ZERO = "0";
 }

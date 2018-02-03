@@ -2,6 +2,7 @@ package com.kendy.controller;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,11 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.log4j.Logger;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.kendy.db.DBUtil;
 import com.kendy.entity.GDDetailInfo;
 import com.kendy.entity.GDInputInfo;
@@ -27,6 +31,7 @@ import com.kendy.util.ShowUtil;
 import com.kendy.util.StringUtil;
 import com.kendy.util.TableUtil;
 
+import application.Constants;
 import application.DataConstans;
 import application.MyController;
 import javafx.collections.FXCollections;
@@ -66,7 +71,9 @@ public class GDController implements Initializable{
 	@FXML private Label difTotalProfit;//总利润差值 （为实时开销与桌费的差值）
 	
 	@FXML private TextField personTime_ProfitRate_Text;//1人次等于多少利润
-	@FXML private TextField gd_currage_money;//股东奖励值
+	@FXML private Label totalRenciProfitText;//总人次利润
+	@FXML private TextField gd_currage_money;//股东奖励值比例，默认70%
+	@FXML private Label gd_currage_money_value;//总股东奖励值
 	
 	@FXML private HBox contributionHBox;//动态生成各个股东贡献值的区域
 	@FXML private Button clearBtn;
@@ -95,6 +102,10 @@ public class GDController implements Initializable{
 	@FXML private TableColumn<GDDetailInfo,String> jl7;
 	@FXML private TableColumn<GDDetailInfo,String> total;
 	
+	
+	public static final String TABLE_KF_DATA_KEY = "table_kf_data";
+	
+	public static final Integer KF_SIZE = 20;
 	
 	private static final String UN_KNOWN = "未知";
 	
@@ -425,7 +436,8 @@ public class GDController implements Initializable{
 	
 	private String getRandomRate() {
 		Random random = new Random();
-		String randomString = random.nextInt(10)+"%";
+//		String randomString = random.nextInt(10)+"%";
+		String randomString = "1%";
 		return randomString;
 	}
 	
@@ -523,7 +535,7 @@ public class GDController implements Initializable{
 	 */
 	private  void setDynamicTableData(TableView<GudongRateInfo> table,Map<String,List<Record>> teamMap,String gudong) {
 		//设置股东的人次
-		setGudongRenci(table,teamMap);
+		//setGudongRenci(table,teamMap);
 		
 		//Loop设置单个动态表的数据(团队部分)
 		for(Map.Entry<String, List<Record>> teamEntry : teamMap.entrySet()) {
@@ -708,10 +720,37 @@ public class GDController implements Initializable{
 		//刷新总利润对比数据
 		refreshDifTatalValue();
 		
+		//刷新总人次利润数据
+		setTotalRenciProfit();
+		
 		//股东奖励值设置数据
 		setGudongMoneyBelow();
 		
+		//设置总彩池值
+		setTotalPoolText();
 		
+	}
+	
+	/**
+	 * 设置总彩池值
+	 * 备注：在股东奖励值设置数据后执行此代码 
+	 * 
+	 * @time 2018年2月3日
+	 */
+	private void setTotalPoolText() {
+		Double jlPool = getJLPoolAvailable();
+		gd_currage_money_value.setText(NumUtil.digit0(jlPool.toString()));
+	}
+	
+	
+	/**
+	 * 设置人次总利润（所有数据，包含银河股东）
+	 * @time 2018年2月3日
+	 */
+	private void setTotalRenciProfit() {
+		String eachRenciProfit = getRenci();
+		Double totalRenciProfits = NumUtil.getNumTimes(eachRenciProfit, dataList.size()+"");
+		totalRenciProfitText.setText(NumUtil.digit0(totalRenciProfits));
 	}
 	
 	/**
@@ -759,7 +798,7 @@ public class GDController implements Initializable{
 	 */
 	private void setTable_YSGu_data_Second() {
 		//获取剩下的30%
-		Double currage_poor_rest = getJLPoolAvailable() * (1 - getCurrageRate());
+		Double currage_poor_rest = ( getJLPoolAvailable() / getCurrageRate() ) * (1 - getCurrageRate());
 		//获取原始股比例
 		tableYSGu.getItems().forEach(info-> {
 			String oldVal = info.getValue();
@@ -849,9 +888,10 @@ public class GDController implements Initializable{
 	
 	/**
 	 * 获取可分配的奖励池
-	 * 奖励池 = （总利润 - 原始股 — 客服股）* 可分配比例
+	 * 奖励池 = （总利润 - 原始股 — 客服股）* 可分配比例，原始股实际上就是银河股东的利润
 	 * 奖励池=（总利润 - 财物分红 - 奖罚 - 银河股东）*70%
 	 * 可分配比例默认是70%
+	 * 财物分红 and 奖罚 即客服表的总和
 	 * 
 	 * @time 2018年1月28日
 	 * @return
@@ -859,8 +899,9 @@ public class GDController implements Initializable{
 	private Double getJLPoolAvailable() {
 		//总利润
 		Double totalProfit = getComputeTotalProfit();
-		//原始股
-		Double totalYSGu = tableYSGu.getItems().stream().map(info->NumUtil.getNum(info.getValue())).reduce(Double::sum).get();
+		//原始股（银河股东）
+		//Double totalYSGu = tableYSGu.getItems().stream().map(info->NumUtil.getNum(info.getValue())).reduce(Double::sum).get();
+		Double totalYSGu = getYinheProfit();
 		//客服股
 		Double totalKFGu = tablekfGu.getItems().stream().map(info->NumUtil.getNum(info.getValue())).reduce(Double::sum).get();
 		//可分配比例,即股东奖励值
@@ -998,6 +1039,8 @@ public class GDController implements Initializable{
 		difTotalProfit.setText("0.0");
 		gudongProfitsRateMap.clear();
 		gudongProfitsValueMap.clear();
+		totalRenciProfitText.setText("0.0");//总人次利润清空
+		gd_currage_money_value.setText("0.0");//总彩池
 	}
 	
 	/**
@@ -1031,5 +1074,67 @@ public class GDController implements Initializable{
 	 */
 	public void renciEnterAction(ActionEvent even) {
 		GDRefreshBtn.fire();
+	}
+	
+	/**
+	 * 加载客服数据（按钮）
+	 * 
+	 * @time 2018年2月3日
+	 * @param even
+	 */
+	public void load_KF_data_Action(ActionEvent even) {
+		//清空客服表数据s
+		if(TableUtil.isHasValue(tablekfGu)) {
+			tablekfGu.getItems().forEach(info->{
+				info.setDescription("");
+				info.setId("");
+				info.setRate("");
+				info.setType("");
+				info.setValue("");
+			});
+		}
+		
+		//从数据库获取客服数据
+		String kfValue = DBUtil.getValueByKey(TABLE_KF_DATA_KEY);
+		Map<String,String> kfMap = JSON.parseObject(kfValue, new TypeReference<Map<String,String>>() {});
+		
+		//保证有20条记录
+		ObservableList<GDInputInfo> obList = FXCollections.observableArrayList();
+		kfMap.forEach((name,rate) -> {
+			obList.add(new GDInputInfo(name,rate));  //本方法最关键的一行
+		});
+		Integer restEmptyCountRowSize = KF_SIZE - kfMap.size() ;//不满足20行的补空行
+		if(restEmptyCountRowSize > 0) {
+			for(int i=0 ; i< restEmptyCountRowSize ; i++)
+				obList.add(new GDInputInfo());
+		}
+		
+		//刷新客服表
+		tablekfGu.setItems(obList);
+		tablekfGu.refresh();
+	}
+	
+	
+	/**
+	 * 保存客服数据（按钮）
+	 * 
+	 * @time 2018年2月3日
+	 * @param even
+	 */
+	public void save_KF_data_Action(ActionEvent even) {
+		if(TableUtil.isHasValue(tablekfGu)) {
+			Map<String,String> kfMap = new HashMap<>();
+			tablekfGu.getItems().forEach(info -> {
+				String kfName = info.getType();
+				if(StringUtil.isNotBlank(kfName))
+					kfMap.put(kfName, info.getRate());
+			});
+			//保存到数据库
+			DBUtil.saveOrUpdateOthers(TABLE_KF_DATA_KEY, JSON.toJSONString(kfMap));
+			//提示
+			ShowUtil.show("保存成功，记录数："+kfMap.size(), 2);
+		}else {
+			ShowUtil.show("保存成功，记录数：0", 2);
+		}
 	}
 }
