@@ -2707,7 +2707,7 @@ public class MyController implements Initializable{
     		DBUtil.handle_last_locked_data();
     		
     		//从数据库中删除相应信息
-			DBUtil.del_club_and_record();
+			//DBUtil.del_club_and_record();
 			
     		ShowUtil.show("已更新到数据库，即将关闭此软件。", 2);
     		Main.primaryStage0.close();
