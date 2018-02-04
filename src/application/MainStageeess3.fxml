@@ -532,15 +532,17 @@
                                     <Font size="14.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="shangmaZZJ" prefHeight="35.0" prefWidth="179.0" text="0">
+                              <Label fx:id="shangmaZZJ" prefHeight="35.0" prefWidth="127.0" text="0">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
                               <AnchorPane prefHeight="35.0" prefWidth="250.0">
                                  <children>
-                                    <HBox layoutX="14.0" layoutY="5.0">
+                                    <HBox layoutX="-47.0" layoutY="5.0" prefHeight="23.0" prefWidth="476.0">
                                        <children>
+                                          <Button mnemonicParsing="false" onAction="#loadNextDayDataAction" prefHeight="23.0" prefWidth="101.0" text="加载次日" />
+                                          <AnchorPane prefHeight="0.0" prefWidth="13.0" />
                                           <TextField fx:id="shangmaSearch" layoutX="14.0" layoutY="6.0" onDragEntered="#searchRowAction" onKeyPressed="#shangmaSearchByEnter" prefHeight="23.0" prefWidth="268.0" promptText="玩家名称" />
                                           <Button fx:id="shangmaSearchBtn" layoutX="143.0" layoutY="5.0" mnemonicParsing="false" onAction="#shangmaSearchAction" prefHeight="23.0" prefWidth="74.0" text="搜索" />
                                        </children>
@@ -569,7 +571,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </VBox>
-                        <TableView fx:id="tableShangmaDetail" layoutX="890.0" layoutY="135.0" prefHeight="672.0" prefWidth="338.0">
+                        <TableView fx:id="tableShangmaDetail" layoutX="890.0" layoutY="135.0" prefHeight="375.0" prefWidth="338.0">
                           <columns>
                               <TableColumn fx:id="shangmaDetailName" prefWidth="92.0" text="玩家名称" />
                             <TableColumn fx:id="shangmaJu" prefWidth="100.0" text="场次" />
@@ -578,6 +580,14 @@
                           </columns>
                         </TableView>
                         <Button layoutX="197.0" layoutY="96.0" mnemonicParsing="false" onAction="#exportSMExcelAction" text="导出" />
+                        <TableView fx:id="tableShangmaNextDay" layoutX="891.0" layoutY="575.0" prefHeight="232.0" prefWidth="338.0">
+                           <columns>
+                              <TableColumn fx:id="shangmaNextDayName" prefWidth="117.0" text="玩家名称" />
+                              <TableColumn fx:id="shangmaNextDayJu" prefWidth="97.0" text="场次" />
+                              <TableColumn fx:id="shangmaNextDaySM" prefWidth="105.0" text="上码" />
+                           </columns>
+                        </TableView>
+                        <Button layoutX="891.0" layoutY="525.0" mnemonicParsing="false" onAction="#addNextDaySMDetailAction" prefHeight="31.0" prefWidth="336.0" text="新增次日上码" />
                      </children>
                   </AnchorPane>
                </content>

@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.kendy.entity.ClubBankInfo;
 import com.kendy.entity.CurrentMoneyInfo;
 import com.kendy.entity.Player;
 import com.kendy.entity.ShangmaDetailInfo;
@@ -62,6 +63,7 @@ public class ShangmaService {
 	
 	public static TableView<ShangmaInfo> tableSM;
 	public static TableView<ShangmaDetailInfo> tableSMD;
+	public static TableView<ShangmaDetailInfo> tableSND;//tableNextDay
 	public static TableView<WanjiaInfo> tablePJ;
 	public static Map<String,CurrentMoneyInfo> cmiMap;//{玩家ID={}}
 	public static Label labelZSM;
@@ -74,7 +76,7 @@ public class ShangmaService {
 	 */
 	public static void initShangma(VBox shangmaVBox0, final TableView<ShangmaInfo> tableShangma, 
 			final Label shangmaTeamIdLabel0, TableView<ShangmaDetailInfo> tableShangmaDetail,
-			Label shangmaZSM,Label shangmaZZJ,TableView<WanjiaInfo> tablePaiju) {
+			Label shangmaZSM,Label shangmaZZJ,TableView<WanjiaInfo> tablePaiju,TableView<ShangmaDetailInfo> tableShangmaNextDay) {
 		shangmaVBox = shangmaVBox0;
 		tableSM = tableShangma;
 		tableSMD = tableShangmaDetail;
@@ -82,6 +84,7 @@ public class ShangmaService {
 		labelZZJ = shangmaZZJ;
 		tablePJ = tablePaiju;
 		shangmaTeamIdLabel = shangmaTeamIdLabel0;
+		tableSND = tableShangmaNextDay;
 
 		//重新初始化所有团队ID按钮
 		initShangmaButton();
@@ -887,7 +890,94 @@ public class ShangmaService {
 		}
     	
     }
+    
+    /**
+     * 获取选中的俱乐部银行卡记录
+     * @time 2017年12月19日
+     * @return
+     */
+    private static ShangmaInfo getSelectShangma() {
+    	if(tableSM.getItems() != null )
+    			return tableSM.getSelectionModel().getSelectedItem();
+    	return null;
+    }
+    
+    /**
+     * 实时上码开始新的一天由用户自行点击加载次日的数据
+     * 
+     * @time 2018年2月4日
+     */
+    public static void loadNextDayDataAction() { 
+    	ShowUtil.show("正在开发中...",2);
+    }
 
-	
+    /**
+     * 实时上码新增次日上码
+     * 
+     * @time 2018年2月4日
+     */
+    public static void addNextDaySMDetailAction() {
+    	ShangmaInfo smInfo = getSelectShangma();
+    	if(smInfo == null){
+    		ShowUtil.show("请先选择要增加次日的玩家记录！");
+    		return;
+    	}
+    	if(smInfo != null && smInfo.getShangmaName() != null) {
+			Dialog<Pair<String, String>> dialog = new Dialog<>();
+			dialog.setTitle(smInfo.getShangmaName());
+			dialog.setHeaderText(null);
+			ButtonType loginButtonType = new ButtonType("确定", ButtonData.OK_DONE);
+			dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+			GridPane grid = new GridPane();
+			grid.setHgap(10);
+			grid.setVgap(10);
+			grid.setPadding(new Insets(20, 20,20, 20));
+
+			TextField shangmaJu = new TextField();
+			TextField shangmaVal = new TextField();
+
+			grid.add(new Label("第X局:"), 0, 0);
+			grid.add(shangmaJu, 1, 0);
+			grid.add(new Label("上码:"), 0, 1);
+			grid.add(shangmaVal, 1, 1);
+
+			Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+			loginButton.setDisable(true);
+
+			shangmaJu.textProperty().addListener((observable, oldValue, newValue) -> {
+			    loginButton.setDisable(newValue.trim().isEmpty());
+			});
+
+			dialog.getDialogPane().setContent(grid);
+
+			Platform.runLater(() -> shangmaJu.requestFocus());
+
+			dialog.setResultConverter(dialogButton -> {
+			    if (dialogButton == loginButtonType) {
+			        return new Pair<>(shangmaJu.getText(), shangmaVal.getText());
+			    }
+			    return null;
+			});
+
+			Optional<Pair<String, String>> result = dialog.showAndWait();
+
+			result.ifPresent(shangmaJuAndVal -> {
+			    log.info("新增次日上码：shangmaJu=" + shangmaJuAndVal.getKey() + ", shangmaVal=" + shangmaJuAndVal.getValue());
+			    try { 
+			    	Integer.valueOf(shangmaJuAndVal.getKey());
+			    	Integer.valueOf(shangmaJuAndVal.getValue());
+				} catch (NumberFormatException e) {  
+					ShowUtil.show("非法数值："+shangmaJuAndVal.getKey()+"或"+shangmaJuAndVal.getValue()+"!");
+					return ;
+				}
+			    //addNewShangma2DetailTable(smInfo,shangmaJuAndVal.getKey(),shangmaJuAndVal.getValue());
+			    
+			    //增加成功
+			    //ShowUtil.show("新增成功",2);
+			});
+		}
+    }
+    
+    
 	
 }

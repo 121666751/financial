@@ -357,6 +357,11 @@ public class MyController implements Initializable{
 	@FXML private TableColumn<ShangmaDetailInfo,String> shangmaSM;
 	@FXML private TableColumn<ShangmaDetailInfo,String> shangmaShishou;
 	
+	@FXML private TableView<ShangmaDetailInfo> tableShangmaNextDay;
+	@FXML private TableColumn<ShangmaDetailInfo,String> shangmaNextDayName;
+	@FXML private TableColumn<ShangmaDetailInfo,String> shangmaNextDayJu;
+	@FXML private TableColumn<ShangmaDetailInfo,String> shangmaNextDaySM;
+	
 	//===============================================================外债
 	@FXML private TableView<WaizhaiInfo> tableWaizhai;
 	@FXML private TableColumn<WaizhaiInfo,String> waizhaiType;
@@ -575,6 +580,11 @@ public class MyController implements Initializable{
 			        		tableShangmaDetail.setItems(null);
 			        }    
 			}); 
+		
+		//绑定次日信息表
+		shangmaNextDayName.setCellValueFactory(new PropertyValueFactory<ShangmaDetailInfo,String>("shangmaDetailName"));
+		shangmaNextDayJu.setCellValueFactory(new PropertyValueFactory<ShangmaDetailInfo,String>("shangmaJu"));
+		shangmaNextDaySM.setCellValueFactory(new PropertyValueFactory<ShangmaDetailInfo,String>("shangmaSM"));
 
 		
 		//绑定积查询表
@@ -823,7 +833,7 @@ public class MyController implements Initializable{
 	 * 初使化上码表的信息
 	 */
 	public void initShanagma() {
-		ShangmaService.initShangma(shangmaVBox,tableShangma,shangmaTeamId,tableShangmaDetail,shangmaZSM,shangmaZZJ,tablePaiju);
+		ShangmaService.initShangma(shangmaVBox,tableShangma,shangmaTeamId,tableShangmaDetail,shangmaZSM,shangmaZZJ,tablePaiju,tableShangmaNextDay);
 	}
 	
 	/**
@@ -3102,6 +3112,24 @@ public class MyController implements Initializable{
     }
 
 
+    /**
+     * 实时上码开始新的一天由用户自行点击加载次日的数据
+     * 
+     * @time 2018年2月4日
+     * @param event
+     */
+    public void loadNextDayDataAction(ActionEvent event) {
+    	ShangmaService.loadNextDayDataAction();
+    }
     
+    /**
+     * 实时上码新增次日上码
+     * 
+     * @time 2018年2月4日
+     * @param event
+     */
+    public void addNextDaySMDetailAction(ActionEvent event) {
+    	ShangmaService.addNextDaySMDetailAction();
+    }
 
 }
