@@ -30,7 +30,21 @@ public class ShangmaDetailInfo implements Entity{
 		this.shangmaPreSM = new SimpleStringProperty(shangmaPreSM);
 		this.shangmaHasPayed = new SimpleStringProperty(shangmaHasPayed);
 	}
-
+	
+	/**
+	 * 适用于次日数据
+	 * @param shangmaPlayerId
+	 * @param shangmaDetailName
+	 * @param shangmaJu
+	 * @param shangmaSM
+	 */
+	public ShangmaDetailInfo(String shangmaPlayerId,String shangmaDetailName, String shangmaJu,String shangmaSM) {
+		super();
+		this.shangmaPlayerId = new SimpleStringProperty(shangmaPlayerId);
+		this.shangmaDetailName = new SimpleStringProperty(shangmaDetailName);
+		this.shangmaJu = new SimpleStringProperty(shangmaJu);
+		this.shangmaSM = new SimpleStringProperty(shangmaSM);
+	}
 
 
 	//==========================================

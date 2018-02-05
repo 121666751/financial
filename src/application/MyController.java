@@ -573,8 +573,10 @@ public class MyController implements Initializable{
 			        	//加载右边的个人详情
 			        	if(smInfo != null) {
 			        		String playerId = smInfo.getShangmaPlayerId();
-			        		if(!StringUtil.isBlank(playerId))
+			        		if(!StringUtil.isBlank(playerId)) {
 			        			ShangmaService.loadSMDetailTable(playerId);
+			        			ShangmaService.loadSMNextDayTable(playerId);
+			        		}
 			        	}
 			        	else
 			        		tableShangmaDetail.setItems(null);

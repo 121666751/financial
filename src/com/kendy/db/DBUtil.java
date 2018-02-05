@@ -25,6 +25,7 @@ import com.kendy.entity.Huishui;
 import com.kendy.entity.JifenInfo;
 import com.kendy.entity.Player;
 import com.kendy.entity.Record;
+import com.kendy.entity.ShangmaNextday;
 import com.kendy.util.ErrorUtil;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
@@ -1852,6 +1853,94 @@ public class DBUtil {
 	}
 	
 	
+	/***************************************************************************
+	 * 
+	 * 				次日上码表
+	 * 
+	 **************************************************************************/
+	/**
+	 * 保存次日上码
+	 * @time 2018年2月5日
+	 * @param nextday
+	 * @return
+	 */
+	public static boolean saveOrUpdate_SM_nextday(final ShangmaNextday nextday) {
+		boolean isOK = false;
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			sql = "replace into shangma_nextday(playerId,playerName,changci,shangma,time,type) values(?,?,?,?,?,?)";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, nextday.getPlayerId());
+			ps.setString(2, nextday.getPlayerName());
+			ps.setString(3, nextday.getChangci());
+			ps.setString(4, nextday.getShangma());
+			ps.setString(5, nextday.getTime());
+			ps.setString(6, nextday.getType());
+			ps.execute();
+			isOK = true;
+		}catch (SQLException e) {
+			ErrorUtil.err(nextday.getPlayerId()+":"+nextday.getChangci()+",保存次日上码记录失败", e);
+			isOK = false;
+		}finally{
+			close(con,ps);
+		}
+		return isOK;
+	}
+	
+	/**
+	 * 获取玩家的次日数据
+	 * @time 2018年2月5日
+	 * @return
+	 */
+	public static List<ShangmaNextday> getAllSM_nextday() {
+		List<ShangmaNextday> list = new ArrayList<>();
+		try {
+			con = DBConnection.getConnection();
+			String sql = "select * from  shangma_nextday n where n.type = '0' ";
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				ShangmaNextday nextday = new ShangmaNextday();
+				nextday.setPlayerId(rs.getString(1));
+				nextday.setPlayerName(rs.getString(2));
+				nextday.setChangci(rs.getString(3));
+				nextday.setShangma(rs.getString(4));
+				nextday.setTime(rs.getString(5));
+				nextday.setType(rs.getString(6));
+				list.add(nextday);
+			}
+		} catch (SQLException e) {
+			ErrorUtil.err("获取玩家的次日数据失败",e);
+		}finally{
+			close(con,ps);
+		}
+		return list;
+	}
+	
+	/**
+	 * 用户自行加载完次日数据后，将数据表中的type设置为1，表示已经加载过
+	 * @time 2018年2月5日
+	 * @param bank
+	 * @return
+	 */
+	public static boolean setNextDayLoaded() {
+		boolean isOK = false;
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			sql = "update shangma_nextday n  set n.type = '1' where n.type = '0' ";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+			isOK = true;
+		}catch (SQLException e) {
+			ErrorUtil.err("修改次日数据记录（为加载）失败", e);
+			isOK = false;
+		}finally{
+			close(con,ps);
+		}
+		return isOK;
+	}
 	
 	
 	

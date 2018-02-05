@@ -14,14 +14,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
+import com.kendy.db.DBUtil;
 import com.kendy.entity.ClubBankInfo;
 import com.kendy.entity.CurrentMoneyInfo;
 import com.kendy.entity.Player;
 import com.kendy.entity.ShangmaDetailInfo;
 import com.kendy.entity.ShangmaInfo;
+import com.kendy.entity.ShangmaNextday;
 import com.kendy.entity.WanjiaInfo;
 import com.kendy.excel.ExportShangmaExcel;
 import com.kendy.util.CollectUtil;
@@ -34,11 +37,13 @@ import application.DataConstans;
 import application.Main;
 import application.MyController;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -47,6 +52,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
@@ -63,13 +69,16 @@ public class ShangmaService {
 	
 	public static TableView<ShangmaInfo> tableSM;
 	public static TableView<ShangmaDetailInfo> tableSMD;
-	public static TableView<ShangmaDetailInfo> tableSND;//tableNextDay
+	public static TableView<ShangmaDetailInfo> tableND;//tableNextDay
 	public static TableView<WanjiaInfo> tablePJ;
 	public static Map<String,CurrentMoneyInfo> cmiMap;//{玩家ID={}}
 	public static Label labelZSM;
 	public static Label labelZZJ;
 	public static VBox shangmaVBox;
 	public static Label shangmaTeamIdLabel;
+	
+	//玩家ID=上码次日列表   ShangmaDetailInfo 存到数据库时对应ShangmaNextday
+	public static Map<String,List<ShangmaDetailInfo>> SM_NextDay_Map= new HashMap<>();
 	
 	/**
 	 * 初始化上码相关配置
@@ -84,10 +93,32 @@ public class ShangmaService {
 		labelZZJ = shangmaZZJ;
 		tablePJ = tablePaiju;
 		shangmaTeamIdLabel = shangmaTeamIdLabel0;
-		tableSND = tableShangmaNextDay;
+		tableND = tableShangmaNextDay;
 
 		//重新初始化所有团队ID按钮
 		initShangmaButton();
+		
+		//加载数据库中玩家的次日信息
+		init_SM_NextDay_Map();
+	}
+	
+	
+	/**
+	 * 加载数据库中玩家的次日信息
+	 * @time 2018年2月5日
+	 */
+	public static void init_SM_NextDay_Map() {
+		List<ShangmaNextday> allSM_nextday = DBUtil.getAllSM_nextday();
+		if(!allSM_nextday.isEmpty()) {
+			SM_NextDay_Map = allSM_nextday.stream().map(nextday -> {
+		    	String playerId = nextday.getPlayerId();
+		    	String playerName = nextday.getPlayerName();
+		    	String changci = nextday.getChangci();
+		    	String shangma = nextday.getShangma();
+		    	ShangmaDetailInfo shangmaDetailInfo = new ShangmaDetailInfo(playerId,playerName,changci,shangma);
+		    	return shangmaDetailInfo;
+			}).collect(Collectors.groupingBy(ShangmaDetailInfo::getShangmaPlayerId));
+		}
 	}
 	
 	/**
@@ -324,7 +355,13 @@ public class ShangmaService {
 	 */
 	public static Double[] getSumDetail(String playerId,String edu,String yicunJifen) {
 		Double[] sumDetail = {0d,0d,0d,0d};
-		List<ShangmaDetailInfo> detailList = DataConstans.SM_Detail_Map.get(playerId);
+//		List<ShangmaDetailInfo> detailList = DataConstans.SM_Detail_Map.get(playerId);
+		//add 2018-2-5 新增次日
+		List<ShangmaDetailInfo> detailList = new ArrayList<>();
+		List<ShangmaDetailInfo> _detailList = DataConstans.SM_Detail_Map.get(playerId);
+		detailList.addAll(_detailList);
+		detailList.addAll(SM_NextDay_Map.getOrDefault(playerId,new ArrayList<>()));
+		
 		if(detailList != null  ) {
 			Double sumAvailableEdu = 0d,sumYiSM = 0d,sumZJ = 0d,sumZJ_hasPayed=0d;
 			for(ShangmaDetailInfo info : detailList) {
@@ -570,6 +607,29 @@ public class ShangmaService {
 		}
 		tableSMD.setItems(obList);
 		tableSMD.refresh();
+	}
+	/**
+	 * 根据玩家ID加载个人上码次日信息表
+	 * @param playerId
+	 */
+	public static void loadSMNextDayTable(String playerId) {
+		Map<String,List<ShangmaDetailInfo>> detailMap = SM_NextDay_Map;
+		final ObservableList<ShangmaDetailInfo> obList = FXCollections.observableArrayList();
+		List<ShangmaDetailInfo> list =detailMap.get(playerId);
+		if(list == null ) {
+			list = new ArrayList<>();
+			String playerName = DataConstans.membersMap.get(playerId).getPlayerName();
+			if(StringUtil.isBlank(playerName)) {
+				ShowUtil.show("ID:"+playerId+"找不到对应的玩家名称", 1);
+			}
+			detailMap.put(playerId, list);
+		}else {
+			list.forEach( detail -> {
+				obList.add(detail);
+			});
+		}
+		tableND.setItems(obList);
+		tableND.refresh();
 	}
 	
 	/**
@@ -908,7 +968,61 @@ public class ShangmaService {
      * @time 2018年2月4日
      */
     public static void loadNextDayDataAction() { 
-    	ShowUtil.show("正在开发中...",2);
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("提示");
+		alert.setHeaderText(null);
+		alert.setContentText("\r\n只有开始新一天的统计才可以加载次日数据哦");
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK){
+			Map<String,List<ShangmaDetailInfo>> detailMap = DataConstans.SM_Detail_Map;
+			boolean isHasValue = detailMap.values().stream().anyMatch(list->list.size()>0);
+			if(isHasValue) {
+				ShowUtil.show("中途不通加载次日数据！！！");
+				return;
+			}else {
+				int playerCount = SM_NextDay_Map.size();
+				//将次日数据的值复制给DataConstans.SM_Detail_Map
+				SM_NextDay_Map.forEach((playerId,nextdayList) -> {
+					List<ShangmaDetailInfo> detailList = new ArrayList<>();
+					for(ShangmaDetailInfo nextday : nextdayList) {
+						detailList.add(copyShangmaDetailInfo(nextday));
+					}
+					detailMap.put(playerId, detailList);
+				});
+				
+				//将数据表中的删除
+				DBUtil.setNextDayLoaded();
+				
+				//清空SM_NextDay_Map
+				SM_NextDay_Map.clear();
+				
+				//清空当前的次日信息
+				tableND.setItems(null);
+				
+				//重新加载主表 TODO
+		    	refreshTableSM();
+		    	
+		    	//提示加载成功
+		    	ShowUtil.show("加载次日数据成功！加载了"+playerCount+"个玩家数据", 4);
+			}
+		}
+    }
+    
+    /**
+     * 复制
+     * @time 2018年2月5日
+     * @param source
+     * @return
+     */
+    private static ShangmaDetailInfo copyShangmaDetailInfo(ShangmaDetailInfo source) {
+    	ShangmaDetailInfo target = new ShangmaDetailInfo();
+    	target.setShangmaDetailName(source.getShangmaDetailName());
+    	target.setShangmaSM(source.getShangmaSM());
+    	target.setShangmaPlayerId(source.getShangmaShishou());
+    	target.setShangmaHasPayed(source.getShangmaHasPayed());
+    	target.setShangmaPreSM(source.getShangmaPreSM());
+    	target.setShangmaJu(source.getShangmaJu());
+    	return target;
     }
 
     /**
@@ -924,7 +1038,7 @@ public class ShangmaService {
     	}
     	if(smInfo != null && smInfo.getShangmaName() != null) {
 			Dialog<Pair<String, String>> dialog = new Dialog<>();
-			dialog.setTitle(smInfo.getShangmaName());
+			dialog.setTitle("次日上码："+smInfo.getShangmaName());
 			dialog.setHeaderText(null);
 			ButtonType loginButtonType = new ButtonType("确定", ButtonData.OK_DONE);
 			dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
@@ -970,13 +1084,75 @@ public class ShangmaService {
 					ShowUtil.show("非法数值："+shangmaJuAndVal.getKey()+"或"+shangmaJuAndVal.getValue()+"!");
 					return ;
 				}
-			    //addNewShangma2DetailTable(smInfo,shangmaJuAndVal.getKey(),shangmaJuAndVal.getValue());
 			    
-			    //增加成功
-			    //ShowUtil.show("新增成功",2);
+			    ShangmaNextday nextday = new ShangmaNextday();
+			    nextday.setPlayerId(smInfo.getShangmaPlayerId());
+			    nextday.setPlayerName(smInfo.getShangmaName());
+			    nextday.setChangci(getShangmaPaiju(shangmaJuAndVal.getKey()));
+			    nextday.setShangma(shangmaJuAndVal.getValue());
+			    
+			    //新增玩家的次日数据
+			    addNewRecord_nextday(tableND,nextday);
+			    
 			});
 		}
     }
+    
+    /**
+     * 新增玩家的次日数据
+     * 
+     * @time 2018年2月5日
+     * @param table
+     * @param nextday
+     */
+    private static void addNewRecord_nextday(TableView<ShangmaDetailInfo> table, ShangmaNextday nextday) {
+    	String playerId = nextday.getPlayerId();
+    	String playerName = nextday.getPlayerName();
+    	String changci = nextday.getChangci();
+    	String shangma = nextday.getShangma();
+    	ShangmaDetailInfo shangmaDetailInfo = new ShangmaDetailInfo(playerId,playerName,changci,shangma);
+    	
+    	//1 保存到数据库
+    	DBUtil.saveOrUpdate_SM_nextday(nextday);
+    	
+    	//2 保存到缓存
+    	List<ShangmaDetailInfo> currentNextdayList = SM_NextDay_Map.getOrDefault(playerId, new ArrayList<>());
+    	currentNextdayList.add(shangmaDetailInfo);
+    	SM_NextDay_Map.put(playerId, currentNextdayList);
+    	
+    	//3 刷新到当前的玩家次日表
+    	tableND.getItems().add(shangmaDetailInfo);
+    	tableND.refresh();
+    	
+    	//4 修改主表的可上码额度 TODO
+    	refreshTableSM();
+    	
+    }
+    
+    
+    /**
+     * 加载数据
+     * @time 2018年2月6日
+     */
+    private static void refreshTableSM() {
+//    	String teamId = shangmaTeamIdLabel.getText();
+//    	//tableSM.setItems(null);
+//		loadShangmaTable(teamId,tableSM);
+		
+		
+		String shangmaTeamIdValue = shangmaTeamIdLabel.getText();
+		if(!StringUtil.isBlank(shangmaTeamIdValue)) {
+			//ShangmaService.loadShangmaTable(shangmaTeamIdValue,tableShangma);
+		}else {
+			if(DataConstans.huishuiMap.containsKey("公司")){
+				shangmaTeamIdValue = "公司";
+			}else {
+				shangmaTeamIdValue = ((Button)shangmaVBox.getChildren().get(0)).getText();
+			}
+		}
+		ShangmaService.loadShangmaTable(shangmaTeamIdValue,tableSM);
+    }
+    
     
     
 	
