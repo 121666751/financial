@@ -380,6 +380,8 @@ public class MyController implements Initializable{
 	
 	
 	public static LMController lmController = new LMController();
+	public static TableView<ProfitInfo> table_Profit;
+	
 	
 	/* 每点击结算按钮就往这个静态变更累加（只针对当局）
 	 * 撤销时清空为0
@@ -405,6 +407,7 @@ public class MyController implements Initializable{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		table_Profit = this.tableProfit;
 		//第一次打开主窗口时设置当前俱乐部ID值
 		String clubIdValue = PropertiesUtil.readProperty("clubId");
 		currentClubId = lable_currentClubId;
@@ -2618,6 +2621,10 @@ public class MyController implements Initializable{
 			DataConstans.initGudong();
 		}
     }
+    
+
+    
+
     
     /**
      * 把渲染表格的数据加载出来，要判断是否2017-01-01，分成两步

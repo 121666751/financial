@@ -2,6 +2,7 @@ package com.kendy.service;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,9 +20,11 @@ import com.kendy.entity.ZonghuiKaixiaoInfo;
 import com.kendy.util.ErrorUtil;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
+import com.kendy.util.StringUtil;
 import com.kendy.util.TableUtil;
 
 import application.DataConstans;
+import application.MyController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
@@ -37,6 +40,7 @@ public class ZonghuiService {
 	private static Logger log = Logger.getLogger(ZonghuiService.class);
 
 	public static DecimalFormat df = new DecimalFormat("#.00");
+	
 	
 	/**
 	 * 刷新汇总信息表
@@ -85,14 +89,14 @@ public class ZonghuiService {
 					new DangtianHuizongInfo("总保险",NumUtil.digit1(sumOfBaoxian+"")),
 					new DangtianHuizongInfo("总团队回水",NumUtil.digit1(sumOfTeamHuishui+"")),
 					new DangtianHuizongInfo("总团队回保",NumUtil.digit1(sumOfTeamHuibao+"")),
-					new DangtianHuizongInfo("总开销",sumOfKaixiao)
-					//new DangtianHuizongInfo("总团队服务费",NumUtil.digit0(teamSumFWF))
+					new DangtianHuizongInfo("总开销",sumOfKaixiao),
+					new DangtianHuizongInfo("总团队服务费",NumUtil.digit0(teamSumFWF))
 					);
 			
 			
 			ShowUtil.show("刷新成功",1);
 		}else {
-			ShowUtil.show("查无数据",1);
+			ShowUtil.show("查无数据",1); 
 		}
 		tableZonghui.setItems(obList);
 		tableZonghui.refresh();
@@ -112,17 +116,18 @@ public class ZonghuiService {
 	 */
 	public static Double getTeamSumFWF(TableView<ProfitInfo> tableProfit) {
 		Double teamSumFWF = 0d;
-		if(TableUtil.isHasValue(tableProfit)) {
-			try {
-				String fwf = tableProfit.getItems()
-						.stream().filter(info -> "总团队服务费".equals(info.getProfitType()))
-						.collect(Collectors.toList()).get(0)
-						.getProfitAccount();
-				teamSumFWF = NumUtil.getNum(fwf);
-			} catch (Exception e) {
-				ErrorUtil.err("总团队服务费不存在于昨日留底中!");
-			}
-		}
+//		if(TableUtil.isHasValue(tableProfit)) {
+//			try {
+//				String fwf = tableProfit.getItems()
+//						.stream().filter(info -> "总团队服务费".equals(info.getProfitType()))
+//						.collect(Collectors.toList()).get(0)
+//						.getProfitAccount();
+//				teamSumFWF = NumUtil.getNum(fwf);
+//			} catch (Exception e) {
+//				ErrorUtil.err("总团队服务费不存在于昨日留底中!");
+//			}
+//		}
+		teamSumFWF = getTodayTotalTeamFWF();
 		return teamSumFWF;
 	}
 	
@@ -147,4 +152,37 @@ public class ZonghuiService {
 		return sumOfKaixiao;
 	}
 	
+    /**
+     * 设置今天的总团队服务费
+     * 昨日留底总团队服务费与所有总团队服务费的差 = 当天汇总中的总团队服务费
+     * @time 2018年2月7日
+     */
+    private static Double getTodayTotalTeamFWF() {
+    	Double yesterday_diff_today_total_team_fwf_sum = 0d;
+    	List<ProfitInfo> profitList;
+    	String profit = DataConstans.preDataMap.get("利润");
+    	if(StringUtil.isBlank(profit)) {
+    		profitList = Collections.EMPTY_LIST;
+    	}else {
+    		profitList = JSON.parseObject(profit, new TypeReference<List<ProfitInfo>>() {});
+    	}
+    	String yestoday = profitList.stream()
+    			.filter(info-> "总团队服务费".equals(info.getProfitType()))
+    			.map(info->info.getProfitAccount()).findFirst().orElse("0");
+    	
+    	String now = MyController.table_Profit.getItems().stream()
+		    	.filter(info-> "总团队服务费".equals(info.getProfitType()))
+				.map(info->info.getProfitAccount()).findFirst().orElse("0");
+    	
+    	Double yester = NumUtil.getNum(yestoday);
+    	Double today = NumUtil.getNum(now);
+    	if(yester > today) {
+    		log.error("检测到昨天的总团队服务费大于今天！请检查");
+    		yesterday_diff_today_total_team_fwf_sum = 0d;
+    	}else {
+    		yesterday_diff_today_total_team_fwf_sum = today - yester;
+    	}
+    	return yesterday_diff_today_total_team_fwf_sum;
+    }
+
 }
