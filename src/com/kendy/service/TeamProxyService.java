@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import com.kendy.entity.ProxyTeamInfo;
 import com.kendy.entity.Record;
 import com.kendy.entity.TeamHuishuiInfo;
 import com.kendy.excel.ExportExcel;
+import com.kendy.util.CollectUtil;
 import com.kendy.util.ErrorUtil;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
@@ -55,6 +57,7 @@ public class TeamProxyService {
 	public static  HBox proxySumHBox;//每列上的总和
 	public static  ComboBox<String> teamIDCombox;//团队ID下拉框
 	public static  CheckBox isZjManage;//团对应的战绩是否被管理
+	public static  CheckBox hasTeamBaoxian;//导出是否有团队保险
 	public static  Label proxyDateLabel;
 	
 	public static  TableView<ProxySumInfo> tableProxySum;
@@ -76,7 +79,8 @@ public class TeamProxyService {
 			 TableView<ProxySumInfo> tableProxySum0,
 			 TextField proxyHSRate0,//回水比例
 			 TextField proxyHBRate0,//回保比例
-			 TextField proxyFWF0//服务费大于多少有效
+			 TextField proxyFWF0,//服务费大于多少有效
+			 CheckBox hasTeamBaoxian0
 			) {
 		tableProxyTeam = tableProxyTeam0;
 		proxySumHBox = proxySumHBox0;
@@ -87,6 +91,7 @@ public class TeamProxyService {
 		proxyHSRate = proxyHSRate0;
 		proxyHBRate = proxyHBRate0;
 		proxyFWF = proxyFWF0; 
+		hasTeamBaoxian = hasTeamBaoxian0;
 	}
 	
 	/**
@@ -125,6 +130,19 @@ public class TeamProxyService {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             	refresh_TableTeamProxy_TableProxySum(newValue);
+            	
+            	//add 团队保险比例为0默认将hasTeamBaoxian打勾
+            	Huishui huishui = DataConstans.huishuiMap.get(newValue);
+            	if(huishui != null) {
+            		if(NumUtil.getNum(huishui.getInsuranceRate()) > 0) {
+            			hasTeamBaoxian.setSelected(false);
+            		}else {
+            			hasTeamBaoxian.setSelected(true);
+            		}
+            	}else {
+            		ShowUtil.show("团队"+newValue+"还没有设置团队保险比例！");
+            		hasTeamBaoxian.setSelected(false);
+            	}
             }
         });
 		
@@ -509,6 +527,18 @@ public class TeamProxyService {
 	
 	/*************************   导出Excel   ************************************/  
 	public static void exportExcel() {
+		if(hasTeamBaoxian.isSelected()) {
+			exportExcel_with_no_teamBaoxianRate();
+		}else {
+			exportExcel_with_has_teamBaoxianRate();
+		}
+	}
+	
+	/**
+	 * 导出有团队保险比例的Excel
+	 * @time 2018年2月8日
+	 */
+	public static void exportExcel_with_has_teamBaoxianRate() {
 		String teamId = teamIDCombox.getSelectionModel().getSelectedItem();
 		boolean isManage = isZjManage.isSelected();
 		String time = DataConstans.Date_Str;
@@ -568,6 +598,83 @@ public class TeamProxyService {
 	      String out = "D:/"+title+System.currentTimeMillis();
 	      ExportExcel ex = new ExportExcel(teamId,time,isManage,title,rowsName, dataList,out,rowsName2,sumList);
 	      try {
+			ex.export();
+			log.info("代理查询导出成功");
+		} catch (Exception e) {
+			ErrorUtil.err("代理查询导出失败",e);
+		}
+	}
+	
+	/**
+	 * 
+	 * @time 2018年2月8日
+	 */
+	public static void exportExcel_with_no_teamBaoxianRate() {
+		String teamId = teamIDCombox.getSelectionModel().getSelectedItem();
+		boolean isManage = isZjManage.isSelected();
+		String time = DataConstans.Date_Str;
+		if(StringUtil.isBlank(teamId)) {
+			ShowUtil.show("导出失败! 请先选择团队ID!!");
+			return;
+		}
+		if(StringUtil.isBlank(time)) {
+			ShowUtil.show("导出失败! 您今天还没导入01场次的战绩，无法确认时间!!");
+			return;
+		}
+		List<ProxyTeamInfo> list = new ArrayList<>();
+		ObservableList<ProxyTeamInfo> obList = tableProxyTeam.getItems();
+		if(obList != null && obList.size() > 0) {
+			for(ProxyTeamInfo info : obList) {
+				list.add(info);
+			}
+		}else {
+			ShowUtil.show("没有需要导出的数据!!");
+			return;
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String title = teamId + "-"+sdf.format(new Date());
+		log.info(title);
+		
+//		String[] rowsName = new String[]{"玩家ID","玩家名称","原始战绩","战绩","保险","回水","回保","场次"};
+		String[] rowsName = new String[]{"玩家ID","玩家名称","原始战绩","战绩","场次"};
+		List<Object[]>  dataList = new ArrayList<Object[]>();
+		Object[] objs = null;
+		for(ProxyTeamInfo info : list) {
+			objs = new Object[rowsName.length];
+			objs[0] = info.getProxyPlayerId();
+			objs[1] = info.getProxyPlayerName();
+			objs[2] = info.getProxyYSZJ();
+			objs[3] = info.getProxyZJ();
+//			objs[4] = info.getProxyBaoxian();
+//			objs[5] = info.getProxyHuishui();
+//			objs[6] = info.getProxyHuiBao();
+			objs[7-3] = info.getProxyTableId();
+			dataList.add(objs);
+		}
+		
+		String[] rowsName2 = new String[]{"合计","0"};
+		List<Object[]> sumList = new ArrayList<>();
+		Object[] sumObjs = null;
+		ObservableList<ProxySumInfo> ob_List = tableProxySum.getItems();
+		List<String> baoxianFilters = Arrays.asList("总回保");
+		if(CollectUtil.isHaveValue(ob_List)) {
+			for(ProxySumInfo info : ob_List) {
+				if(!baoxianFilters.contains(info.getProxySumType())) {
+					sumObjs= new Object[rowsName2.length];
+					sumObjs[0] = info.getProxySumType();
+					sumObjs[1] = info.getProxySum();
+					sumList.add(sumObjs);
+				}
+			}
+//			String sum = tableProxySum.getColumns().get(1).getText();
+			Integer sum = ob_List.stream().filter(info -> !baoxianFilters.contains(info.getProxySumType()))
+				.mapToInt(info -> NumUtil.getNum(info.getProxySum()).intValue()).sum();
+			rowsName2[1] = sum+"";
+		}
+		
+		String out = "D:/"+title+System.currentTimeMillis();
+		ExportExcel ex = new ExportExcel(teamId,time,isManage,title,rowsName, dataList,out,rowsName2,sumList);
+		try {
 			ex.export();
 			log.info("代理查询导出成功");
 		} catch (Exception e) {

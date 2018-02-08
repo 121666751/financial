@@ -32,7 +32,8 @@ public class Huishui {
 	//服务费有效值，比如大如1000，合计才会去计算服务费
 	public String proxyFWF = "0";
 	
-	public String jifenInput = "0";
+//	public String jifenInput = "0";
+	
 	//=================== constructors ================================================
 	public Huishui() {
 		super();
@@ -63,8 +64,7 @@ public class Huishui {
 		return teamId;
 	}
 	public Huishui(String teamId, String teamName, String huishuiRate, String insuranceRate, String gudong,
-			String zjManaged, String beizhu, String proxyHSRate, String proxyHBRate, String proxyFWF,
-			String jifenInput) {
+			String zjManaged, String beizhu, String proxyHSRate, String proxyHBRate, String proxyFWF) {
 		super();
 		this.teamId = teamId;
 		this.teamName = teamName;
@@ -76,7 +76,6 @@ public class Huishui {
 		this.proxyHSRate = proxyHSRate;
 		this.proxyHBRate = proxyHBRate;
 		this.proxyFWF = proxyFWF;
-		this.jifenInput = jifenInput;
 	}
 
 
@@ -163,14 +162,6 @@ public class Huishui {
 	}
 
 
-	public String getJifenInput() {
-		return jifenInput;
-	}
-
-
-	public void setJifenInput(String jifenInput) {
-		this.jifenInput = jifenInput;
-	}
 
 
 

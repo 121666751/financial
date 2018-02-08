@@ -246,7 +246,8 @@ public class ExcelReaderUtil {
 						}else if(i==10) {
 							//服务费====="+value);
 							proxyFWF = value;
-						}else if(i==11) {
+						}
+						else if(i==11) {
 							//积分比例====="+value);
 							if(StringUtil.isBlank(value)) {
 								value = "0";
@@ -255,7 +256,7 @@ public class ExcelReaderUtil {
 						}
 					}
 					if(!StringUtil.isBlank(teamId))
-						huishuiMap.put(teamId, new Huishui(teamId,teamName,huishuiRate,insuranceRate,gudong,zjManage,beizhu,proxyHsRate,proxyHbRate,proxyFWF,jfPercent));
+						huishuiMap.put(teamId, new Huishui(teamId,teamName,huishuiRate,insuranceRate,gudong,zjManage,beizhu,proxyHsRate,proxyHbRate,proxyFWF));
 				}
 			}
 			is.close();

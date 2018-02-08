@@ -295,6 +295,7 @@ public class MyController implements Initializable{
 
 	@FXML private ComboBox<String> teamIDCombox;//团队ID下拉框
 	@FXML private CheckBox isZjManage;//团对应的战绩是否被管理
+	@FXML private CheckBox hasTeamBaoxian;//导出是否团队无保险
 //	@FXML private Label proxyMonthLabel;
 //	@FXML private Label proxyDayLabel;
 	@FXML private Label proxyDateLabel;
@@ -615,7 +616,7 @@ public class MyController implements Initializable{
 		
 		////////////////////代理查询中的团队回水选择
 		TeamProxyService.initTeamProxy(
-				tableProxyTeam,proxySumHBox,teamIDCombox,isZjManage,proxyDateLabel,tableProxySum,proxyHSRate,proxyHBRate,proxyFWF);
+				tableProxyTeam,proxySumHBox,teamIDCombox,isZjManage,proxyDateLabel,tableProxySum,proxyHSRate,proxyHBRate,proxyFWF,hasTeamBaoxian);
 		////////////////////代理查询中的团队回水选择
 		TeamProxyService.initTeamSelectAction(teamIDCombox,isZjManage,tableProxyTeam,proxySumHBox);
 		////////////////////会员服务类
@@ -3077,6 +3078,56 @@ public class MyController implements Initializable{
     		hs.setHuishuiRate(NumUtil.getNumByPercent(teamHsRate)+"");//地址引用，会修改值
     		
     	    ShowUtil.show("修改成功！",2);
+    	});
+    }
+    
+    
+    
+    /**
+     * 修改团队保险比例
+     * 
+     * @time 2018年2月8日
+     * @param event
+     */
+    public void updateTeamHsBaoxianRateAction(ActionEvent event) {
+    	
+    	InputDialog inputDlg = new InputDialog("修改团队保险比例","待修改的团队ID:","团队新保险比例：");
+    	Optional<Pair<String, String>> result = inputDlg.getResult();
+    	result.ifPresent(teamId_and_hsRate -> {
+    		
+    		//获取到原始的有效的团队ID及团队回水率
+    		String teamID = teamId_and_hsRate.getKey();
+    		String teamHsRate = teamId_and_hsRate.getValue();
+    		if(StringUtil.isBlank(teamID) || StringUtil.isBlank(teamHsRate)) {
+    			ShowUtil.show("修改失败！原因：团队ID或团队回水不能为空！！");
+    			return;
+    		}
+    		teamID = teamID.trim().toUpperCase();
+    		teamHsRate = teamHsRate.trim();
+    		Huishui hs = DataConstans.huishuiMap.get(teamID);//判断是否有此团队
+    		if(hs == null) {
+    			ShowUtil.show("修改失败！原因：不存在此团队ID,请检查！");
+    			return;
+    		}
+    		if(!teamHsRate.endsWith("%")) {
+    			ShowUtil.show("修改失败！原因：团队保险必须中有百分号！");
+    			return;
+    		}
+    		//开始修改
+    		//1修改数据库
+    		Double _hsRate = NumUtil.getNumByPercent(teamHsRate);
+    		int size = (_hsRate+"").length();
+    		if(size > 6) {
+    			_hsRate = NumUtil.getNum(NumUtil.digit4(_hsRate.toString()));
+    		}
+    		if(!DBUtil.updateTeamHsBaoxianRate(teamID, _hsRate+"")) {
+    			return;
+    		}
+    		
+    		//2修改缓存
+    		hs.setInsuranceRate(NumUtil.getNumByPercent(teamHsRate)+"");//地址引用，会修改值
+    		
+    		ShowUtil.show("修改成功！",2);
     	});
     }
     

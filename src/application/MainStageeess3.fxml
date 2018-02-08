@@ -56,6 +56,7 @@
                               <Button fx:id="exportMembersBtn" layoutX="872.0" layoutY="249.0" mnemonicParsing="false" onAction="#exportMembersExcelAction" prefHeight="23.0" prefWidth="58.0" text="导出" />
                               <Button fx:id="exportHuishuiBtn" layoutX="773.0" layoutY="319.0" mnemonicParsing="false" onAction="#exportHuishuiExcelAction" prefHeight="23.0" prefWidth="56.0" text="导出" />
                               <Button fx:id="exportHuishuiBtn2" layoutX="843.0" layoutY="319.0" mnemonicParsing="false" onAction="#updateTeamHsRateAction" prefHeight="23.0" prefWidth="97.0" text="修改团队回水" />
+                              <Button fx:id="exportHuishuiBtn21" layoutX="954.0" layoutY="319.0" mnemonicParsing="false" onAction="#updateTeamHsBaoxianRateAction" prefHeight="23.0" prefWidth="97.0" text="修改团队保险" />
                            </children>
                         </Group>
                         <Group layoutX="35.0" layoutY="52.0">
@@ -374,7 +375,7 @@
 					      <children>
 					            <Group>
 					               <children>
-					                  <Label fx:id="proxyDateLabel" layoutX="48.0" prefHeight="15.0" prefWidth="115.0" textAlignment="LEFT" wrapText="true">
+					                  <Label fx:id="proxyDateLabel" layoutX="48.0" prefHeight="15.0" prefWidth="102.0" textAlignment="LEFT" wrapText="true">
 					                     <font>
 					                        <Font size="12.0" />
 					                     </font>
@@ -384,6 +385,11 @@
                                                 <Font name="System Bold" size="12.0" />
                                              </font>
                                           </Label>
+                                          <CheckBox fx:id="hasTeamBaoxian" layoutX="160.0" layoutY="-2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="104.0" text="是否无保险">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </CheckBox>
 					               </children>
 					            </Group>
 					            <HBox>

@@ -66,21 +66,21 @@ public class JifenService {
 	
 	
 	
-	@SuppressWarnings("unchecked")
-	public static void init_JFTeamSelect_Action(ComboBox<String> teamIDCombox,TextField jfTeamPercent) {
-		teamIDCombox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-        		Huishui hs = DataConstans.huishuiMap.get(newValue);
-                if(hs != null) {
-                	jfTeamPercent.setText(hs.getJifenInput());
-                }else {
-                	jfTeamPercent.setText("0");
-                }
-            	
-            }
-        });
-	}
+//	@SuppressWarnings("unchecked")
+//	public static void init_JFTeamSelect_Action(ComboBox<String> teamIDCombox,TextField jfTeamPercent) {
+//		teamIDCombox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+//        		Huishui hs = DataConstans.huishuiMap.get(newValue);
+//                if(hs != null) {
+//                	jfTeamPercent.setText(hs.getJifenInput());
+//                }else {
+//                	jfTeamPercent.setText("0");
+//                }
+//            	
+//            }
+//        });
+//	}
 	
 	/**
 	 * 积分查询功能
