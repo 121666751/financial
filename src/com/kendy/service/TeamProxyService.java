@@ -535,7 +535,7 @@ public class TeamProxyService {
 	}
 	
 	/**
-	 * 导出有团队保险比例的Excel
+	 * 导出无团队保险比例的Excel
 	 * @time 2018年2月8日
 	 */
 	public static void exportExcel_with_has_teamBaoxianRate() {
@@ -584,16 +584,33 @@ public class TeamProxyService {
 	      List<Object[]> sumList = new ArrayList<>();
 	      Object[] sumObjs = null;
 		  ObservableList<ProxySumInfo> ob_List = tableProxySum.getItems();
-			if(ob_List != null && ob_List.size() > 0) {
+//			if(ob_List != null && ob_List.size() > 0) {
+//				for(ProxySumInfo info : ob_List) {
+//					sumObjs= new Object[rowsName2.length];
+//					sumObjs[0] = info.getProxySumType();
+//					sumObjs[1] = info.getProxySum();
+//					sumList.add(sumObjs);
+//				}
+//				String sum = tableProxySum.getColumns().get(1).getText();
+//				rowsName2[1] = sum;
+//			}
+			
+			List<String> baoxianFilters = getHejiFilters();
+			if(CollectUtil.isHaveValue(ob_List)) {
 				for(ProxySumInfo info : ob_List) {
-					sumObjs= new Object[rowsName2.length];
-					sumObjs[0] = info.getProxySumType();
-					sumObjs[1] = info.getProxySum();
-					sumList.add(sumObjs);
+					if(!baoxianFilters.contains(info.getProxySumType())) {
+						sumObjs= new Object[rowsName2.length];
+						sumObjs[0] = info.getProxySumType();
+						sumObjs[1] = info.getProxySum();
+						sumList.add(sumObjs);
+					}
 				}
-				String sum = tableProxySum.getColumns().get(1).getText();
-				rowsName2[1] = sum;
+				Integer sum = ob_List.stream().filter(info -> !baoxianFilters.contains(info.getProxySumType()))
+					.mapToInt(info -> NumUtil.getNum(info.getProxySum()).intValue()).sum();
+				rowsName2[1] = sum+"";
 			}
+			
+			
 	      
 	      String out = "D:/"+title+System.currentTimeMillis();
 	      ExportExcel ex = new ExportExcel(teamId,time,isManage,title,rowsName, dataList,out,rowsName2,sumList);
@@ -606,7 +623,7 @@ public class TeamProxyService {
 	}
 	
 	/**
-	 * 
+	 * 导出有团队保险比例的Excel
 	 * @time 2018年2月8日
 	 */
 	public static void exportExcel_with_no_teamBaoxianRate() {
@@ -656,7 +673,7 @@ public class TeamProxyService {
 		List<Object[]> sumList = new ArrayList<>();
 		Object[] sumObjs = null;
 		ObservableList<ProxySumInfo> ob_List = tableProxySum.getItems();
-		List<String> baoxianFilters = Arrays.asList("总回保");
+		List<String> baoxianFilters = getHejiFilters();
 		if(CollectUtil.isHaveValue(ob_List)) {
 			for(ProxySumInfo info : ob_List) {
 				if(!baoxianFilters.contains(info.getProxySumType())) {
@@ -680,6 +697,22 @@ public class TeamProxyService {
 		} catch (Exception e) {
 			ErrorUtil.err("代理查询导出失败",e);
 		}
+	}
+	
+	/**
+	 * 获取需要过滤的合计项
+	 * @time 2018年2月9日
+	 * @return
+	 */
+	private static List<String> getHejiFilters(){
+		List<String> totalFilters = new ArrayList<>();
+		if(hasTeamBaoxian.isSelected()) {
+			totalFilters.add("总回保");
+		}
+		if(isZjManage.isSelected()) {
+			totalFilters.add("总战绩");
+		}
+		return totalFilters;
 	}
 	
 	
