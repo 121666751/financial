@@ -648,6 +648,56 @@ public class ShangmaService {
 	}
 	
 	
+	/**
+	 * 右下表：名称鼠标双击事件：打开对话框增加上码值
+	 * 
+	 * @time 2018年2月9日
+	 * @param detail
+	 */
+	public static void openAddNextdayShangSMDiag(ShangmaDetailInfo detail) {
+		if(detail != null && detail.getShangmaDetailName() != null) {
+			String oddSM = StringUtil.isBlank(detail.getShangmaSM()) ? "0" : detail.getShangmaSM();
+			String newSM = "";
+			TextInputDialog dialog = new TextInputDialog();
+			dialog.setTitle("添加");
+			dialog.setHeaderText(null);
+			dialog.setContentText("续增上码值(Enter):");
+			
+			Optional<String> result = dialog.showAndWait();
+			if (result.isPresent()){
+				detail.setShangmaSM(MoneyService.digit0(MoneyService.getNum(oddSM)+MoneyService.getNum(result.get())));
+			}
+			
+			String playerId= detail.getShangmaPlayerId();
+			
+			// 1保存到数据库
+		    ShangmaNextday nextday = new ShangmaNextday();
+		    nextday.setPlayerId(playerId);
+		    nextday.setPlayerName(detail.getShangmaDetailName());
+		    nextday.setChangci(detail.getShangmaJu());
+		    nextday.setShangma(detail.getShangmaSM());
+			DBUtil.saveOrUpdate_SM_nextday(nextday);
+			
+	    	// 2保存到缓存
+	    	List<ShangmaDetailInfo> currentNextdayList = SM_NextDay_Map.getOrDefault(playerId, new ArrayList<>());
+	    	ShangmaDetailInfo shangmaDetailInfo = currentNextdayList.stream().filter(info->playerId.equals(info.getShangmaPlayerId())).findFirst().get();
+	    	shangmaDetailInfo.setShangmaSM(detail.getShangmaSM());
+	    	
+	    	// 3刷新到当前的玩家次日表
+	    	tableND.refresh();
+	    	
+	    	//4 修改主表的可上码额度 TODO
+	    	refreshTableSM();
+			
+//			//刷新左表对应记录
+//			try {
+//				updateRowByPlayerId(playerId,result.get());
+//			} catch (Exception e) {
+//			}
+		}
+	}
+	
+	
 	//右表：名称鼠标双击事件：打开对话框增加上码值
 	public static void openAddShangSMDiag(ShangmaDetailInfo detail) {
 		if(detail != null && detail.getShangmaDetailName() != null) {

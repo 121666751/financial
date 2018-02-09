@@ -589,8 +589,14 @@ public class MyController implements Initializable{
 		
 		//绑定次日信息表
 		shangmaNextDayName.setCellValueFactory(new PropertyValueFactory<ShangmaDetailInfo,String>("shangmaDetailName"));
+		shangmaNextDayName.setCellFactory(ShangmaNameNextdayCellFactory);
+		shangmaNextDayName.setStyle("-fx-alignment: CENTER;");
 		shangmaNextDayJu.setCellValueFactory(new PropertyValueFactory<ShangmaDetailInfo,String>("shangmaJu"));
+		shangmaNextDayJu.setCellFactory(ShangmaNameNextdayCellFactory);
+		shangmaNextDayJu.setStyle("-fx-alignment: CENTER;");
 		shangmaNextDaySM.setCellValueFactory(new PropertyValueFactory<ShangmaDetailInfo,String>("shangmaSM"));
+		shangmaNextDaySM.setCellFactory(ShangmaNameNextdayCellFactory);
+		shangmaNextDaySM.setStyle("-fx-alignment: CENTER;");
 
 		
 		//绑定积查询表
@@ -1646,9 +1652,9 @@ public class MyController implements Initializable{
     
     
     /**
-     * 上码详情表添加双击名称事件
+     * 右下表：次日上码详情表添加双击名称事件
      */
-    Callback<TableColumn<ShangmaDetailInfo, String>, TableCell<ShangmaDetailInfo,String>> ShangmaNameCellFactory = 
+    Callback<TableColumn<ShangmaDetailInfo, String>, TableCell<ShangmaDetailInfo,String>> ShangmaNameNextdayCellFactory = 
     	new Callback<TableColumn<ShangmaDetailInfo, String>, TableCell<ShangmaDetailInfo, String>> () {  
     	    @Override  
     	    public TableCell<ShangmaDetailInfo, String> call(TableColumn<ShangmaDetailInfo, String> param) {  
@@ -1657,14 +1663,35 @@ public class MyController implements Initializable{
     	        cell.setEditable(false);//不让其可编辑
     	        cell.setOnMouseClicked((MouseEvent t) -> {  
     	        	//鼠标双击事件
-    	            if (t.getClickCount() == 2 && cell.getIndex() < tableShangmaDetail.getItems().size()) { 
+    	            if (t.getClickCount() == 2 && cell.getIndex() < tableShangmaNextDay.getItems().size()) { 
     	               //双击执行的代码  
-    	            	ShangmaDetailInfo smDetail =  tableShangmaDetail.getItems().get(cell.getIndex());
-    	            	ShangmaService.openAddShangSMDiag(smDetail);
+    	            	ShangmaDetailInfo smDetail =  tableShangmaNextDay.getItems().get(cell.getIndex());
+    	            	ShangmaService.openAddNextdayShangSMDiag(smDetail);
     	            }  
     	        }); 
     	        return cell;  
     	    } 
+    };
+    /**
+     * 上码详情表添加双击名称事件
+     */
+    Callback<TableColumn<ShangmaDetailInfo, String>, TableCell<ShangmaDetailInfo,String>> ShangmaNameCellFactory = 
+    		new Callback<TableColumn<ShangmaDetailInfo, String>, TableCell<ShangmaDetailInfo, String>> () {  
+    	@Override  
+    	public TableCell<ShangmaDetailInfo, String> call(TableColumn<ShangmaDetailInfo, String> param) {  
+    		TextFieldTableCell<ShangmaDetailInfo, String> cell = new TextFieldTableCell<>();  
+//    	        cell.setTextFill(Color.RED);
+    		cell.setEditable(false);//不让其可编辑
+    		cell.setOnMouseClicked((MouseEvent t) -> {  
+    			//鼠标双击事件
+    			if (t.getClickCount() == 2 && cell.getIndex() < tableShangmaDetail.getItems().size()) { 
+    				//双击执行的代码  
+    				ShangmaDetailInfo smDetail =  tableShangmaDetail.getItems().get(cell.getIndex());
+    				ShangmaService.openAddShangSMDiag(smDetail);
+    			}  
+    		}); 
+    		return cell;  
+    	} 
     };
     
     /**
