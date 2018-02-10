@@ -360,9 +360,12 @@ public class GDController implements Initializable{
 	 * @return
 	 */
 	public static String getTeamIdWithUperCase(String playerId) {
-		Optional<String> findFirst = dataList.stream().filter(record->record.getPlayerId()==playerId).findFirst().map(Record::getTeamId);
-		findFirst.orElse(UN_KNOWN);
-		return findFirst.get();
+		String findFirst = dataList.stream()
+				.filter(record->record.getPlayerId()==playerId)
+				.findFirst()
+				.map(Record::getTeamId)
+				.orElseGet(()->UN_KNOWN);
+		return findFirst;
 	}
 	
 	@Override

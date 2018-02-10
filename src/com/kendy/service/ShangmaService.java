@@ -687,13 +687,14 @@ public class ShangmaService {
 	    	tableND.refresh();
 	    	
 	    	//4 修改主表的可上码额度 TODO
-	    	refreshTableSM();
+//	    	refreshTableSM();
 			
-//			//刷新左表对应记录
-//			try {
-//				updateRowByPlayerId(playerId,result.get());
-//			} catch (Exception e) {
-//			}
+			//刷新左表对应记录
+			try {
+				updateRowByPlayerId(playerId,result.get());
+			} catch (Exception e) {
+				ErrorUtil.err("刷新左表对应记录失败",e);
+			}
 		}
 	}
 	
@@ -853,6 +854,10 @@ public class ShangmaService {
 	 * @param addedYiShangmaVal
 	 */
 	public static void updateRowByPlayerId(String playerId,String addedYiShangmaVal) {
+		if(StringUtil.isBlank(playerId)) {
+			ShowUtil.show("修改上码表后更新行失败，原因：程序错误，玩家ID没有检测到。");
+			return;
+		}
 		if(!StringUtil.isBlank(addedYiShangmaVal)) {
 			double addedYSMVal = MoneyService.getNum(addedYiShangmaVal);
 			ObservableList<ShangmaInfo> obList = tableSM.getItems();
@@ -863,6 +868,7 @@ public class ShangmaService {
 					info.setShangmaYiSM(MoneyService.digit0(MoneyService.getNum(old_YSM_val)+addedYSMVal));
 					info.setShangmaAvailableEdu(MoneyService.digit0(MoneyService.getNum(old_available_edu_val)-addedYSMVal));
 					labelZSM.setText(MoneyService.digit0(MoneyService.getNum(labelZSM.getText())+addedYSMVal));
+					tableSM.refresh();
 					break;
 				}
 			}
@@ -1027,7 +1033,7 @@ public class ShangmaService {
 			Map<String,List<ShangmaDetailInfo>> detailMap = DataConstans.SM_Detail_Map;
 			boolean isHasValue = detailMap.values().stream().anyMatch(list->list.size()>0);
 			if(isHasValue) {
-				ShowUtil.show("中途不通加载次日数据！！！");
+				ShowUtil.show("中途不能加载次日数据！！！");
 				return;
 			}else {
 				int playerCount = SM_NextDay_Map.size();
@@ -1068,7 +1074,7 @@ public class ShangmaService {
     	ShangmaDetailInfo target = new ShangmaDetailInfo();
     	target.setShangmaDetailName(source.getShangmaDetailName());
     	target.setShangmaSM(source.getShangmaSM());
-    	target.setShangmaPlayerId(source.getShangmaShishou());
+    	target.setShangmaPlayerId(source.getShangmaPlayerId());
     	target.setShangmaHasPayed(source.getShangmaHasPayed());
     	target.setShangmaPreSM(source.getShangmaPreSM());
     	target.setShangmaJu(source.getShangmaJu());
