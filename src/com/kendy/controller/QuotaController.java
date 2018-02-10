@@ -106,7 +106,7 @@ public class QuotaController implements Initializable{
 				//刷新缓存
 				allClubBankModels.put(club.getClubId(), model);
 				//插入到数据库
-				DBUtil.addClubBank(model);
+				DBUtil.addOrUpdateClubBank(model);
 			});
 		}
 	}
@@ -573,7 +573,7 @@ public class QuotaController implements Initializable{
     		bank.setPersonName(personName);
     		bank.setPhoneNumber(phoneNumber);
     		bank.setBankAccountInfo(bankAccountInfo);
-    		boolean isAdd2DB = DBUtil.addClubBank(bank);
+    		boolean isAdd2DB = DBUtil.addOrUpdateClubBank(bank);
     		
     		//往银行信息表添加一条记录
     		addClubBank2Table(bank);
@@ -697,7 +697,7 @@ public class QuotaController implements Initializable{
     		model.setPersonName(personName);
     		model.setPhoneNumber(phoneNumber);
     		model.setBankAccountInfo(bankAccountInfo);
-    		boolean isUpdate2DB = DBUtil.updateClubBank(model);
+    		boolean isUpdate2DB = DBUtil.addOrUpdateClubBank(model);
     		
     		//更新缓存
     		allClubBankModels.put(item.getClubId(),model);

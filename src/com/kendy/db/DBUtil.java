@@ -1687,14 +1687,15 @@ public class DBUtil {
 	 * 
 	 ****************************************************************/
 	/**
-	 * 增加俱乐部银行卡信息
+	 * 增加或修改俱乐部银行卡信息
 	 */
-	public static boolean addClubBank(final ClubBankModel bank) {
+	public static boolean addOrUpdateClubBank(final ClubBankModel bank) {
 		boolean isOK = false;
 		try {
 			con = DBConnection.getConnection();
 			String sql;
-			sql = "insert into clubBank values(?,?,?,?,?,?,?)";
+//			sql = "insert into clubBank values(?,?,?,?,?,?,?)";
+			sql = "replace into clubBank values(?,?,?,?,?,?,?)";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, bank.getClubId());
 			ps.setString(2, bank.getClubName());
@@ -1713,33 +1714,34 @@ public class DBUtil {
 		}
 		return isOK;
 	}
-	/**
-	 * 修改俱乐部银行卡信息
-	 */
-	public static boolean updateClubBank(final ClubBankModel bank) {
-		boolean isOK = false;
-		try {
-			con = DBConnection.getConnection();
-			String sql;
-			sql = "update clubbank set clubName=?,mobilePayType=?,personName=?,phoneNumber=?,bankType=?,bankAccountInfo=? where clubId=?";
-			ps = con.prepareStatement(sql);
-			ps.setString(1, bank.getClubName());
-			ps.setString(2, bank.getMobilePayType());
-			ps.setString(3, bank.getPersonName());
-			ps.setString(4, bank.getPhoneNumber());
-			ps.setString(5, bank.getBankType());
-			ps.setString(6, bank.getBankAccountInfo());
-			ps.setString(7, bank.getClubId());
-			ps.execute();
-			isOK = true;
-		}catch (SQLException e) {
-			ErrorUtil.err("修改俱乐部银行卡信息记录失败", e);
-			isOK = false;
-		}finally{
-			close(con,ps);
-		}
-		return isOK;
-	}
+//	/**
+//	 * 修改俱乐部银行卡信息
+//	 */
+//	public static boolean updateClubBank(final ClubBankModel bank) {
+//		boolean isOK = false;
+//		try {
+//			con = DBConnection.getConnection();
+//			String sql;
+////			sql = "update clubbank set clubName=?,mobilePayType=?,personName=?,phoneNumber=?,bankType=?,bankAccountInfo=? where clubId=?";
+//			sql = "update clubbank set clubName=?,mobilePayType=?,personName=?,phoneNumber=?,bankType=?,bankAccountInfo=? where clubId=?";
+//			ps = con.prepareStatement(sql);
+//			ps.setString(1, bank.getClubName());
+//			ps.setString(2, bank.getMobilePayType());
+//			ps.setString(3, bank.getPersonName());
+//			ps.setString(4, bank.getPhoneNumber());
+//			ps.setString(5, bank.getBankType());
+//			ps.setString(6, bank.getBankAccountInfo());
+//			ps.setString(7, bank.getClubId());
+//			ps.execute();
+//			isOK = true;
+//		}catch (SQLException e) {
+//			ErrorUtil.err("修改俱乐部银行卡信息记录失败", e);
+//			isOK = false;
+//		}finally{
+//			close(con,ps);
+//		}
+//		return isOK;
+//	}
 	
 	/**
 	 * 获取所有俱乐部银行卡信息
