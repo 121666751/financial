@@ -605,8 +605,6 @@ public class TeamProxyService {
 						sumList.add(sumObjs);
 					}
 				}
-//				Integer sum = ob_List.stream().filter(info -> !baoxianFilters.contains(info.getProxySumType()))
-//					.mapToInt(info -> NumUtil.getNum(info.getProxySum()).intValue()).sum();
 				String sum = getExportHejiSum(ob_List,baoxianFilters);
 				rowsName2[1] = sum;
 			}
@@ -684,10 +682,6 @@ public class TeamProxyService {
 					sumList.add(sumObjs);
 				}
 			}
-//			String sum = tableProxySum.getColumns().get(1).getText();
-//			Integer sum = ob_List.stream().filter(info -> !baoxianFilters.contains(info.getProxySumType()))
-//				.mapToInt(info -> NumUtil.getNum(info.getProxySum()).intValue()).sum();
-			
 			String sum = getExportHejiSum(ob_List,baoxianFilters);
 			
 			rowsName2[1] = sum;

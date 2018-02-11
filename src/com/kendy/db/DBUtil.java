@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.kendy.entity.Club;
 import com.kendy.entity.ClubBankModel;
+import com.kendy.entity.ClubZhuofei;
 import com.kendy.entity.HistoryRecord;
 import com.kendy.entity.Huishui;
 import com.kendy.entity.JifenInfo;
@@ -1967,6 +1968,83 @@ public class DBUtil {
 			close(con,ps);
 		}
 		return isOK;
+	}
+	
+	/***************************************************************************
+	 * 
+	 * 				桌费表
+	 * 
+	 **************************************************************************/
+	/**
+	 * 保存或修改历史桌费
+	 * 
+	 * @time 2018年2月11日
+	 * @param zhuofei
+	 * @return
+	 */
+	public static boolean saveOrUpdate_club_zhuofei(final ClubZhuofei zhuofei) {
+		boolean isOK = false;
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			sql = "replace into club_zhuofei(time,clubId,zhuofei) values(?,?,?)";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, zhuofei.getTime());
+			ps.setString(2, zhuofei.getClubId());
+			ps.setString(3, zhuofei.getZhuofei());
+			ps.execute();
+			isOK = true;
+		}catch (SQLException e) {
+			ErrorUtil.err(zhuofei.getTime()+":"+zhuofei.getClubId()+",保存或修改历史桌费失败", e);
+			isOK = false;
+		}finally{
+			close(con,ps);
+		}
+		return isOK;
+	}
+	
+	/**
+	 * 获取所有历史桌费
+	 * 
+	 * @time 2018年2月11日
+	 * @return
+	 */
+	public static List<ClubZhuofei> getAll_club_zhuofei() {
+		List<ClubZhuofei> list = new ArrayList<>();
+		try {
+			con = DBConnection.getConnection();
+			String sql = "select cz.time, cz.clubId, cz.zhuofei, c.name, c.gudong from  club_zhuofei cz  LEFT JOIN club c on cz.clubId = c.clubId ";
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				ClubZhuofei zhuofei = new ClubZhuofei(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5));
+				list.add(zhuofei);
+			}
+		} catch (SQLException e) {
+			ErrorUtil.err("获取所有历史桌费失败",e);
+		}finally{
+			close(con,ps);
+		}
+		return list;
+	}
+	
+	/**
+	 * 删除所有的历史联盟桌费
+	 * 
+	 * @time 2018年2月11日
+	 * @param key
+	 */
+	public static void del_all_club_zhuofei() {
+		try {
+			con = DBConnection.getConnection();
+			String sql  = "delete from club_zhuofei ";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("删除所有的历史联盟桌费失败", e);
+		}finally{
+			close(con,ps);
+		}
 	}
 	
 	
