@@ -605,9 +605,10 @@ public class TeamProxyService {
 						sumList.add(sumObjs);
 					}
 				}
-				Integer sum = ob_List.stream().filter(info -> !baoxianFilters.contains(info.getProxySumType()))
-					.mapToInt(info -> NumUtil.getNum(info.getProxySum()).intValue()).sum();
-				rowsName2[1] = sum+"";
+//				Integer sum = ob_List.stream().filter(info -> !baoxianFilters.contains(info.getProxySumType()))
+//					.mapToInt(info -> NumUtil.getNum(info.getProxySum()).intValue()).sum();
+				String sum = getExportHejiSum(ob_List,baoxianFilters);
+				rowsName2[1] = sum;
 			}
 			
 			
@@ -684,9 +685,12 @@ public class TeamProxyService {
 				}
 			}
 //			String sum = tableProxySum.getColumns().get(1).getText();
-			Integer sum = ob_List.stream().filter(info -> !baoxianFilters.contains(info.getProxySumType()))
-				.mapToInt(info -> NumUtil.getNum(info.getProxySum()).intValue()).sum();
-			rowsName2[1] = sum+"";
+//			Integer sum = ob_List.stream().filter(info -> !baoxianFilters.contains(info.getProxySumType()))
+//				.mapToInt(info -> NumUtil.getNum(info.getProxySum()).intValue()).sum();
+			
+			String sum = getExportHejiSum(ob_List,baoxianFilters);
+			
+			rowsName2[1] = sum;
 		}
 		
 		String out = "D:/"+title+System.currentTimeMillis();
@@ -697,6 +701,28 @@ public class TeamProxyService {
 		} catch (Exception e) {
 			ErrorUtil.err("代理查询导出失败",e);
 		}
+	}
+	
+	/**
+	 * 计算导出Excel时的合计
+	 * 小胖：总人次不计入，服务费要减掉
+	 * 
+	 * @time 2018年2月11日
+	 * @param ob_List
+	 * @param filters
+	 * @return
+	 */
+	private static String getExportHejiSum(ObservableList<ProxySumInfo> ob_List, List<String> filters) {
+		Double sum = ob_List.stream()
+				.filter(info -> !filters.contains(info.getProxySumType()))
+				.filter(info -> !"服务费".equals(info.getProxySumType()))
+				.filter(info -> !"总人次".equals(info.getProxySumType())) // 总人次不纳入计算
+				.mapToDouble(info -> NumUtil.getNum(info.getProxySum())).sum();
+		
+		Double fwf = ob_List.stream().filter(info -> "服务费".equals(info.getProxySumType()))
+				.mapToDouble(info -> NumUtil.getNum(info.getProxySum())).sum();
+		
+		return NumUtil.digit2((sum - fwf)+"");
 	}
 	
 	/**

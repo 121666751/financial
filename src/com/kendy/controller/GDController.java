@@ -430,7 +430,7 @@ public class GDController implements Initializable{
 			return;
 		if(mockRows != 9) {
 			for(int i=1; i<=mockRows; i++) {
-				obList.add(new GDInputInfo("股东"+i,getRandomRate()));
+				obList.add(new GDInputInfo("客服"+i,getRandomRate()));
 			}
 		}
 		table.setItems(obList);
@@ -855,7 +855,8 @@ public class GDController implements Initializable{
 		ObservableList<GDInputInfo> obList = FXCollections.observableArrayList();
 		//股东列表总和：除了银河股东,用于获取各股东的比例（比拼值）,加上了总人次利润（除去银河股东）
 		Double sum = tableGDSum.getItems().stream().filter(info->!info.getGudongName().contains("银河"))
-				.map(info->NumUtil.getNum(info.getGudongProfit())).reduce(Double::sum).get() + renciProfit;
+				.map(info->NumUtil.getNum(info.getGudongProfit()))
+				.reduce(Double::sum).orElseGet(()->0d) + renciProfit;
 		
 		//获取可分配的奖励池
 		Double curragePool = getJLPoolAvailable();
