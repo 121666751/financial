@@ -613,7 +613,7 @@ public class TeamProxyService {
 			
 			
 	      
-	      String out = "D:/"+title+System.currentTimeMillis();
+	      String out = getOutPath(title, rowsName2[1]);
 	      ExportExcel ex = new ExportExcel(teamId,time,isManage,title,rowsName, dataList,out,rowsName2,sumList);
 	      try {
 			ex.export();
@@ -693,7 +693,7 @@ public class TeamProxyService {
 			rowsName2[1] = sum;
 		}
 		
-		String out = "D:/"+title+System.currentTimeMillis();
+		String out = getOutPath(title, rowsName2[1]);
 		ExportExcel ex = new ExportExcel(teamId,time,isManage,title,rowsName, dataList,out,rowsName2,sumList);
 		try {
 			ex.export();
@@ -701,6 +701,13 @@ public class TeamProxyService {
 		} catch (Exception e) {
 			ErrorUtil.err("代理查询导出失败",e);
 		}
+	}
+	
+	private static String getOutPath(String title, String sumStr){
+		String out = "D:/" + title + System.currentTimeMillis() 
+			+ String.format("(%s)", 
+					(sumStr !=null && !sumStr.contains("-")) ? "+"+sumStr : sumStr);
+		return out;
 	}
 	
 	/**
