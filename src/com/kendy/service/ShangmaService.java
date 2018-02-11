@@ -669,6 +669,7 @@ public class ShangmaService {
 			}
 			
 			String playerId= detail.getShangmaPlayerId();
+			String changci = detail.getShangmaJu();
 			
 			// 1保存到数据库
 		    ShangmaNextday nextday = new ShangmaNextday();
@@ -680,7 +681,8 @@ public class ShangmaService {
 			
 	    	// 2保存到缓存
 	    	List<ShangmaDetailInfo> currentNextdayList = SM_NextDay_Map.getOrDefault(playerId, new ArrayList<>());
-	    	ShangmaDetailInfo shangmaDetailInfo = currentNextdayList.stream().filter(info->playerId.equals(info.getShangmaPlayerId())).findFirst().get();
+	    	ShangmaDetailInfo shangmaDetailInfo = currentNextdayList.stream()
+	    			.filter(info->changci.equals(info.getShangmaJu())).findFirst().get();
 	    	shangmaDetailInfo.setShangmaSM(detail.getShangmaSM());
 	    	
 	    	// 3刷新到当前的玩家次日表
