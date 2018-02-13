@@ -1,34 +1,15 @@
 package application;
 	
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Optional;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.mail.DefaultAuthenticator;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.SimpleEmail;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import com.kendy.util.ErrorUtil;
-import com.kendy.util.IPUtil;
-import com.kendy.util.ShowUtil;
-import com.kendy.util.StringUtil;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 /**
  * 程序主窗口
