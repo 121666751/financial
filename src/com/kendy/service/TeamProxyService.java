@@ -652,7 +652,7 @@ public class TeamProxyService {
 		log.info(title);
 		
 //		String[] rowsName = new String[]{"玩家ID","玩家名称","原始战绩","战绩","保险","回水","回保","场次"};
-		String[] rowsName = new String[]{"玩家ID","玩家名称","原始战绩","战绩","场次"};
+		String[] rowsName = new String[]{"玩家ID","玩家名称","原始战绩","战绩","回水","场次"};
 		List<Object[]>  dataList = new ArrayList<Object[]>();
 		Object[] objs = null;
 		for(ProxyTeamInfo info : list) {
@@ -662,9 +662,9 @@ public class TeamProxyService {
 			objs[2] = info.getProxyYSZJ();
 			objs[3] = info.getProxyZJ();
 //			objs[4] = info.getProxyBaoxian();
-//			objs[5] = info.getProxyHuishui();
+			objs[5-1] = info.getProxyHuishui();
 //			objs[6] = info.getProxyHuiBao();
-			objs[7-3] = info.getProxyTableId();
+			objs[7-2] = info.getProxyTableId();
 			dataList.add(objs);
 		}
 		
