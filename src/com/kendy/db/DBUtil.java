@@ -1987,11 +1987,12 @@ public class DBUtil {
 		try {
 			con = DBConnection.getConnection();
 			String sql;
-			sql = "replace into club_zhuofei(time,clubId,zhuofei) values(?,?,?)";
+			sql = "replace into club_zhuofei(time,clubId,zhuofei,lmType) values(?,?,?,?)";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, zhuofei.getTime());
 			ps.setString(2, zhuofei.getClubId());
 			ps.setString(3, zhuofei.getZhuofei());
+			ps.setString(4, zhuofei.getLmType());
 			ps.execute();
 			isOK = true;
 		}catch (SQLException e) {
@@ -2004,20 +2005,22 @@ public class DBUtil {
 	}
 	
 	/**
-	 * 获取所有历史桌费
+	 * 获取联盟1的所有历史桌费
 	 * 
 	 * @time 2018年2月11日
 	 * @return
 	 */
-	public static List<ClubZhuofei> getAll_club_zhuofei() {
+	public static List<ClubZhuofei> get_LM1_all_club_zhuofei() {
 		List<ClubZhuofei> list = new ArrayList<>();
 		try {
 			con = DBConnection.getConnection();
-			String sql = "select cz.time, cz.clubId, cz.zhuofei, c.name, c.gudong from  club_zhuofei cz  LEFT JOIN club c on cz.clubId = c.clubId ";
+			String sql = "select cz.time, cz.clubId, cz.zhuofei, cz.lmType, c.name, c.gudong from  club_zhuofei cz  "
+					+ "LEFT JOIN club c on cz.clubId = c.clubId where cz.lmType='联盟1'";
 			ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
-				ClubZhuofei zhuofei = new ClubZhuofei(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5));
+				ClubZhuofei zhuofei = new ClubZhuofei(rs.getString(1),rs.getString(2),rs.getString(3),
+						rs.getString(4),rs.getString(5),rs.getString(6));
 				list.add(zhuofei);
 			}
 		} catch (SQLException e) {

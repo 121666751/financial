@@ -11,6 +11,7 @@ public class ClubZhuofei {
 	private String time ;
 	private String clubId;
 	private String zhuofei;
+	private String lmType;
 	
 	private String clubName; // 俱乐部名称
 	private String gudong; // 所属股东
@@ -27,11 +28,12 @@ public class ClubZhuofei {
 	 * @param clubId
 	 * @param zhuofei
 	 */
-	public ClubZhuofei(String time, String clubId, String zhuofei) {
+	public ClubZhuofei(String time, String clubId, String zhuofei, String lmType) {
 		super();
 		this.time = time;
 		this.clubId = clubId;
 		this.zhuofei = zhuofei;
+		this.lmType = lmType;
 	}
 
 	/**
@@ -41,11 +43,12 @@ public class ClubZhuofei {
 	 * @param clubName
 	 * @param gudong
 	 */
-	public ClubZhuofei(String time, String clubId, String zhuofei, String clubName, String gudong) {
+	public ClubZhuofei(String time, String clubId, String zhuofei, String lmType, String clubName, String gudong) {
 		super();
 		this.time = time;
 		this.clubId = clubId;
 		this.zhuofei = zhuofei;
+		this.lmType = lmType;
 		this.clubName = clubName;
 		this.gudong = gudong;
 	}
@@ -85,16 +88,18 @@ public class ClubZhuofei {
 	public void setZhuofei(String zhuofei) {
 		this.zhuofei = zhuofei;
 	}
-
-
-
+	public String getLmType() {
+		return lmType;
+	}
+	public void setLmType(String lmType) {
+		this.lmType = lmType;
+	}
 
 	@Override
 	public String toString() {
-		return "ClubZhuofei [time=" + time + ", clubId=" + clubId + ", zhuofei=" + zhuofei + ", clubName=" + clubName
-				+ ", gudong=" + gudong + "]";
+		return "ClubZhuofei [time=" + time + ", clubId=" + clubId + ", zhuofei=" + zhuofei + ", lmType=" + lmType
+				+ ", clubName=" + clubName + ", gudong=" + gudong + "]";
 	}
-	
-	
+
 	
 }

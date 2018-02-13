@@ -1169,6 +1169,11 @@ public class ShangmaService {
     	String changci = nextday.getChangci();
     	String shangma = nextday.getShangma();
     	ShangmaDetailInfo shangmaDetailInfo = new ShangmaDetailInfo(playerId,playerName,changci,shangma);
+    	//先判断是否重复
+		if(checkIfDuplicateInNextday(playerId,changci)) {
+			ShowUtil.show("请勿重复添加"+changci+"!,该场次已存在!");
+			return;
+		}
     	
     	//1 保存到数据库
     	DBUtil.saveOrUpdate_SM_nextday(nextday);
@@ -1185,6 +1190,23 @@ public class ShangmaService {
     	//4 修改主表的可上码额度 TODO
     	refreshTableSM();
     	
+    }
+    
+    /**
+     * 判断次日是否重复添加
+     * 
+     * @time 2018年2月13日
+     * @param playerId
+     * @param changci
+     * @return
+     */
+    private static boolean checkIfDuplicateInNextday(String playerId, String changci) {
+    	if(StringUtil.isBlank(playerId)) {
+    		return false;
+    	}else {
+    		return tableND.getItems().stream()
+    		    	.anyMatch(info->playerId.equals(info.getShangmaPlayerId()) && changci.equals(info.getShangmaJu()));
+    	}
     }
     
     

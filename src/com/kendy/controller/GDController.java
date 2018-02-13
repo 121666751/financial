@@ -18,6 +18,8 @@ import org.apache.log4j.Logger;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.kendy.db.DBUtil;
+import com.kendy.entity.Club;
+import com.kendy.entity.ClubZhuofei;
 import com.kendy.entity.GDDetailInfo;
 import com.kendy.entity.GDInputInfo;
 import com.kendy.entity.GudongRateInfo;
@@ -289,10 +291,30 @@ public class GDController implements Initializable{
 		} 
 		
 		//获取联盟桌费
-		Double LM1Zhuofei = LMController.getLM1TotalZhuofei() *(-1);
+		Double LM1Zhuofei = getLM1TotalZhuofei() *(-1);
 		totalProfits += LM1Zhuofei;
 		
 		return totalProfits;
+	}
+	
+	/**
+	 * 获取联盟1的所有桌费
+	 * 问题：如果用户在同一天插入相同的记录，存在被覆盖一条的隐患（TODO）
+	 * 
+	 * @time 2018年2月11日
+	 * @return
+	 */
+	private static Double getLM1TotalZhuofei() {
+		List<ClubZhuofei> LM1_all_club_zhuofei = DBUtil.get_LM1_all_club_zhuofei();
+		Double totalZhuofei = 
+				LM1_all_club_zhuofei
+				.stream()
+				.filter(info->"联盟1".equals(info.getLmType()))
+				.map(ClubZhuofei::getZhuofei)
+				.map(NumUtil::getNum)
+				.reduce(Double::sum)
+				.orElseGet(()->0d);
+		return  totalZhuofei;
 	}
 	
 	

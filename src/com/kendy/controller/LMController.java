@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import com.kendy.db.DBUtil;
 import com.kendy.entity.Club;
 import com.kendy.entity.ClubQuota;
+import com.kendy.entity.ClubZhuofei;
 import com.kendy.entity.LMDetailInfo;
 import com.kendy.entity.LMSumInfo;
 import com.kendy.entity.Record;
@@ -32,6 +33,7 @@ import com.kendy.util.MapUtil;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
 import com.kendy.util.StringUtil;
+import com.kendy.util.TimeUtil;
 
 import application.DataConstans;
 import application.MyController;
@@ -44,18 +46,14 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
@@ -65,7 +63,6 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import javafx.util.Pair;
 
 /**
@@ -607,6 +604,10 @@ public class LMController implements Initializable{
 //							club.setZhuoFei(newValue);
 							//将新桌费设置到不同联盟当中
 							set_LM_Zhuofei(club,lmType,newValue);
+							//add 2018-2-11 添加到历史联盟桌费
+							String date = StringUtil.isBlank(DataConstans.Date_Str) ? "2017-01-01" : DataConstans.Date_Str;
+							ClubZhuofei clubZhuofei = new ClubZhuofei(date,  club.getClubId(),  newValue,  "联盟"+lmType);
+							DBUtil.saveOrUpdate_club_zhuofei(clubZhuofei);
 							
 						}else if("已结算".equals(sumInfo.getLmSumName())) {
 							//club.setYiJieSuan(newValue);
@@ -1557,10 +1558,11 @@ public class LMController implements Initializable{
 	}
 	/**
 	 * 获取联盟1的所有桌费
-	 * 
+	 * 此方法已经由GDController.getLM1TotalZhuofei方法代替
 	 * @time 2018年1月20日
 	 * @return
 	 */
+	@Deprecated
 	public static Double getLM1TotalZhuofei() {
 		Optional<Double> totalZhuofei = 
 				allClubMap.values()

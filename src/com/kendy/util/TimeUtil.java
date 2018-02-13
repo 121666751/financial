@@ -38,5 +38,18 @@ public class TimeUtil {
 		timeStr = format.format(new Date());
 		return timeStr;
 	}
+	
+	/**
+	 * 获取当前日期
+	 * 
+	 * @time 2018年2月11日
+	 * @return
+	 */
+	public static String getDateString() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		String timeStr = "";
+		timeStr = format.format(new Date());
+		return timeStr;
+	}
 
 }
