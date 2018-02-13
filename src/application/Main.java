@@ -124,7 +124,7 @@ public class Main extends Application {
 //			}
 			primaryStage.setTitle(Constants.TITLE+Constants.VERSION);
             primaryStage.setScene(new Scene(root));
-            primaryStage.setResizable(false); 
+            //primaryStage.setResizable(false); 
             primaryStage.show();
             
             
