@@ -3,6 +3,7 @@ package application;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import com.kendy.controller.TeamProxyController;
 import com.kendy.util.ErrorUtil;
 
 import javafx.application.Application;
@@ -20,6 +21,9 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	
 	private static Logger log = Logger.getLogger(Main.class);
+	
+	public static TeamProxyController teamProxyController  = new TeamProxyController();
+	
 	static {
 		try {
 			////生产环境可用
@@ -30,6 +34,9 @@ public class Main extends Application {
 		} catch (Exception e) {
 			ErrorUtil.err("日志组件初始化失败");
 		}
+		
+		teamProxyController  = new TeamProxyController();
+		System.out.println("Main static");
 	}
 	
 	
@@ -109,7 +116,7 @@ public class Main extends Application {
 //			Parent root = FXMLLoader.load(getClass().getResource("MainStage4.fxml"));
 
 			FXMLLoader fxmlLoader = new FXMLLoader();
-			Parent root = fxmlLoader.load(getClass().getResource("MainStageeess3.fxml").openStream());
+			Parent root = fxmlLoader.load(getClass().getResource("MainStageeess.fxml").openStream());
 //			Pane p = fxmlLoader.load(getClass().getResource("MainStage4.fxml").openStream());
 //			Parent root = p.getParent()
 			MyController mc = (MyController) fxmlLoader.getController();

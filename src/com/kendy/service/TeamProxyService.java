@@ -126,7 +126,7 @@ public class TeamProxyService {
 	@SuppressWarnings("unchecked")
 	public static void initTeamSelectAction(ComboBox<String> teamIDCombox,CheckBox isZjManage,
 			TableView<ProxyTeamInfo> tableProxyTeam,HBox proxySumHBox) {
-		teamIDCombox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+			teamIDCombox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             	refresh_TableTeamProxy_TableProxySum(newValue);
@@ -697,8 +697,41 @@ public class TeamProxyService {
 		}
 	}
 	
+	/**
+	 * 代理查询一键导出
+	 * 程序会导出多个Excel文件到同一个目录中
+	 * 提示：先点击隐藏今日无数据团队
+	 */
+	public static void exportTeamHasDataOneKey() {
+		
+		//循环遍历每一个有数据的团队并导出
+		ObservableList<String> obList = teamIDCombox.getItems();
+		if(!CollectUtil.isHaveValue(obList)) {
+			ShowUtil.show("小林提示：没有团队数据！不导出Excel哦！",2);
+			return;
+		}else {
+			//1 删除今日文件夹
+			
+			//2 遍历
+			for(String teamId : obList) {
+				teamIDCombox.getSelectionModel().select(teamId);
+				exportExcel();
+				log.info("循环导出团队Excel: "+ teamId);
+			}
+			
+		}
+		
+	}
+	
 	private static String getOutPath(String title, String sumStr){
 		String out = "D:/" + title + System.currentTimeMillis() 
+			+ String.format("(%s)", 
+					(sumStr !=null && !sumStr.contains("-")) ? "+"+sumStr : sumStr);
+		return out;
+	}
+	
+	private static String getOutPathOneKey(String rootPath, String title, String sumStr){
+		String out = "D:/" +  rootPath + "/" + title + System.currentTimeMillis() 
 			+ String.format("(%s)", 
 					(sumStr !=null && !sumStr.contains("-")) ? "+"+sumStr : sumStr);
 		return out;
@@ -741,6 +774,8 @@ public class TeamProxyService {
 		}
 		return totalFilters;
 	}
+	
+	
 	
 	
 	

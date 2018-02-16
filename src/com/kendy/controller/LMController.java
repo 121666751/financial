@@ -1448,6 +1448,17 @@ public class LMController implements Initializable{
 	}
 	
 	/**
+	 * 一键导出俱乐部帐单
+	 * 
+	 * @param event
+	 */
+	public void exportClubOneKeyAction(ActionEvent event) {
+		
+		
+	}
+	
+	
+	/**
 	 * 导出所有俱乐部总帐单
 	 * 由沈美女负责提供接口
 	 * 

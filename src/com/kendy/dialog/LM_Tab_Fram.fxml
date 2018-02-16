@@ -28,7 +28,7 @@
                    <Button disable="true" layoutX="106.0" layoutY="168.0" mnemonicParsing="false" onAction="#addNewClubAction" prefHeight="23.0" prefWidth="172.0" text="临时新增俱乐部" />
                    <Button disable="true" layoutX="107.0" layoutY="215.0" mnemonicParsing="false" onAction="#delClubAction" prefHeight="23.0" prefWidth="171.0" text="删除俱乐部（不用）" />
                    <Button layoutX="108.0" layoutY="496.0" mnemonicParsing="false" onAction="#exportSingleClubAction" prefHeight="23.0" prefWidth="163.0" text="导出当前俱乐部帐单" />
-                   <Button layoutX="107.0" layoutY="559.0" mnemonicParsing="false" onAction="#exportAllClubAction" prefHeight="23.0" prefWidth="163.0" text="导出所有俱乐部总帐单" />
+                   <Button layoutX="107.0" layoutY="600.0" mnemonicParsing="false" onAction="#exportAllClubAction" prefHeight="23.0" prefWidth="163.0" text="导出所有俱乐部总帐单" />
                    <Label layoutX="22.0" layoutY="453.0" prefHeight="24.0" prefWidth="156.0" text="导出Excel文件：" />
                   <Button layoutX="107.0" layoutY="359.0" mnemonicParsing="false" onAction="#clear_All_Club_ZhuoFei_Action" prefHeight="23.0" prefWidth="170.0" text="桌费和已结算置0" />
                   <Button layoutX="107.0" layoutY="308.0" mnemonicParsing="false" onAction="#change_club_gudong_Action" prefHeight="23.0" prefWidth="170.0" text="修改俱乐部股东" />
@@ -36,6 +36,7 @@
                   <Button layoutX="28.0" layoutY="69.0" mnemonicParsing="false" onAction="#LM1_Btn_Action" prefHeight="23.0" prefWidth="71.0" text="联盟1" />
                   <Button layoutX="118.0" layoutY="69.0" mnemonicParsing="false" onAction="#LM2_Btn_Action" prefHeight="23.0" prefWidth="71.0" text="联盟2" />
                   <Button layoutX="211.0" layoutY="69.0" mnemonicParsing="false" onAction="#LM3_Btn_Action" prefHeight="23.0" prefWidth="71.0" text="联盟3" />
+                  <Button layoutX="106.0" layoutY="547.0" mnemonicParsing="false" onAction="#exportClubOneKeyAction" prefHeight="23.0" prefWidth="163.0" text="一键导出俱乐部帐单" />
                 </children>
              </AnchorPane>
              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="783.0" prefWidth="897.0">

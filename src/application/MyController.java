@@ -29,6 +29,7 @@ import com.kendy.controller.CombineIDController;
 import com.kendy.controller.GDController;
 import com.kendy.controller.LMController;
 import com.kendy.controller.QuotaController;
+import com.kendy.controller.TeamProxyController;
 import com.kendy.db.DBConnection;
 import com.kendy.db.DBUtil;
 import com.kendy.entity.CurrentMoneyInfo;
@@ -296,8 +297,6 @@ public class MyController implements Initializable{
 	@FXML private ComboBox<String> teamIDCombox;//团队ID下拉框
 	@FXML private CheckBox isZjManage;//团对应的战绩是否被管理
 	@FXML private CheckBox hasTeamBaoxian;//导出是否团队无保险
-//	@FXML private Label proxyMonthLabel;
-//	@FXML private Label proxyDayLabel;
 	@FXML private Label proxyDateLabel;
 	
 	@FXML private TableView<ProxySumInfo> tableProxySum;
@@ -644,6 +643,22 @@ public class MyController implements Initializable{
 		//选择导入白名单的版本
 		initWhiteVersion();
 		
+		
+//		try {
+//			FXMLLoader loader = new FXMLLoader();
+//			Parent root = loader.load(getClass().getResource("/com/kendy/dialog/team_proxy_frame.fxml").openStream());
+//			loader.setController(new TeamProxyController());
+////			loader.setController(ControllerManager.teamProxyController);
+//			//lmController = loader.getController();
+//			Tab tab1 = new Tab();
+//			tab1.setText("代理2查询");
+//			tab1.setClosable(false);
+//			tab1.setContent(root);
+//			tabs.getTabs().add(tab1);  
+//			
+//		} catch (IOException e) {
+//			ErrorUtil.err("代理2查询加载失败", e);
+//		}
 		
 	    try {
 	    	FXMLLoader loader = new FXMLLoader();
@@ -2528,6 +2543,13 @@ public class MyController implements Initializable{
 	 */
 	public void exportExcelAction(ActionEvent event) {
 		TeamProxyService.exportExcel();
+	}
+	
+	/**
+	 * 代理查询一键导出为Excel
+	 */
+	public void exportExcelBatchAction(ActionEvent event) {
+		TeamProxyService.exportTeamHasDataOneKey();
 	}
 	
 	/**
