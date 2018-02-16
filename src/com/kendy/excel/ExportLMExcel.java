@@ -21,6 +21,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.hssf.util.HSSFColor;
 
+import com.kendy.util.StringUtil;
+
 /**
  * 导出Excel公共方法
  * 
@@ -52,14 +54,22 @@ public class ExportLMExcel  {
     
     //构造方法，传入要导出的数据
     public ExportLMExcel(String title, 
-    		String[] rowName,List<Object[]>  dataList,String out,String[] rowName2,List<Object[]>  dataList2){
+    		String[] rowName,List<Object[]>  dataList,String outPath,String[] rowName2,List<Object[]>  dataList2){
     	this.title = title;
         this.dataList = dataList;
         this.rowName = rowName;
         this.rowName2 = rowName2;
         this.dataList2 = dataList2;
-        this.out = out;
-        this.out = out.replace("?", "");
+        this.out = handleOutPath(outPath);
+    }
+    
+    private static String handleOutPath(String outPath) {
+    	if(StringUtil.isNotBlank(outPath)) {
+    		outPath =  outPath.replace("/", "").replace(":", ":/").replace("?", "");
+    		return outPath;
+    	}
+    	log.error("传入的Excel路径为空");
+    	return "D:/";
     }
             
     /*
