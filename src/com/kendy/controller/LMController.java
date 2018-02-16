@@ -27,6 +27,7 @@ import com.kendy.entity.Record;
 import com.kendy.excel.ExportAllLMExcel;
 import com.kendy.excel.ExportLMExcel;
 import com.kendy.interfaces.Entity;
+import com.kendy.util.CollectUtil;
 import com.kendy.util.ErrorUtil;
 import com.kendy.util.InputDialog;
 import com.kendy.util.MapUtil;
@@ -1453,7 +1454,22 @@ public class LMController implements Initializable{
 	 * @param event
 	 */
 	public void exportClubOneKeyAction(ActionEvent event) {
-		
+		//循环遍历每一个有数据的团队并导出
+		ObservableList<String> obList = clubListView.getItems();
+		if(!CollectUtil.isHaveValue(obList)) {
+			ShowUtil.show("小林提示：没有俱乐部数据！不导出Excel哦！",2);
+			return;
+		}else {
+			//1 删除今日文件夹
+			
+			//2 遍历
+			for(String teamId : obList) {
+				clubListView.getSelectionModel().select(teamId);
+				exportSingleClubAction(new ActionEvent());
+				log.info("一键导出俱乐部帐单Excel: "+ teamId);
+			}
+			
+		}
 		
 	}
 	
