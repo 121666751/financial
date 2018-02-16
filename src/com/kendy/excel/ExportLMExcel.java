@@ -59,7 +59,7 @@ public class ExportLMExcel  {
         this.rowName2 = rowName2;
         this.dataList2 = dataList2;
         this.out = out;
-        this.out = out.replace("/", "").replace("?", "");
+        this.out = out.replace("?", "");
     }
             
     /*
