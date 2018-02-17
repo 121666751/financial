@@ -369,7 +369,7 @@
                <content>
                   <AnchorPane fx:id="exportExcelBtn" minHeight="0.0" minWidth="0.0" prefHeight="785.0" prefWidth="1073.0">
                   	<children>
-                  	<GridPane hgap="14.0" layoutX="178.0" layoutY="57.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="772.0" prefWidth="701.0" vgap="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+                  	<GridPane hgap="14.0" layoutX="204.0" layoutY="58.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="772.0" prefWidth="701.0" vgap="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 					  <children>
 					    <VBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" prefHeight="769.0" prefWidth="689.0" spacing="7.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
 					      <children>
@@ -452,15 +452,15 @@
                               <RowConstraints />
                            </rowConstraints>
 					</GridPane>
-                        <Button fx:id="exportExcel" layoutX="719.0" layoutY="32.0" mnemonicParsing="false" onAction="#exportExcelAction" text="导出Excel" />
-                        <TableView fx:id="tableProxySum" layoutX="912.0" layoutY="146.0" prefHeight="200.0" prefWidth="157.0">
+                        <Button fx:id="exportExcel" layoutX="745.0" layoutY="33.0" mnemonicParsing="false" onAction="#exportExcelAction" text="导出Excel" />
+                        <TableView fx:id="tableProxySum" layoutX="30.0" layoutY="130.0" prefHeight="200.0" prefWidth="157.0">
                           <columns>
                             <TableColumn fx:id="proxySumType" prefWidth="75.0" text="合计" />
                             <TableColumn fx:id="proxySum" prefWidth="75.0" text="0" />
                           </columns>
                         </TableView>
-                        <Button fx:id="proxyRefreshBtn" layoutX="597.0" layoutY="32.0" mnemonicParsing="false" onAction="#proxyRefreshAction" prefHeight="23.0" prefWidth="103.0" text="保存团队修改" />
-					            <HBox layoutX="708.0" layoutY="829.0" prefHeight="20.0" prefWidth="612.0" visible="false">
+                        <Button fx:id="proxyRefreshBtn" layoutX="623.0" layoutY="33.0" mnemonicParsing="false" onAction="#proxyRefreshAction" prefHeight="23.0" prefWidth="103.0" text="保存团队修改" />
+					            <HBox layoutX="734.0" layoutY="830.0" prefHeight="20.0" prefWidth="612.0" visible="false">
 					               <children>
 					                  <AnchorPane prefHeight="20.0" prefWidth="142.0" />
                               <HBox fx:id="proxySumHBox" prefHeight="20.0" prefWidth="523.0">
@@ -502,8 +502,8 @@
                               </HBox>
 					               </children>
 					            </HBox>
-                        <Button fx:id="proxyRefreshBtn1" layoutX="418.0" layoutY="32.0" mnemonicParsing="false" onAction="#proxyHideNoDataTeamAction" prefHeight="23.0" prefWidth="164.0" text="隐藏今日无数据的团队" />
-                        <Button fx:id="exportExcel1" layoutX="810.0" layoutY="32.0" mnemonicParsing="false" onAction="#exportExcelBatchAction" text="一键导出" />
+                        <Button fx:id="proxyRefreshBtn1" layoutX="444.0" layoutY="33.0" mnemonicParsing="false" onAction="#proxyHideNoDataTeamAction" prefHeight="23.0" prefWidth="164.0" text="隐藏今日无数据的团队" />
+                        <Button fx:id="exportExcel1" layoutX="836.0" layoutY="33.0" mnemonicParsing="false" onAction="#exportExcelBatchAction" text="一键导出" />
                   	</children>
                   </AnchorPane>
                </content>
