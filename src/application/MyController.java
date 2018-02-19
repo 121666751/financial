@@ -3193,6 +3193,46 @@ public class MyController implements Initializable{
     		ShowUtil.show("修改成功！",2);
     	});
     }
+
+
+    /**
+     * 修改团队股东
+     * 
+     * @param event
+     */
+    public void updateTeamHsGudongAction(ActionEvent event) {
+    	
+    	InputDialog inputDlg = new InputDialog("修改团队股东","待修改的团队ID:","团队新股东：");
+    	Optional<Pair<String, String>> result = inputDlg.getResult();
+    	result.ifPresent(teamId_and_teamGD -> {
+    		
+    		//获取到原始的有效的团队ID及团队回水率
+    		String teamID = teamId_and_teamGD.getKey();
+    		String teamGD = teamId_and_teamGD.getValue();
+    		if(StringUtil.isBlank(teamID) || StringUtil.isBlank(teamGD)) {
+    			ShowUtil.show("修改失败！原因：团队ID或团队股东不能为空！！");
+    			return;
+    		}
+    		teamID = teamID.trim().toUpperCase();
+    		teamGD = teamGD.trim();
+    		Huishui hs = DataConstans.huishuiMap.get(teamID);//判断是否有此团队
+    		if(hs == null) {
+    			ShowUtil.show("修改失败！原因：不存在此团队ID,请检查！");
+    			return;
+    		}
+    		//开始修改
+    		//1修改数据库
+    		if(!DBUtil.updateTeamHsGudong(teamID, teamGD)) {
+    			ShowUtil.show("修改失败");
+    			return;
+    		}
+    		
+    		//2修改缓存
+    		hs.setGudong(teamGD);//地址引用，会修改值
+    		
+    		ShowUtil.show("修改成功！",2);
+    	});
+    }
     
     /**
      * 检测合并ID

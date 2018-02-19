@@ -623,6 +623,32 @@ public class DBUtil {
 		}
 		return isOK;
 	}
+	/**
+	 * 修改团队股东
+	 * 
+	 * @param teamId
+	 * @param teamGD
+	 * @return
+	 */
+	public static boolean updateTeamHsGudong(String teamId,String teamGD) {
+		teamId=teamId.toUpperCase();
+		boolean isOK = false;
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			sql = "update teamhs set gudong=? where teamId =?";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, teamGD);
+			ps.setString(2, teamId);
+			ps.executeUpdate();
+			isOK = true;
+		}catch (SQLException e) {
+			ErrorUtil.err("修改团队股东失败", e);
+		}finally{
+			close(con,ps);
+		}
+		return isOK;
+	}
 	
 	/**
 	 * 修改代理查询中导出是否显示团队保险

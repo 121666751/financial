@@ -444,7 +444,7 @@ public class DelController implements Initializable{
     			ShowUtil.show("修改成功",2);
     			
     		} catch (Exception e) {
-    			ShowUtil.show("修改失败，原因："+e.getMessage());
+    			ShowUtil.show("修改玩家股东失败，原因："+e.getMessage());
     			e.printStackTrace();
     		}
     	}

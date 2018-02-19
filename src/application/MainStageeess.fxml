@@ -57,6 +57,7 @@
                               <Button fx:id="exportHuishuiBtn" layoutX="773.0" layoutY="319.0" mnemonicParsing="false" onAction="#exportHuishuiExcelAction" prefHeight="23.0" prefWidth="56.0" text="导出" />
                               <Button fx:id="exportHuishuiBtn2" layoutX="843.0" layoutY="319.0" mnemonicParsing="false" onAction="#updateTeamHsRateAction" prefHeight="23.0" prefWidth="97.0" text="修改团队回水" />
                               <Button fx:id="exportHuishuiBtn21" layoutX="954.0" layoutY="319.0" mnemonicParsing="false" onAction="#updateTeamHsBaoxianRateAction" prefHeight="23.0" prefWidth="97.0" text="修改团队保险" />
+                              <Button fx:id="exportHuishuiBtn211" layoutX="1065.0" layoutY="319.0" mnemonicParsing="false" onAction="#updateTeamHsGudongAction" prefHeight="23.0" prefWidth="97.0" text="修改团队股东" />
                            </children>
                         </Group>
                         <Group layoutX="35.0" layoutY="52.0">
