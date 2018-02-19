@@ -84,6 +84,6 @@
       <TextField fx:id="newTeamId" layoutX="506.0" layoutY="182.0" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="127.0" promptText="请输入玩家的新团队" />
       <Button fx:id="newPlayerEduBtn1" layoutX="506.0" layoutY="213.0" mnemonicParsing="false" onAction="#updateNewTeamIdAction" prefHeight="23.0" prefWidth="127.0" text="确定修改团队" />
       <Button fx:id="newPlayerEduBtn11" layoutX="506.0" layoutY="298.0" mnemonicParsing="false" onAction="#updateNewGudongAction" prefHeight="23.0" prefWidth="127.0" text="确定修改股东" />
-      <TextField fx:id="newTeamId1" layoutX="506.0" layoutY="267.0" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="127.0" promptText="请输入玩家的新股东" />
+      <TextField fx:id="newGudong" layoutX="506.0" layoutY="267.0" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="127.0" promptText="请输入玩家的新股东" />
    </children>
 </AnchorPane>

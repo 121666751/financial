@@ -387,7 +387,7 @@ public class DelController implements Initializable{
     			
     			//2，修改缓存中的人员信息
     			Player player = DataConstans.membersMap.get(playerId);
-    			player.setTeamName(newTeam);
+    			player.setGudong(newTeam);
     			
     			//3，同步到数据库
     			DBUtil.updateMember(player);
