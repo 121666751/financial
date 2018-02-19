@@ -62,6 +62,7 @@ public class DelController implements Initializable{
 	private TextField newPlayerEdu; 
 	
     @FXML private TextField newTeamId;
+    @FXML private TextField newGudong;
     //=====================================================================对话框
     
     
@@ -392,6 +393,52 @@ public class DelController implements Initializable{
     			DBUtil.updateMember(player);
     			
     			//4，同步实时上码中的数据(实时金额不用)
+    			
+    			
+    			ShowUtil.show("修改成功",2);
+    			
+    		} catch (Exception e) {
+    			ShowUtil.show("修改失败，原因："+e.getMessage());
+    			e.printStackTrace();
+    		}
+    	}
+    }
+    
+    
+    public void updateNewGudongAction(ActionEvent event) {
+    	String newGD = newGudong.getText();
+    	newGD = StringUtil.isBlank(newGD) ? "" : newGD.trim();
+    	if(StringUtil.isBlank(newGD)) {
+    		ShowUtil.show("请先输入玩家的新股东！！");
+    		return;
+    	}
+    	
+    	String selectedMemberName = (String) delMemberListView.getFocusModel().getFocusedItem(); 
+    	if(StringUtil.isBlank(selectedMemberName)) {
+    		ShowUtil.show("请先选择要修改股东的玩家！！");
+    		return;
+    	}
+    	
+    	Alert alert = new Alert(AlertType.CONFIRMATION);
+    	alert.setTitle("警告");
+    	alert.setHeaderText(null);
+    	alert.setContentText(selectedMemberName+" 哥，你确定要修改该玩家的股东为"+newGD+"??");
+    	Optional<ButtonType> result = alert.showAndWait();
+    	if (result.get() == ButtonType.OK){
+    		try {
+    			//1,获取玩家ID
+    			String playerId = getIdFromStr(selectedMemberName);
+    			
+    			//2，修改缓存中的人员信息
+    			Player player = DataConstans.membersMap.get(playerId);
+    			player.setTeamName(newGD);
+    			
+    			//3，同步到数据库
+    			DBUtil.updateMember(player);
+    			
+    			//4，同步实时上码中的数据(实时金额不用)
+    			
+    			//5 修改其他所设及的玩家或数据缓存，如父子ID TODO
     			
     			
     			ShowUtil.show("修改成功",2);

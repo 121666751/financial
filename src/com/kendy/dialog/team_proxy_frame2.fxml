@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.media.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.scene.*?>
+<?import javafx.embed.swing.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.paint.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="864.0" prefWidth="1296.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kendy.controller.TeamProxyController">
+   <children>
+     <AnchorPane  minHeight="0.0" minWidth="0.0" prefHeight="864.0" prefWidth="1296.0">
+         <children>
+                <TableView fx:id="tableTG" layoutX="55.0" layoutY="71.0" prefHeight="697.0" prefWidth="376.0">
+                   <columns>
+                      <TableColumn fx:id="tgTeamId" prefWidth="105.0" text="托管团队名称" />
+                      <TableColumn fx:id="tgRate1" prefWidth="88.0" text="回水比例1" />
+                      <TableColumn fx:id="tgRate2" prefWidth="91.0" text="回水比例2" />
+                      <TableColumn fx:id="tgTeamHolder" prefWidth="75.0" text="所属主人" />
+                   </columns>
+                </TableView>
+                <Button fx:id="tgAddBtn" layoutX="489.0" layoutY="249.0" mnemonicParsing="false" onAction="#tgAddAction" prefHeight="25.0" prefWidth="94.0" text="新增" />
+                <Button fx:id="tgDelBtn" layoutX="489.0" layoutY="298.0" mnemonicParsing="false" onAction="#tgDelAction" prefHeight="25.0" prefWidth="94.0" text="删除" />
+                <Button fx:id="tgUpdateBtn" layoutX="488.0" layoutY="350.0" mnemonicParsing="false" onAction="#tgUpdateAction" prefHeight="25.0" prefWidth="94.0" text="修改" />
+                <Button fx:id="tgExportBtn" layoutX="487.0" layoutY="396.0" mnemonicParsing="false" onAction="#tgExportAction" prefHeight="25.0" prefWidth="94.0" text="统计Excel" />
+         </children>
+         </AnchorPane>  
+   </children>
+ </AnchorPane>

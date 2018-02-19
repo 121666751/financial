@@ -705,6 +705,20 @@ public class MyController implements Initializable{
 	    	ErrorUtil.err("股东贡献值tab加载失败", e);
 	    }
 	 
+//	    try {
+//	    	FXMLLoader loader = new FXMLLoader();
+//	    	Parent root = loader.load(getClass().getResource("/com/kendy/dialog/team_proxy_frame2.fxml").openStream());
+//	    	loader.setController(new TeamProxyController());
+//	    	Tab gdTab = new Tab();
+//	    	gdTab.setText("托管小工具");
+//	    	gdTab.setClosable(false);
+//	    	gdTab.setContent(root);
+//	    	tabs.getTabs().add(gdTab);  
+//	    	
+//	    } catch (IOException e) {
+//	    	ErrorUtil.err("托管小工具tab加载失败", e);
+//	    }
+	    
 	}
 		
 	/**

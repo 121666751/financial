@@ -132,16 +132,18 @@ public class TeamProxyService {
             	refresh_TableTeamProxy_TableProxySum(newValue);
             	
             	//add 团队保险比例为0默认将hasTeamBaoxian打勾
-            	Huishui huishui = DataConstans.huishuiMap.get(newValue);
-            	if(huishui != null) {
-            		if(NumUtil.getNum(huishui.getInsuranceRate()) > 0) {
-            			hasTeamBaoxian.setSelected(false);
-            		}else {
-            			hasTeamBaoxian.setSelected(true);
-            		}
-            	}else {
-            		ShowUtil.show("团队"+newValue+"还没有设置团队保险比例！");
-            		hasTeamBaoxian.setSelected(false);
+            	if(newValue != null && StringUtil.isNotBlank(newValue.toString())) {
+	            	Huishui huishui = DataConstans.huishuiMap.get(newValue);
+	            	if(huishui != null) {
+	            		if("0".equals(huishui.getShowInsure()) || StringUtil.isBlank(huishui.getShowInsure())) {
+	            			hasTeamBaoxian.setSelected(false);
+	            		}else {
+	            			hasTeamBaoxian.setSelected(true);
+	            		}
+	            	}else {
+	            		ShowUtil.show("团队"+newValue+"对应的huishui字段为空！");
+	            		hasTeamBaoxian.setSelected(false);
+	            	}
             	}
             }
         });
@@ -155,6 +157,24 @@ public class TeamProxyService {
 	        		if(hs != null) {
 	        			hs.setZjManaged(new_val?"是":"否");
 	        			DataConstans.huishuiMap.put(teamId,hs);
+	        		}
+	        	}
+	        }
+	    });
+		
+		hasTeamBaoxian.selectedProperty().addListener(new ChangeListener<Boolean>() {
+	        public void changed(ObservableValue<? extends Boolean> ov,
+	            Boolean old_val, Boolean new_val) {
+	        	String teamId = teamIDCombox.getSelectionModel().getSelectedItem();
+	        	if(!StringUtil.isBlank(teamId)) {
+	        		Huishui hs = DataConstans.huishuiMap.get(teamId);
+	        		if(hs != null) {
+	        			//修改缓存
+	        			String showInsure = new_val ? "1" : "0";
+	        			hs.setShowInsure(showInsure);
+	        			DataConstans.huishuiMap.put(teamId,hs);
+	        			//更新到数据库
+	        			DBUtil.updateTeamHsShowInsure(teamId, showInsure);
 	        		}
 	        	}
 	        }

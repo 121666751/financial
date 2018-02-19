@@ -77,15 +77,13 @@
             <Insets left="16.0" top="14.0" />
          </padding>
       </GridPane>
-      <Label layoutX="513.0" layoutY="14.0" prefHeight="35.0" prefWidth="121.0" text="====修改信息===" />
-      <Label layoutX="514.0" layoutY="49.0" prefHeight="35.0" prefWidth="135.0" text="1、请输入玩家的新名字：" />
-      <TextField fx:id="newPlayerName" layoutX="513.0" layoutY="85.0" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="127.0" promptText="名称" />
-      <Button fx:id="updatePlayerNameBtn" layoutX="513.0" layoutY="120.0" mnemonicParsing="false" onAction="#updatePlayerNamerAction" prefHeight="23.0" prefWidth="127.0" text="确定修改名字" />
-      <TextField fx:id="newPlayerEdu" layoutX="513.0" layoutY="182.0" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="127.0" promptText="额度" />
-      <Label layoutX="514.0" layoutY="148.0" prefHeight="35.0" prefWidth="151.0" text="2、请输入玩家的新额度：" />
-      <Button fx:id="newPlayerEduBtn" layoutX="513.0" layoutY="216.0" mnemonicParsing="false" onAction="#updateNewPlayerEduAction" prefHeight="23.0" prefWidth="127.0" text="确定修改额度" />
-      <Label layoutX="506.0" layoutY="251.0" prefHeight="35.0" prefWidth="151.0" text="3、请输入玩家的新团队：" />
-      <TextField fx:id="newTeamId" layoutX="516.0" layoutY="284.0" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="127.0" promptText="团队ID" />
-      <Button fx:id="newPlayerEduBtn1" layoutX="516.0" layoutY="315.0" mnemonicParsing="false" onAction="#updateNewTeamIdAction" prefHeight="23.0" prefWidth="127.0" text="确定修改团队" />
+      <TextField fx:id="newPlayerName" layoutX="506.0" layoutY="21.0" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="127.0" promptText="请输入玩家的新名称" />
+      <Button fx:id="updatePlayerNameBtn" layoutX="506.0" layoutY="56.0" mnemonicParsing="false" onAction="#updatePlayerNamerAction" prefHeight="23.0" prefWidth="127.0" text="确定修改名字" />
+      <TextField fx:id="newPlayerEdu" layoutX="506.0" layoutY="102.0" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="127.0" promptText="请输入玩家的新额度" />
+      <Button fx:id="newPlayerEduBtn" layoutX="506.0" layoutY="136.0" mnemonicParsing="false" onAction="#updateNewPlayerEduAction" prefHeight="23.0" prefWidth="127.0" text="确定修改额度" />
+      <TextField fx:id="newTeamId" layoutX="506.0" layoutY="182.0" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="127.0" promptText="请输入玩家的新团队" />
+      <Button fx:id="newPlayerEduBtn1" layoutX="506.0" layoutY="213.0" mnemonicParsing="false" onAction="#updateNewTeamIdAction" prefHeight="23.0" prefWidth="127.0" text="确定修改团队" />
+      <Button fx:id="newPlayerEduBtn11" layoutX="506.0" layoutY="298.0" mnemonicParsing="false" onAction="#updateNewGudongAction" prefHeight="23.0" prefWidth="127.0" text="确定修改股东" />
+      <TextField fx:id="newTeamId1" layoutX="506.0" layoutY="267.0" onKeyPressed="#queryDelMemberByEnterEvent" prefHeight="23.0" prefWidth="127.0" promptText="请输入玩家的新股东" />
    </children>
 </AnchorPane>

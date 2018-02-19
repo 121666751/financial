@@ -32,7 +32,7 @@ public class Huishui {
 	//服务费有效值，比如大如1000，合计才会去计算服务费
 	public String proxyFWF = "0";
 	
-//	public String jifenInput = "0";
+	public String showInsure = "0";//代理查询导出时是否显示团队保险，默认不显示
 	
 	//=================== constructors ================================================
 	public Huishui() {
@@ -159,6 +159,16 @@ public class Huishui {
 
 	public void setProxyFWF(String proxyFWF) {
 		this.proxyFWF = proxyFWF;
+	}
+
+
+	public String getShowInsure() {
+		return showInsure;
+	}
+
+
+	public void setShowInsure(String showInsure) {
+		this.showInsure = showInsure;
 	}
 
 
