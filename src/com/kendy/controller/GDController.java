@@ -316,6 +316,18 @@ public class GDController implements Initializable{
 				.orElseGet(()->0d);
 		return  totalZhuofei;
 	}
+	private static Double getLM1TotalZhuofei(String gudong) {
+		List<ClubZhuofei> LM1_all_club_zhuofei = DBUtil.get_LM1_all_club_zhuofei();
+		Double totalZhuofei = 
+				LM1_all_club_zhuofei
+				.stream()
+				.filter(info->"联盟1".equals(info.getLmType()) && info.getGudong().equals(gudong))
+				.map(ClubZhuofei::getZhuofei)
+				.map(NumUtil::getNum)
+				.reduce(Double::sum)
+				.orElseGet(()->0d);
+		return  totalZhuofei;
+	}
 	
 	
 	/**
@@ -638,7 +650,7 @@ public class GDController implements Initializable{
 	 * @param gudong
 	 */
 	private  void setDynamicTableData_team_part(TableView<GudongRateInfo> table,String gudong) {
-		Double LM1Zhuofei = LMController.getLM1TotalZhuofei(gudong) *(-1);
+		Double LM1Zhuofei = getLM1TotalZhuofei(gudong) *(-1);
 		Double LM1Zhuofei_Double =  LM1Zhuofei / getComputeTotalProfit(); 
 		String LM1ZhuofeiStr = NumUtil.getPercentStr(LM1Zhuofei_Double);
 		table.getItems().add(new GudongRateInfo("联盟桌费",LM1ZhuofeiStr, LM1Zhuofei.intValue()+""));

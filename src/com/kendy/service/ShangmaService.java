@@ -33,6 +33,7 @@ import com.kendy.util.ErrorUtil;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
 import com.kendy.util.StringUtil;
+import com.kendy.util.TimeUtil;
 
 import application.DataConstans;
 import application.Main;
@@ -253,6 +254,7 @@ public class ShangmaService {
 			
 			//add 2018-2-19 设置团队押金与团队额度
 			resetTeamYajinAndEdu();
+//			System.out.println("设置团队押金与团队额度"+TimeUtil.getTime());
 			
 			
 		} catch (Exception e1) {
