@@ -351,6 +351,10 @@ public class MyController implements Initializable{
 	@FXML private Label shangmaZZJ;//团队总战绩
 	@FXML private TextField shangmaSearch;//上码的输入框
 	
+	@FXML private TextField teamYajin;//团队押金
+	@FXML private TextField teamEdu;//团队额度
+	@FXML private Label teamShangmaAvailable;//团队可上码
+	
 	@FXML private TableView<ShangmaDetailInfo> tableShangmaDetail;
 	@FXML private TableColumn<ShangmaDetailInfo,String> shangmaDetailName;
 	@FXML private TableColumn<ShangmaDetailInfo,String> shangmaJu;
@@ -874,7 +878,9 @@ public class MyController implements Initializable{
 	 * 初使化上码表的信息
 	 */
 	public void initShanagma() {
-		ShangmaService.initShangma(shangmaVBox,tableShangma,shangmaTeamId,tableShangmaDetail,shangmaZSM,shangmaZZJ,tablePaiju,tableShangmaNextDay);
+		ShangmaService.initShangma(shangmaVBox,tableShangma,shangmaTeamId,
+				tableShangmaDetail,shangmaZSM,shangmaZZJ,tablePaiju,tableShangmaNextDay,
+				teamShangmaAvailable,teamYajin,teamEdu);
 	}
 	
 	/**
@@ -3293,6 +3299,14 @@ public class MyController implements Initializable{
      */
     public void addNextDaySMDetailAction(ActionEvent event) {
     	ShangmaService.addNextDaySMDetailAction();
+    }
+    
+    /**
+     * 保存实时上码中的团队押金与团队额度修改
+     * @param event
+     */
+    public void saveTeamYajinAndEduAction(ActionEvent event) {
+    	ShangmaService.updateTeamYajinAndEdu();
     }
 
 }

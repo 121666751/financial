@@ -545,7 +545,7 @@ public class DBUtil {
 		try {
 			con = DBConnection.getConnection();
 			String sql;
-			sql = "insert into teamhs values(?,?,?,?,?,?,?,?,?,?,?)";//11列
+			sql = "insert into teamhs values(?,?,?,?,?,?,?,?,?,?,?,?,?)";//13列
 			ps = con.prepareStatement(sql);
 			ps.setString(1, hs.getTeamId().toUpperCase());
 			ps.setString(2, hs.getTeamName());
@@ -558,6 +558,8 @@ public class DBUtil {
 			ps.setString(9, hs.getProxyHBRate());
 			ps.setString(10, hs.getProxyFWF());
 			ps.setString(11, hs.getShowInsure());
+			ps.setString(12, hs.getTeamYajin());
+			ps.setString(13, hs.getTeamEdu());
 			ps.execute();
 		}catch (SQLException e) {
 			isOK = false;
@@ -651,6 +653,35 @@ public class DBUtil {
 	}
 	
 	/**
+	 * 修改团队押金与额度
+	 * 
+	 * @param teamId
+	 * @param teamYajin
+	 * @param teamEdu
+	 * @return
+	 */
+	public static boolean updateTeamYajinAndEdu(String teamId,String teamYajin, String teamEdu) {
+		teamId=teamId.toUpperCase();
+		boolean isOK = false;
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			sql = "update teamhs set teamYajin=?, teamEdu=?  where teamId =?";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, teamYajin);
+			ps.setString(2, teamEdu);
+			ps.setString(3, teamId);
+			ps.executeUpdate();
+			isOK = true;
+		}catch (SQLException e) {
+			ErrorUtil.err("修改团队押金与额度失败", e);
+		}finally{
+			close(con,ps);
+		}
+		return isOK;
+	}
+	
+	/**
 	 * 修改代理查询中导出是否显示团队保险
 	 * @param teamId
 	 * @param teamHsRate
@@ -686,7 +717,7 @@ public class DBUtil {
 		try {
 			con = DBConnection.getConnection();
 			String sql = "update teamhs set teamName=?,huishuiRate=?,insuranceRate=?,"
-					+ "gudong=?,zjManaged=?,beizhu=?,proxyHSRate=?,proxyHBRate=?,proxyFWF=?,showInsure=?  where teamId = ?";//11列
+					+ "gudong=?,zjManaged=?,beizhu=?,proxyHSRate=?,proxyHBRate=?,proxyFWF=?,showInsure=?,teamYajin=?,teamEdu=?  where teamId = ?";//11列
 			ps = con.prepareStatement(sql);
 			ps.setString(1, hs.getTeamName());
 			ps.setString(2, hs.getHuishuiRate());
@@ -698,7 +729,9 @@ public class DBUtil {
 			ps.setString(8, hs.getProxyHBRate());
 			ps.setString(9, hs.getProxyFWF());
 			ps.setString(10, hs.getShowInsure());
-			ps.setString(11, hs.getTeamId().toUpperCase());
+			ps.setString(11, hs.getTeamYajin());
+			ps.setString(12, hs.getTeamEdu());
+			ps.setString(13, hs.getTeamId().toUpperCase());
 			ps.execute();
 			log.info("团队回水修改");
 		}catch (SQLException e) {
@@ -728,7 +761,7 @@ public class DBUtil {
 				log.info("团队回水进数据库开始...");
 				for(Map.Entry<String, Huishui> entry : map.entrySet()) {
 					hs = entry.getValue();
-					sql = "insert into teamhs values(?,?,?,?,?,?,?,?,?,?,?)";//10列
+					sql = "insert into teamhs values(?,?,?,?,?,?,?,?,?,?,?,?,?)";//10列
 					ps = con.prepareStatement(sql);
 					ps.setString(1, hs.getTeamId().toUpperCase());
 					ps.setString(2, hs.getTeamName());
@@ -741,6 +774,8 @@ public class DBUtil {
 					ps.setString(9, hs.getProxyHBRate());
 					ps.setString(10, hs.getProxyFWF());
 					ps.setString(11, hs.getShowInsure());
+					ps.setString(12, hs.getTeamYajin());
+					ps.setString(13, hs.getTeamEdu());
 					ps.execute();
 				}
 				log.info("团队回水进数据库结束！size:"+map.size());
@@ -855,6 +890,8 @@ public class DBUtil {
 				hs.setProxyHBRate(rs.getString(9));
 				hs.setProxyFWF(rs.getString(10));
 				hs.setShowInsure(rs.getString(11));
+				hs.setTeamYajin(rs.getString(12));
+				hs.setTeamEdu(rs.getString(13));
 				result.add(hs);
 			}
 		} catch (SQLException e) {

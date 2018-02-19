@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import com.kendy.db.DBUtil;
 import com.kendy.entity.ClubBankInfo;
 import com.kendy.entity.CurrentMoneyInfo;
+import com.kendy.entity.Huishui;
 import com.kendy.entity.Player;
 import com.kendy.entity.ShangmaDetailInfo;
 import com.kendy.entity.ShangmaInfo;
@@ -77,6 +78,10 @@ public class ShangmaService {
 	public static VBox shangmaVBox;
 	public static Label shangmaTeamIdLabel;
 	
+	public static Label teamShangmaAvailable;
+	public static TextField teamYajin;
+	public static TextField teamEdu;
+	
 	//玩家ID=上码次日列表   ShangmaDetailInfo 存到数据库时对应ShangmaNextday
 	public static Map<String,List<ShangmaDetailInfo>> SM_NextDay_Map= new HashMap<>();
 	
@@ -85,7 +90,9 @@ public class ShangmaService {
 	 */
 	public static void initShangma(VBox shangmaVBox0, final TableView<ShangmaInfo> tableShangma, 
 			final Label shangmaTeamIdLabel0, TableView<ShangmaDetailInfo> tableShangmaDetail,
-			Label shangmaZSM,Label shangmaZZJ,TableView<WanjiaInfo> tablePaiju,TableView<ShangmaDetailInfo> tableShangmaNextDay) {
+			Label shangmaZSM,Label shangmaZZJ,TableView<WanjiaInfo> tablePaiju,
+			TableView<ShangmaDetailInfo> tableShangmaNextDay, Label teamShangmaAvailable0, 
+			TextField teamYajin0, TextField teamEdu0) {
 		shangmaVBox = shangmaVBox0;
 		tableSM = tableShangma;
 		tableSMD = tableShangmaDetail;
@@ -94,12 +101,42 @@ public class ShangmaService {
 		tablePJ = tablePaiju;
 		shangmaTeamIdLabel = shangmaTeamIdLabel0;
 		tableND = tableShangmaNextDay;
+		teamShangmaAvailable = teamShangmaAvailable0;
+		teamYajin = teamYajin0;
+		teamEdu = teamEdu0;
 
 		//重新初始化所有团队ID按钮
 		initShangmaButton();
 		
 		//加载数据库中玩家的次日信息
 		init_SM_NextDay_Map();
+	}
+	
+	/**
+	 * 重置团队押金与团队额度，包括团可上码
+	 */
+	private static void resetTeamYajinAndEdu() {
+		//置零
+		teamShangmaAvailable.setText("0");
+		teamYajin.setText("0");
+		teamEdu.setText("0");
+		//赋新值
+		//获取团队信息
+		String teamId = shangmaTeamIdLabel.getText();
+		Huishui hs = DataConstans.huishuiMap.get(teamId);
+		if(hs != null) {
+			String _teamYajin = hs.getTeamYajin();
+			String _teamEdu = hs.getTeamEdu();
+			teamYajin.setText(_teamYajin);
+			teamEdu.setText(_teamEdu);
+			//计算团队可上码
+			//计算公式：  团队可上码= 押金 + 额度 + 团队战绩 - 团队已上码
+			Double teamSMAvailable = NumUtil.getNum(NumUtil.getSum(_teamYajin, _teamEdu, labelZZJ.getText()))
+					- NumUtil.getNum(labelZSM.getText());
+			
+			teamShangmaAvailable.setText(teamSMAvailable.intValue()+"");
+			
+		}
 	}
 	
 	
@@ -214,10 +251,17 @@ public class ShangmaService {
 			labelZSM.setText(MoneyService.digit0(teamSumYiSM));
 			labelZZJ.setText(MoneyService.digit0(teamSumZJ));
 			
+			//add 2018-2-19 设置团队押金与团队额度
+			resetTeamYajinAndEdu();
+			
+			
 		} catch (Exception e1) {
 			ErrorUtil.err("加载上码主表",e1);
 		}
 	}
+	
+	
+	
 	/**
 	 * 添加合并ID
 	 * @param srcList
@@ -1231,6 +1275,29 @@ public class ShangmaService {
 			}
 		}
 		ShangmaService.loadShangmaTable(shangmaTeamIdValue,tableSM);
+    }
+    
+    /**
+     * 保存实时上码中的团队押金与团队额度修改
+     */
+    public static void updateTeamYajinAndEdu() {
+    	String teamId = shangmaTeamIdLabel.getText();
+    	if(StringUtil.isNotBlank(teamId)) {
+    		boolean updateOK = DBUtil.updateTeamYajinAndEdu(teamId, teamYajin.getText(), teamEdu.getText());
+    		if(updateOK) {
+    			//更新缓存
+    			Huishui team = DataConstans.huishuiMap.get(teamId);
+    			if(team != null ) {
+    				team.setTeamYajin(teamYajin.getText());
+    				team.setTeamEdu(teamEdu.getText());
+    			}
+    			ShowUtil.show("保存成功！", 2);
+    		}else {
+    			ShowUtil.show("保存失败！");
+    		}
+    	}else {
+    		ShowUtil.show("保存失败,当前团队ID为空！");
+    	}
     }
     
     

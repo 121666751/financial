@@ -32,7 +32,14 @@ public class Huishui {
 	//服务费有效值，比如大如1000，合计才会去计算服务费
 	public String proxyFWF = "0";
 	
-	public String showInsure = "0";//代理查询导出时是否显示团队保险，默认不显示
+	//代理查询导出时是否显示团队保险，默认不显示
+	public String showInsure = "0";
+	
+	//实时上码中的团队押金
+	public String teamYajin = "0";
+	
+	//实时上码中的团队额度
+	public String teamEdu = "0";
 	
 	//=================== constructors ================================================
 	public Huishui() {
@@ -76,6 +83,45 @@ public class Huishui {
 		this.proxyHSRate = proxyHSRate;
 		this.proxyHBRate = proxyHBRate;
 		this.proxyFWF = proxyFWF;
+	}
+	
+	
+	
+
+	/**
+	 * 所有字段的构造方法
+	 * 
+	 * @param teamId
+	 * @param teamName
+	 * @param huishuiRate
+	 * @param insuranceRate
+	 * @param gudong
+	 * @param zjManaged
+	 * @param beizhu
+	 * @param proxyHSRate
+	 * @param proxyHBRate
+	 * @param proxyFWF
+	 * @param showInsure
+	 * @param teamYajin
+	 * @param teamEdu
+	 */
+	public Huishui(String teamId, String teamName, String huishuiRate, String insuranceRate, String gudong,
+			String zjManaged, String beizhu, String proxyHSRate, String proxyHBRate, String proxyFWF, String showInsure,
+			String teamYajin, String teamEdu) {
+		super();
+		this.teamId = teamId;
+		this.teamName = teamName;
+		this.huishuiRate = huishuiRate;
+		this.insuranceRate = insuranceRate;
+		this.gudong = gudong;
+		this.zjManaged = zjManaged;
+		this.beizhu = beizhu;
+		this.proxyHSRate = proxyHSRate;
+		this.proxyHBRate = proxyHBRate;
+		this.proxyFWF = proxyFWF;
+		this.showInsure = showInsure;
+		this.teamYajin = teamYajin;
+		this.teamEdu = teamEdu;
 	}
 
 
@@ -169,6 +215,26 @@ public class Huishui {
 
 	public void setShowInsure(String showInsure) {
 		this.showInsure = showInsure;
+	}
+
+
+	public String getTeamYajin() {
+		return teamYajin;
+	}
+
+
+	public void setTeamYajin(String teamYajin) {
+		this.teamYajin = teamYajin;
+	}
+
+
+	public String getTeamEdu() {
+		return teamEdu;
+	}
+
+
+	public void setTeamEdu(String teamEdu) {
+		this.teamEdu = teamEdu;
 	}
 
 
