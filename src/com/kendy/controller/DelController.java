@@ -98,7 +98,6 @@ public class DelController implements Initializable{
 		            	obList.add("实时金额："+MoneyService.get_SSJE_byId(playerId));
 		            	obList.add("是否父ID："+ (DataConstans.Combine_Super_Id_Map.containsKey(playerId) ? "是" : "否"));
 		            	obList.add("是否子ID："+ (DataConstans.Combine_Sub_Id_Map.containsKey(playerId) ? "是" : "否"));
-		            	
 		            }
 				});
 	}
@@ -387,7 +386,7 @@ public class DelController implements Initializable{
     			
     			//2，修改缓存中的人员信息
     			Player player = DataConstans.membersMap.get(playerId);
-    			player.setGudong(newTeam);
+    			player.setTeamName(newTeam);
     			
     			//3，同步到数据库
     			DBUtil.updateMember(player);
@@ -431,7 +430,7 @@ public class DelController implements Initializable{
     			
     			//2，修改缓存中的人员信息
     			Player player = DataConstans.membersMap.get(playerId);
-    			player.setTeamName(newGD);
+    			player.setGudong(newGD);
     			
     			//3，同步到数据库
     			DBUtil.updateMember(player);
