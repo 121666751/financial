@@ -606,7 +606,7 @@ public class GDController implements Initializable{
 		//占比总和
 		Double rateSum = table.getItems().stream()
 			.map(GudongRateInfo::getGudongProfit)
-			.map(rate -> { return NumUtil.getNumByPercent(rate);})
+			.map(rate -> {return NumUtil.getNumByPercent(rate);})
 			.reduce(Double::sum)
 			.get();
 		table.getColumns().get(1).setText(NumUtil.getPercentStr(rateSum));
@@ -651,7 +651,7 @@ public class GDController implements Initializable{
 	 */
 	private  void setDynamicTableData_team_part(TableView<GudongRateInfo> table,String gudong) {
 		Double LM1Zhuofei = getLM1TotalZhuofei(gudong) *(-1);
-		Double LM1Zhuofei_Double =  LM1Zhuofei / getComputeTotalProfit(); 
+		Double LM1Zhuofei_Double =  NumUtil.getNumDivide(LM1Zhuofei , getComputeTotalProfit()); 
 		String LM1ZhuofeiStr = NumUtil.getPercentStr(LM1Zhuofei_Double);
 		table.getItems().add(new GudongRateInfo("联盟桌费",LM1ZhuofeiStr, LM1Zhuofei.intValue()+""));
 		table.refresh();
@@ -674,7 +674,7 @@ public class GDController implements Initializable{
 		Double teamProfits = NumUtil.getNum(teamFWF) + teamPersonProfit;
 		
 		//计算团队占比      公式 = (人次 + 团队服务费) / 当天总利润 
-		Double teamRate_Double =  teamProfits / getComputeTotalProfit(); 
+		Double teamRate_Double =  NumUtil.getNumDivide(teamProfits , getComputeTotalProfit()); 
 		String teamRateStr = NumUtil.getPercentStr(teamRate_Double);
 		table.getItems().add(new GudongRateInfo(getFinalTeamId(teamId,gudong),teamRateStr,NumUtil.digit0(teamProfits)));
 		
@@ -707,7 +707,7 @@ public class GDController implements Initializable{
 		
 		//计算团队中公司的占比      公式 = sum（收回水+水后险） / 计算总利润 
 		//Double teamRenci = teamList.size() * NumUtil.getNum(getRenci());
-		Double companyRate_Double = companyProfit / getComputeTotalProfit(); 
+		Double companyRate_Double = NumUtil.getNumDivide(companyProfit , getComputeTotalProfit()); 
 		String companyRateStr = NumUtil.getPercentStr(companyRate_Double);
 		table.getItems().add(new GudongRateInfo(getFinalTeamId(teamId,gudong),companyRateStr,companyProfit.intValue()+""));
 		

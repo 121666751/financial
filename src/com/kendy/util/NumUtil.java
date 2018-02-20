@@ -97,7 +97,12 @@ public class NumUtil {
 	//把百分比转化为小数
 	public static Double getNumByPercent(String percentStr) {
 		if(!StringUtil.isBlank(percentStr) && percentStr.contains("%")) {
-			 return new Double(percentStr.substring(0, percentStr.indexOf("%"))) / 100;
+			 try {
+				return new Double(percentStr.substring(0, percentStr.indexOf("%"))) / 100;
+			} catch (NumberFormatException e) {
+				ErrorUtil.err(percentStr+"把百分比转化为小数失败", e);
+				return 0d;
+			}
 		}
 		return 0d;
 	}
@@ -163,5 +168,20 @@ public class NumUtil {
 	 */
 	public static Double getNumTimes(String str1, String str2) {
 		return NumUtil.getNum(str1) * NumUtil.getNum(str2);
+	}
+	
+	/**
+	 * 两数相除
+	 * @time 2018年2月20日
+	 * @param d1
+	 * @param d2
+	 * @return
+	 */
+	public static Double getNumDivide(Double d1, Double d2) {
+		if(d1.compareTo(0d) == 0 || d2.compareTo(0d) == 0) {
+			return 0d;
+		}else {
+			return d1 / d2;
+		}
 	}
 }
