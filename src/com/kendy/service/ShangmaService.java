@@ -1292,6 +1292,8 @@ public class ShangmaService {
     			if(team != null ) {
     				team.setTeamYajin(teamYajin.getText());
     				team.setTeamEdu(teamEdu.getText());
+    				//重新加载
+    				loadShangmaTable(teamId, tableSM);
     			}
     			ShowUtil.show("保存成功！", 2);
     		}else {
