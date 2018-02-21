@@ -30,9 +30,9 @@
                    <Button layoutX="108.0" layoutY="496.0" mnemonicParsing="false" onAction="#exportSingleClubAction" prefHeight="23.0" prefWidth="163.0" text="导出当前俱乐部帐单" />
                    <Button layoutX="107.0" layoutY="600.0" mnemonicParsing="false" onAction="#exportAllClubAction" prefHeight="23.0" prefWidth="163.0" text="导出所有俱乐部总帐单" />
                    <Label layoutX="22.0" layoutY="453.0" prefHeight="24.0" prefWidth="156.0" text="导出Excel文件：" />
-                  <Button layoutX="107.0" layoutY="359.0" mnemonicParsing="false" onAction="#clear_All_Club_ZhuoFei_Action" prefHeight="23.0" prefWidth="170.0" text="桌费和已结算置0" />
+                  <Button disable="true" layoutX="107.0" layoutY="359.0" mnemonicParsing="false" onAction="#clear_All_Club_ZhuoFei_Action" prefHeight="23.0" prefWidth="170.0" text="桌费和已结算置0" />
                   <Button layoutX="107.0" layoutY="308.0" mnemonicParsing="false" onAction="#change_club_gudong_Action" prefHeight="23.0" prefWidth="170.0" text="修改俱乐部股东" />
-                  <Button layoutX="107.0" layoutY="407.0" mnemonicParsing="false" onAction="#clearClubAndRecordAction" prefHeight="23.0" prefWidth="170.0" text="清空所有统计信息" />
+                  <Button disable="true" layoutX="107.0" layoutY="407.0" mnemonicParsing="false" onAction="#clearClubAndRecordAction" prefHeight="23.0" prefWidth="170.0" text="清空所有统计信息" />
                   <Button layoutX="28.0" layoutY="69.0" mnemonicParsing="false" onAction="#LM1_Btn_Action" prefHeight="23.0" prefWidth="71.0" text="联盟1" />
                   <Button layoutX="118.0" layoutY="69.0" mnemonicParsing="false" onAction="#LM2_Btn_Action" prefHeight="23.0" prefWidth="71.0" text="联盟2" />
                   <Button layoutX="211.0" layoutY="69.0" mnemonicParsing="false" onAction="#LM3_Btn_Action" prefHeight="23.0" prefWidth="71.0" text="联盟3" />

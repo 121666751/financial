@@ -1570,6 +1570,14 @@ public class MyController implements Initializable{
 		                		ShowUtil.show("只能在导入战绩后才能结算！");
 		                		return;
 		                	}
+		            		Alert alert = new Alert(AlertType.CONFIRMATION);
+		            		alert.setTitle("提示");
+		            		alert.setHeaderText(null);
+		            		alert.setContentText("\r\n只能在当天最后一场才能结算！你确定了吗?");
+		            		Optional<ButtonType> result = alert.showAndWait();
+		            		if (result.get() != ButtonType.OK){
+		            			return;
+		            		}
 		                	TeamInfo teamInfo = getTableView().getItems().get(getIndex());
 		                    if(getTableRow() != null && teamInfo != null && "0".equals(teamInfo.getHasJiesuaned())){  
 		                    	TeamInfo tempTeamInfo = copyTeamInfo(teamInfo);
