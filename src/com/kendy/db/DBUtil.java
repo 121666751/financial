@@ -24,6 +24,7 @@ import com.kendy.entity.ClubZhuofei;
 import com.kendy.entity.HistoryRecord;
 import com.kendy.entity.Huishui;
 import com.kendy.entity.JifenInfo;
+import com.kendy.entity.KaixiaoInfo;
 import com.kendy.entity.Player;
 import com.kendy.entity.Record;
 import com.kendy.entity.ShangmaNextday;
@@ -964,6 +965,10 @@ public class DBUtil {
 			ps.execute();
 			
 			sql = "DELETE from record ";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+			
+			sql = "DELETE from gudong_kaixiao ";
 			ps = con.prepareStatement(sql);
 			ps.execute();
 			
@@ -2177,6 +2182,101 @@ public class DBUtil {
 		}
 	}
 	
+	/***************************************************************************
+	 * 
+	 * 				股东开销表
+	 * 
+	 **************************************************************************/
+	/**
+	 * 保存或修改股东开销
+	 * 
+	 */
+	public static boolean saveOrUpdate_gudong_kaixiao(final KaixiaoInfo kaixiao) {
+		boolean isOK = false;
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			sql = "replace into gudong_kaixiao(kaixiaoID, kaixiaoType, kaixiaoMoney, kaixiaoGudong, kaixiaoTime) values(?,?,?,?,?)";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, kaixiao.getKaixiaoID());
+			ps.setString(2, kaixiao.getKaixiaoType());
+			ps.setString(3, kaixiao.getKaixiaoMoney());
+			ps.setString(4, kaixiao.getKaixiaoGudong());
+			ps.setString(5, kaixiao.getKaixiaoTime());
+			ps.execute();
+			isOK = true;
+		}catch (SQLException e) {
+			ErrorUtil.err(kaixiao.toString()+",保存或修改股东开销失败", e);
+			isOK = false;
+		}finally{
+			close(con,ps);
+		}
+		return isOK;
+	}
+	
+	/**
+	 * 获取所有股东开销
+	 * 
+	 * @time 2018年2月21日
+	 * @return
+	 */
+	public static List<KaixiaoInfo> get_all_gudong_kaixiao() {
+		List<KaixiaoInfo> list = new ArrayList<>();
+		try {
+			con = DBConnection.getConnection();
+			String sql = "select * from gudong_kaixiao";
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				KaixiaoInfo kaixiao = new KaixiaoInfo(rs.getString(1),rs.getString(2),rs.getString(3),
+						rs.getString(4),rs.getString(5));
+				list.add(kaixiao);
+			}
+		} catch (SQLException e) {
+			ErrorUtil.err("获取所有股东开销失败",e);
+		}finally{
+			close(con,ps);
+		}
+		return list;
+	}
+	
+	/**
+	 * 删除所有的股东开销
+	 * 
+	 * @time 2018年2月21日
+	 * @param key
+	 */
+	public static void del_all_gudong_kaixiao() {
+		try {
+			con = DBConnection.getConnection();
+			String sql  = "delete from gudong_kaixiao ";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("删除所有的股东开销失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	/**
+	 * 根据ID删除股东开销
+	 * 
+	 * @time 2018年2月21日
+	 * @param key
+	 */
+	public static void del_gudong_kaixiao_by_id(String kaixiaoID) {
+		try {
+			con = DBConnection.getConnection();
+			String sql  = "delete from gudong_kaixiao where kaixiaoID = '"+ kaixiaoID +"'";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("根据ID删除股东开销失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
 	
 	
 }

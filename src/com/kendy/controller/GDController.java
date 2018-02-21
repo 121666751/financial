@@ -12,17 +12,16 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.kendy.db.DBUtil;
-import com.kendy.entity.Club;
 import com.kendy.entity.ClubZhuofei;
 import com.kendy.entity.GDDetailInfo;
 import com.kendy.entity.GDInputInfo;
 import com.kendy.entity.GudongRateInfo;
+import com.kendy.entity.KaixiaoInfo;
 import com.kendy.entity.Player;
 import com.kendy.entity.Record;
 import com.kendy.service.MoneyService;
@@ -34,7 +33,6 @@ import com.kendy.util.ShowUtil;
 import com.kendy.util.StringUtil;
 import com.kendy.util.TableUtil;
 
-import application.Constants;
 import application.DataConstans;
 import application.MyController;
 import javafx.collections.FXCollections;
@@ -113,12 +111,18 @@ public class GDController implements Initializable{
 	private static final String UN_KNOWN = "未知";
 	
 	
-	//数据来源:当天某俱乐部的数据
+	//数据来源:某俱乐部的数据
 	private static List<Record> dataList = new ArrayList();
+	
+	//数据来源:股东开销的总数据来源
+	private static List<KaixiaoInfo> gudongKaixiao_dataList = new ArrayList();
 	
 	//将dataList转成特定数据结构
 	//{股东ID:{团队ID:List<Record}}
 	private static  Map<String,Map<String,List<Record>>> gudongTeamMap = new HashMap<>();
+	
+	//获取每个股东的开销总和
+	private static  Map<String,List<KaixiaoInfo>> gudongKaixiaoMap = new HashMap<>();
 	
 	//用于计算每个团队与股东客的利润（因为总利润 = 人次 + 团队+股东客 + 联盟桌费）
 	//{团队ID:List<Record>}
@@ -139,6 +143,10 @@ public class GDController implements Initializable{
 		//将原始数据转换成特定的数据结构
 		initGudongTeamMap();
 		initTeamMap();
+		
+		// 初始化总开销数据
+		initGudongKaixiaoDataList();
+		initGudongKaixiaoMap();
 	}
 	
 	
@@ -160,6 +168,18 @@ public class GDController implements Initializable{
 	}
 	
 	/**
+	 * 初始化GudongKaixiaoDataList
+	 * 
+	 * @time 2018年2月21日
+	 */
+	private static void initGudongKaixiaoDataList() {
+		List<KaixiaoInfo> get_all_gudong_kaixiao = DBUtil.get_all_gudong_kaixiao();
+		if(CollectUtil.isHaveValue(get_all_gudong_kaixiao)) {
+			gudongKaixiao_dataList = get_all_gudong_kaixiao;
+		}
+	}
+	
+	/**
 	 * 将原始数据转换成特定的数据结构
 	 * {股东ID:{团队ID:List<Record}}
 	 * 
@@ -172,6 +192,25 @@ public class GDController implements Initializable{
 				.collect(Collectors.groupingBy(//先按股东分
 						record -> getGudongByPlayerId((Record)record),
 						Collectors.groupingBy(info -> StringUtil.nvl(info.getTeamId(),UN_KNOWN))));//再按团队分
+		
+		//add 20182-2-21 手动加入股东总公司
+		if(gudongTeamMap !=null) {
+			gudongTeamMap.put("总公司", Collections.emptyMap());
+		}
+	}
+	
+	/**
+	 * 将原始数据转换成特定的数据结构
+	 * {股东ID:List<KaixiaoInfo>}
+	 * 
+	 * @time 2018年1月19日
+	 */
+	private static void initGudongKaixiaoMap() {
+		if(CollectUtil.isNullOrEmpty(gudongKaixiao_dataList)) return;
+		gudongKaixiaoMap = 
+				gudongKaixiao_dataList.stream()
+			    .collect(
+			    		Collectors.groupingBy(info -> StringUtil.nvl(((KaixiaoInfo)info).getKaixiaoGudong(),UN_KNOWN)));//按团队分
 	}
 	
 	/**
@@ -186,7 +225,6 @@ public class GDController implements Initializable{
 		dataList.stream()
 			    .collect(
 			    		Collectors.groupingBy(info -> StringUtil.nvl(info.getTeamId(),UN_KNOWN)));//按团队分
-
 	}
 	
 	/**
@@ -254,7 +292,7 @@ public class GDController implements Initializable{
 				.collect(Collectors.groupingBy(record -> getGudongByPlayerId((Record)record)));
 		//计算总利润
 		Double totalProfits = getTotalProfits();
-		if(Double.compare(totalProfits, 0) <= 0) {
+		if(Double.compare(totalProfits, 0) == 0) {
 			ShowUtil.show("当天总利润计算为0", 2);
 			return;
 		}else {
@@ -273,7 +311,7 @@ public class GDController implements Initializable{
 	
 	/**
 	 * 获取总利润
-	 * 股东的总利润 =  团队(团队利润+团队服务费)+股东客 + 联盟桌费
+	 * 股东的总利润 =  团队(团队利润+团队服务费)+股东客 + 联盟桌费 + 总开销
 	 */
 	public  Double getTotalProfits() {
 		Double totalProfits = 0d;
@@ -294,6 +332,10 @@ public class GDController implements Initializable{
 		//获取联盟桌费
 		Double LM1Zhuofei = getLM1TotalZhuofei() *(-1);
 		totalProfits += LM1Zhuofei;
+		
+		// 获取总开销
+		Double totalKaixiao = getTotalGudongKaixiao();
+		totalProfits += totalKaixiao;
 		
 		return totalProfits;
 	}
@@ -328,6 +370,36 @@ public class GDController implements Initializable{
 				.reduce(Double::sum)
 				.orElseGet(()->0d);
 		return  totalZhuofei;
+	}
+	
+	
+	/**
+	 * 获取联盟1的所有桌费
+	 * 问题：如果用户在同一天插入相同的记录，存在被覆盖一条的隐患（TODO）
+	 * 
+	 * @time 2018年2月11日
+	 * @return
+	 */
+	private static Double getTotalGudongKaixiao() {
+		Double totalGudongKaixiao = 
+				gudongKaixiao_dataList
+				.stream()
+				.map(KaixiaoInfo::getKaixiaoMoney)
+				.map(NumUtil::getNum)
+				.reduce(Double::sum)
+				.orElseGet(()->0d);
+		return  totalGudongKaixiao;
+	}
+	private static Double getKaixiaoByGudong(String gudong) {
+		Double gudongKaixiao = 
+				gudongKaixiao_dataList
+				.stream()
+				.filter(info -> gudong.equals(info.getKaixiaoGudong()))
+				.map(KaixiaoInfo::getKaixiaoMoney)
+				.map(NumUtil::getNum)
+				.reduce(Double::sum)
+				.orElseGet(()->0d);
+		return  gudongKaixiao;
 	}
 	
 	
@@ -500,11 +572,13 @@ public class GDController implements Initializable{
 		
 		//股东列表
 		Set<String> gudongSet = gudongTeamMap.keySet();
+		List<String> _gudongList = new ArrayList<>(gudongSet);
+		Collections.sort(_gudongList);
 		
 		 TableView<GudongRateInfo> table;
 	      
 		ObservableList<GudongRateInfo> obList= FXCollections.observableArrayList();
-        for(String gudongName : gudongSet) {
+        for(String gudongName : _gudongList) {
         	table = new TableView<GudongRateInfo>();
 	 
         	//设置列
@@ -535,7 +609,8 @@ public class GDController implements Initializable{
 	        //设置数据
 	        //{团队ID:List<Record}
 	        Map<String,List<Record>> teamMap = gudongTeamMap.get(gudongName);
-	        setDynamicTableData(table,teamMap,gudongName);
+	        List<KaixiaoInfo> kaixiaoList = gudongKaixiaoMap.get(gudongName);
+	        setDynamicTableData(table,teamMap, kaixiaoList, gudongName);
 	        //往左边的股东表中添加记录
 	        setDataToSumTable(table);
 	        
@@ -566,12 +641,14 @@ public class GDController implements Initializable{
 	 * 		1、公司的计入对应的股东客；
 	 * 		2、团队服务费问题：目前是直接引用代理查询表的数据，但最好重新计算！！！已经重新算了
 	 * 		3、后期加入联盟桌费！！！！已经加入了
+	 * 		4、后期加入股东开销
 	 * 
 	 * @time 2018年1月20日
 	 * @param table  单个动态表
 	 * @param teamMap 单个动态表的团队数据，不包括联盟
 	 */
-	private  void setDynamicTableData(TableView<GudongRateInfo> table,Map<String,List<Record>> teamMap,String gudong) {
+	private  void setDynamicTableData(TableView<GudongRateInfo> table,Map<String,List<Record>> teamMap,
+			List<KaixiaoInfo> kaixiaoList, String gudong) {
 		//设置股东的人次
 		//setGudongRenci(table,teamMap);
 		
@@ -587,6 +664,9 @@ public class GDController implements Initializable{
         }
 		//设置单个动态表的数据(联盟部分)
 		setDynamicTableData_team_part(table,gudong);
+		
+		//设置单个动态表的数据(股东开销部分)
+		setDynamicTableData_gudong_kaixiao_part(table,gudong);
 		
 		//修改该表的利润占比百分比
 		setColumnSum(table);
@@ -655,6 +735,21 @@ public class GDController implements Initializable{
 		Double LM1Zhuofei_Double =  NumUtil.getNumDivide(LM1Zhuofei , getComputeTotalProfit()); 
 		String LM1ZhuofeiStr = NumUtil.getPercentStr(LM1Zhuofei_Double);
 		table.getItems().add(new GudongRateInfo("联盟桌费",LM1ZhuofeiStr, LM1Zhuofei.intValue()+""));
+		table.refresh();
+	}
+	
+	/**
+	 * 设置单个动态表的数据(股东开销部分)
+	 * 
+	 * @time 2018年2月21日
+	 * @param table
+	 * @param gudong
+	 */
+	private  void setDynamicTableData_gudong_kaixiao_part(TableView<GudongRateInfo> table, String gudong) {
+		Double gudongKaixiao = getKaixiaoByGudong(gudong) ; //*(-1);
+		Double gudongKaixiao_Double =  NumUtil.getNumDivide(gudongKaixiao , getComputeTotalProfit()); 
+		String gudongKaixiaoStr = NumUtil.getPercentStr(gudongKaixiao_Double);
+		table.getItems().add(new GudongRateInfo("累计开销",gudongKaixiaoStr, gudongKaixiao.intValue()+""));
 		table.refresh();
 	}
 	
@@ -889,17 +984,17 @@ public class GDController implements Initializable{
 		
 		ObservableList<GDInputInfo> obList = FXCollections.observableArrayList();
 		//股东列表总和：除了银河股东,用于获取各股东的比例（比拼值）,加上了总人次利润（除去银河股东）
-		Double sum = tableGDSum.getItems().stream().filter(info->!info.getGudongName().contains("银河"))
+		Double sum = tableGDSum.getItems().stream()
+				.filter(info->!info.getGudongName().contains("银河") && (!info.getGudongName().contains("总公司")))
 				.map(info->NumUtil.getNum(info.getGudongProfit()))
 				.reduce(Double::sum).orElseGet(()->0d) + renciProfit;
 		
 		//获取可分配的奖励池
 		Double curragePool = getJLPoolAvailable();
 		
-		//
 		//计算各股东的奖励金额
 		tableGDSum.getItems().stream()
-			.filter(info->!info.getGudongName().contains("银河"))
+			.filter(info->!info.getGudongName().contains("银河") && (!info.getGudongName().contains("总公司")))
 			.map(info -> {
 				/********************************************************添加相应股东的人次总利润**********/
 				String gudongId = info.getGudongName().replace("股东", "");
@@ -941,6 +1036,10 @@ public class GDController implements Initializable{
 		//原始股（银河股东）
 		//Double totalYSGu = tableYSGu.getItems().stream().map(info->NumUtil.getNum(info.getValue())).reduce(Double::sum).get();
 		Double totalYSGu = getYinheProfit();
+		//总公司
+		Double Zonggongsi_Profit = get_Zonggongsi_Profit(); //TODO
+		
+		
 		//客服股
 		Double totalKFGu = tablekfGu.getItems().stream().map(info->NumUtil.getNum(info.getValue())).reduce(Double::sum).get();
 		//可分配比例,即股东奖励值
@@ -982,7 +1081,7 @@ public class GDController implements Initializable{
 		//股东列表：除了银河股东
 		if(tableYSGu.getItems()==null || tableYSGu.getItems().size() == 0 || StringUtil.isBlank(tableYSGu.getItems().get(0).getType())) {
 			tableGDSum.getItems().stream()
-					.filter(info->!info.getGudongName().contains("银河"))
+					.filter(info->!info.getGudongName().contains("银河") && (!info.getGudongName().contains("总公司")))
 					.map(info -> new GDInputInfo(info.getGudongName(),"",""))
 					.forEach(info-> {
 						obList.add(info);
@@ -1020,6 +1119,20 @@ public class GDController implements Initializable{
 	 */
 	private Double getYinheProfit() {
 		Optional<GudongRateInfo> gudongRateInfoOpt = tableGDSum.getItems().stream().filter(info->info.getGudongName().contains("银河")).findFirst();
+		if(gudongRateInfoOpt.isPresent())
+			return NumUtil.getNum(gudongRateInfoOpt.get().getGudongProfit());
+		else
+			return 0d;
+	}
+	
+	/**
+	 * 获取总公司的利润
+	 * 
+	 * @time 2018年2月21日
+	 * @return
+	 */
+	private Double get_Zonggongsi_Profit() {
+		Optional<GudongRateInfo> gudongRateInfoOpt = tableGDSum.getItems().stream().filter(info->info.getGudongName().contains("总公司")).findFirst();
 		if(gudongRateInfoOpt.isPresent())
 			return NumUtil.getNum(gudongRateInfoOpt.get().getGudongProfit());
 		else

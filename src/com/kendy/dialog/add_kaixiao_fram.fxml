@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import java.lang.*?>
 <?import java.net.*?>
 <?import java.util.*?>
@@ -10,48 +11,71 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane hgap="14.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="194.0" prefWidth="340.0" vgap="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kendy.controller.AddController">
+<GridPane hgap="14.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="238.0" prefWidth="340.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kendy.controller.AddController">
   <children>
-    <VBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" prefHeight="112.0" prefWidth="298.0" spacing="7.0" GridPane.columnIndex="1">
+    <VBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" prefHeight="196.0" prefWidth="284.0" spacing="20.0" GridPane.columnIndex="1">
       <children>
-        <Label fx:id="messageLabel" text="开销类型：" textAlignment="LEFT" wrapText="true">
-          <font>
-            <Font name="System Bold" size="13.0" />
-          </font>
-        </Label>
-            <TextField fx:id="kaixiaoTypes" prefHeight="23.0" prefWidth="230.0" />
-            <Label fx:id="detailsLabel1" text="开销金额：" textAlignment="LEFT" wrapText="true">
-               <font>
+            <Group>
+               <children>
+                  <TextField fx:id="kaixiaoTypes" layoutX="71.0" prefHeight="23.0" prefWidth="203.0" />
+              <Label fx:id="messageLabel" text="开销类型：" textAlignment="LEFT" wrapText="true">
+                <font>
                   <Font name="System Bold" size="13.0" />
+                </font>
+              </Label>
+               </children>
+            </Group>
+            <Group>
+               <children>
+                  <Label fx:id="detailsLabel1" text="开销金额：" textAlignment="LEFT" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="kaixiaoMoneys" layoutX="70.0" prefHeight="23.0" prefWidth="201.0" />
+               </children>
+            </Group>
+            <Group>
+               <children>
+                  <Label fx:id="detailsLabel11" text="从属股东：" textAlignment="LEFT" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <ChoiceBox fx:id="gudongChoice" layoutX="73.0" prefHeight="23.0" prefWidth="198.0" />
+               </children>
+            </Group>
+      <Button fx:id="addKaixiao_OK_Btn" minWidth="80.0" mnemonicParsing="false" onAction="#addKaixiaoOKAction" prefHeight="28.0" prefWidth="274.0" text="OK">
+               <font>
+                  <Font size="13.0" />
                </font>
-            </Label>
-            <TextField fx:id="kaixiaoMoneys" prefHeight="23.0" prefWidth="230.0" />
-      </children>
-    </VBox>
-    <HBox maxHeight="-Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1">
-      <children>
-        <Pane maxWidth="+Infinity" HBox.hgrow="ALWAYS" />
-        <HBox fx:id="okParent" alignment="CENTER">
-          <children>
-            <Button fx:id="addKaixiao_OK_Btn" minWidth="80.0" mnemonicParsing="false" onAction="#addKaixiaoOKAction" text="OK" HBox.hgrow="NEVER">
-              <HBox.margin>
-                <Insets left="14.0" />
-              </HBox.margin>
+      </Button>
+            <Group>
+               <children>
+                  <Label fx:id="detailsLabel111" layoutX="24.0" layoutY="-89.0" prefHeight="18.0" prefWidth="275.0" text="温馨提示：无从属股东则不纳入股东贡献值中" textAlignment="LEFT" textFill="#ab1f1f" wrapText="true">
                      <font>
                         <Font size="13.0" />
                      </font>
-            </Button>
-          </children>
-        </HBox>
+                  </Label>
+               </children>
+            </Group>
+            <Group>
+               <children>
+                  <AnchorPane layoutX="-28.0" layoutY="-153.0" prefHeight="30.0" prefWidth="250.0" />
+               </children>
+            </Group>
       </children>
-    </HBox>
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+    </VBox>
   </children>
   <columnConstraints>
     <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
     <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="+Infinity" minWidth="-Infinity" />
   </columnConstraints>
   <padding>
-    <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+    <Insets left="14.0" right="14.0" top="14.0" />
   </padding>
   <rowConstraints>
     <RowConstraints maxHeight="Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="ALWAYS" />

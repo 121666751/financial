@@ -8,6 +8,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -81,6 +82,7 @@ import com.kendy.util.Text2ImageUtil;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -1342,6 +1344,23 @@ public class MyController implements Initializable{
 
     }
     
+    /**
+     * 获取股东列表
+     * @time 2018年2月21日
+     * @return
+     */
+    public static ObservableList<String>  getGudongList(){
+    	ObservableList gudongItems = Main.myController.gudongListView.getItems();
+    	if(CollectUtil.isHaveValue(gudongItems)) {
+//    		List<String> gudongList = new ArrayList<>();
+//    		gudongItems.forEach(gudong -> gudongList.add((String)gudong));
+//    		return gudongList;
+    		return gudongItems;
+    	}else {
+    		return FXCollections.observableArrayList();
+    	}
+    }
+    
     
     /**
      * 打开对话框
@@ -1811,10 +1830,10 @@ public class MyController implements Initializable{
 	 * 更新开销表
 	 * @param data
 	 */
-	public void updateKaixiaoTable(String kxType,String kxMoney){
+	public void updateKaixiaoTable(KaixiaoInfo  info){
 		//获取ObserableList
 		ObservableList<KaixiaoInfo> list = tableKaixiao.getItems();
-		list.add(new KaixiaoInfo(kxType,kxMoney));
+		list.add(info);
 		tableKaixiao.setItems(list);
 	}
 	/**
@@ -2612,6 +2631,12 @@ public class MyController implements Initializable{
 			if (result.get() == ButtonType.OK){
 				tableKaixiao.getItems().remove(kaixiaoIndex);
 				tableKaixiao.refresh();
+				//删除数据库中的开销数据
+				String kaixiaoID = info.getKaixiaoID();
+				String kaixiaoGudong = info.getKaixiaoGudong();
+				if(!StringUtil.isAnyBlank(kaixiaoID, kaixiaoGudong)) {
+					DBUtil.del_gudong_kaixiao_by_id(kaixiaoID);
+				}
 			}
 		}else {
 			ShowUtil.show("请选中要删除的实时开销记录!");

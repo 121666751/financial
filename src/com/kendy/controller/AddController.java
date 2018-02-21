@@ -2,12 +2,14 @@ package com.kendy.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import com.kendy.db.DBUtil;
 import com.kendy.entity.CurrentMoneyInfo;
 import com.kendy.entity.Huishui;
+import com.kendy.entity.KaixiaoInfo;
 import com.kendy.entity.Player;
 import com.kendy.service.JifenService;
 import com.kendy.service.MoneyService;
@@ -22,9 +24,12 @@ import application.Constants;
 import application.DataConstans;
 import application.Main;
 import application.MyController;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -52,34 +57,30 @@ public class AddController implements Initializable{
     @FXML
     private TextField insuranceRate; //新增保险比例
     //=====================================================================新增人员名单对话框
-    @FXML
-    private TextField gameIdField;//团ID
-    @FXML
-    private TextField gudongField;//股东
-    @FXML
-    private TextField teamField;//团队名称
-    @FXML
-    private TextField playerNameField;//玩家名称
-    @FXML
-    private TextField beizhuField;//备注
+    @FXML private TextField gameIdField;//团ID
+    @FXML private TextField gudongField;//股东
+    @FXML private TextField teamField;//团队名称
+    @FXML private TextField playerNameField;//玩家名称
+    @FXML private TextField beizhuField;//备注
     
     //=====================================================================新增实时开销对话框
-    @FXML
-    private TextField kaixiaoTypes;//名称
-    @FXML
-    private TextField kaixiaoMoneys;//开销金额
+    @FXML private TextField kaixiaoTypes;//名称
+    @FXML private TextField kaixiaoMoneys;//开销金额
+    @FXML private ChoiceBox<String> gudongChoice;//股东下拉框
+    @FXML private CheckBox needComputeBox;//是否需要纳入股东贡献值
     //=====================================================================新增实时金额对话框
-    @FXML
-    private TextField cmName;//名称
-    @FXML
-    private TextField cmMoney;//实时金额
-    @FXML
-    private TextField cmPlayerId;
-    @FXML
-    private TextField cmEdu;//额度
+    @FXML private TextField cmName;//名称
+    @FXML private TextField cmMoney;//实时金额
+    @FXML private TextField cmPlayerId;
+    @FXML private TextField cmEdu;//额度
     
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		//初始化股东列表
+		ObservableList<String> gudongList = MyController.getGudongList();
+		gudongChoice.setItems(gudongList);
+		
 		
 	}
 
@@ -170,9 +171,20 @@ public class AddController implements Initializable{
     		ShowUtil.show("添加开销成功", 2);
     		//更新到表
     		MyController mc = Main.myController;
-//    		MyController mc = (MyController) Main._fxmlLoader.getController();
     		if(mc != null) {
-    			mc.updateKaixiaoTable(kaixiaoTypes.getText(), kaixiaoMoneys.getText());
+    			String kxGudong = gudongChoice.getSelectionModel().getSelectedItem();
+    			String kaixiaoID = StringUtil.isBlank(kxGudong) ? "" : UUID.randomUUID().toString().replace("-", "");
+    			String kaixiaoTime = "";//StringUtil.nvl(DataConstans.Date_Str , "2017-01-01");
+    			String kxType = kaixiaoTypes.getText();
+    			String kxMoney = kaixiaoMoneys.getText();
+    			KaixiaoInfo kaixiaoInfo = new KaixiaoInfo(kaixiaoID,kxType,kxMoney,kxGudong,kaixiaoTime);
+    			// 添加到场次信息中的开销表(若股东为空，则ID为空)
+    			mc.updateKaixiaoTable(kaixiaoInfo);
+    			// 添加到数据库中（如果股东不为空）
+    			if(!StringUtil.isAnyBlank(kxMoney, kxGudong)) {
+    				DBUtil.saveOrUpdate_gudong_kaixiao(kaixiaoInfo);
+    				//缓存？
+    			}
     		}else {
     			log.info("===========================mc = null ");
     		}
