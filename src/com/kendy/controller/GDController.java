@@ -28,6 +28,7 @@ import com.kendy.entity.Record;
 import com.kendy.service.MoneyService;
 import com.kendy.service.TeamProxyService;
 import com.kendy.util.CollectUtil;
+import com.kendy.util.MapUtil;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
 import com.kendy.util.StringUtil;
@@ -1121,6 +1122,15 @@ public class GDController implements Initializable{
 	 * @param even
 	 */
 	public void load_KF_data_Action(ActionEvent even) {
+		//从数据库获取客服数据
+		String kfValue = DBUtil.getValueByKey(TABLE_KF_DATA_KEY);
+		Map<String,String> kfMap = JSON.parseObject(kfValue, new TypeReference<Map<String,String>>() {});
+		
+		if(MapUtil.isNullOrEmpty(kfMap)) {
+			ShowUtil.show("数据库中无客服数据！");
+			return;
+		}
+		
 		//清空客服表数据s
 		if(TableUtil.isHasValue(tablekfGu)) {
 			tablekfGu.getItems().forEach(info->{
@@ -1132,9 +1142,6 @@ public class GDController implements Initializable{
 			});
 		}
 		
-		//从数据库获取客服数据
-		String kfValue = DBUtil.getValueByKey(TABLE_KF_DATA_KEY);
-		Map<String,String> kfMap = JSON.parseObject(kfValue, new TypeReference<Map<String,String>>() {});
 		
 		//保证有20条记录
 		ObservableList<GDInputInfo> obList = FXCollections.observableArrayList();
