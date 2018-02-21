@@ -1930,6 +1930,7 @@ public class MyController implements Initializable{
 				LMController.refreshClubList();
 				LMController.checkOverEdu(final_selected_LM_type);//检查俱乐部额度
 				
+				
 				//当局已结算的团队服务费之和 要置为0
 				current_Jiesuaned_team_fwf_sum = 0d;
 				
@@ -2797,6 +2798,8 @@ public class MyController implements Initializable{
     		
     		//从数据库中删除相应信息
 			//DBUtil.del_club_and_record();
+    		
+    		DBUtil.reset_clubZhuofei_to_0();//重置联盟中俱乐部的桌费和已结算为0
 			
     		ShowUtil.show("已更新到数据库，即将关闭此软件。", 2);
     		Main.primaryStage0.close();
@@ -2862,10 +2865,17 @@ public class MyController implements Initializable{
 	 * @param event
 	 */
 	public void clearAllDataAction(ActionEvent event) {
-		if(DBUtil.clearAllData()) {
-			ShowUtil.show("清空成功。",1);
-		}else {
-			ShowUtil.show("清空失败");
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("提示");
+		alert.setHeaderText(null);
+		alert.setContentText("即将清空桌费、已结算、已锁定的历史数据，是否继续?");
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK){
+			if(DBUtil.clearAllData()) {
+				ShowUtil.show("清空成功。",1);
+			}else {
+				ShowUtil.show("清空失败");
+			}
 		}
 	}
 	

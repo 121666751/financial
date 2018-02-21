@@ -945,16 +945,31 @@ public class DBUtil {
 		boolean isOK = true;
 		try {
 			con = DBConnection.getConnection();
+			//表：last_locked_data
 			String sql1 = "delete from last_locked_data";
-			String sql2 = "DELETE from yesterday_data where dateTime != '2017-01-01'";
-			String sql3 = "DELETE from historyrecord ";
-			
 			ps = con.prepareStatement(sql1);
 			ps.execute();
+			
+			String sql2 = "DELETE from yesterday_data where dateTime != '2017-01-01'";
 			ps = con.prepareStatement(sql2);
 			ps.execute();
+			
+			
+			String sql3 = "DELETE from historyrecord ";
 			ps = con.prepareStatement(sql3);
 			ps.execute();
+			
+			sql = "DELETE from club_zhuofei ";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+			
+			sql = "DELETE from record ";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+			
+			//俱乐部的桌费和已结处归0
+			reset_clubZhuofei_to_0();
+			
 		} catch (SQLException e) {
 			isOK = false;
 			ErrorUtil.err("清空并恢复到最开始的数据",e);
@@ -1298,6 +1313,25 @@ public class DBUtil {
 			}
 		}catch (SQLException e) {
 			ErrorUtil.err("根据ID("+id+")删除俱乐部失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	/**
+	 * 到新的一天重置俱乐部桌费为0
+	 * @time 2018年2月21日
+	 * @param id
+	 */
+	public static void reset_clubZhuofei_to_0() {
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			sql = "update club c set c.zhuoFei='0',c.zhuoFei2='0',c.zhuoFei3='0',c.yiJieSuan='0',c.yiJieSuan2='0',c.yiJieSuan3='0'";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("到新的一天重置俱乐部桌费为0失败", e);
 		}finally{
 			close(con,ps);
 		}
