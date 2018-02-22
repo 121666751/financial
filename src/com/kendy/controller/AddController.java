@@ -1,6 +1,8 @@
 package com.kendy.controller;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
@@ -24,6 +26,7 @@ import application.Constants;
 import application.DataConstans;
 import application.Main;
 import application.MyController;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -74,12 +77,21 @@ public class AddController implements Initializable{
     @FXML private TextField cmPlayerId;
     @FXML private TextField cmEdu;//额度
     
+    public static final String ALL_COMPANY = "全公司参与";
+    
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		//初始化股东列表
 		ObservableList<String> gudongList = MyController.getGudongList();
-		gudongChoice.setItems(gudongList);
+		ObservableList<String> copyGudongList = FXCollections.observableArrayList();
+		for(String gudong : gudongList) {
+			copyGudongList.add(gudong);
+		}
+		if(!copyGudongList.contains(ALL_COMPANY)) {
+			copyGudongList.add(ALL_COMPANY);
+		}
+		gudongChoice.setItems(copyGudongList);
 		
 		
 	}
@@ -173,17 +185,31 @@ public class AddController implements Initializable{
     		MyController mc = Main.myController;
     		if(mc != null) {
     			String kxGudong = gudongChoice.getSelectionModel().getSelectedItem();
-    			String kaixiaoID = StringUtil.isBlank(kxGudong) ? "" : UUID.randomUUID().toString().replace("-", "");
-    			String kaixiaoTime = "";//StringUtil.nvl(DataConstans.Date_Str , "2017-01-01");
+    			boolean isGudongEmpty = StringUtil.isBlank(kxGudong);
+    			String kaixiaoID = isGudongEmpty ? "" : UUID.randomUUID().toString().replace("-", "");
+    			String kaixiaoTime = StringUtil.nvl(DataConstans.Date_Str , "2017-01-01");
     			String kxType = kaixiaoTypes.getText();
-    			String kxMoney = kaixiaoMoneys.getText();
+    			String kxMoney = StringUtil.nvl(kaixiaoMoneys.getText(),"");
     			KaixiaoInfo kaixiaoInfo = new KaixiaoInfo(kaixiaoID,kxType,kxMoney,kxGudong,kaixiaoTime);
     			// 添加到场次信息中的开销表(若股东为空，则ID为空)
     			mc.updateKaixiaoTable(kaixiaoInfo);
     			// 添加到数据库中（如果股东不为空）
     			if(!StringUtil.isAnyBlank(kxMoney, kxGudong)) {
-    				DBUtil.saveOrUpdate_gudong_kaixiao(kaixiaoInfo);
-    				//缓存？
+    				if(ALL_COMPANY.equals(kxGudong)) {
+    					// N个股东平摊（包括银河股东）
+    					ObservableList<String> gudongList = MyController.getGudongList();
+    					String averageKaixiaoMoney = getAverageKaixiaoMoney(kxMoney, gudongList.size());//股东平摊的开销值
+    					//有几个股东就保存几条开销记录进数据库
+    					for(String gudongName : gudongList) {
+    						kaixiaoID = UUID.randomUUID().toString().replace("-", "");
+    						KaixiaoInfo averageInfo = new KaixiaoInfo(kaixiaoID,kxType,averageKaixiaoMoney,gudongName,kaixiaoTime);
+    						DBUtil.saveOrUpdate_gudong_kaixiao(averageInfo);
+    					}
+    					
+    				}else {
+    					DBUtil.saveOrUpdate_gudong_kaixiao(kaixiaoInfo);
+    				}
+    				//缓存？ TODO
     			}
     		}else {
     			log.info("===========================mc = null ");
@@ -195,6 +221,21 @@ public class AddController implements Initializable{
     	DataConstans.framesNameMap.remove(Constants.ADD_KAIXIAO_FRAME);
     	addNewPlayerStage.close();
     }
+    
+    /**
+     * 获取股东平摊的值
+     * 
+     * @time 2018年2月22日
+     * @param kxMoney
+     * @param gudongSize
+     * @return
+     */
+    private String getAverageKaixiaoMoney(String kxMoney, Integer gudongSize) {
+    	Double money = NumUtil.getNum(kxMoney);
+    	Double averageKaixiaoMoney = NumUtil.getNumDivide(money, Double.valueOf(gudongSize.toString()));
+    	return NumUtil.digit2(averageKaixiaoMoney.toString());
+    }
+    
     /**
      * 增加人员的实时金额
      */

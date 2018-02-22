@@ -194,9 +194,9 @@ public class GDController implements Initializable{
 						Collectors.groupingBy(info -> StringUtil.nvl(info.getTeamId(),UN_KNOWN))));//再按团队分
 		
 		//add 20182-2-21 手动加入股东总公司
-		if(gudongTeamMap !=null) {
-			gudongTeamMap.put("总公司", Collections.emptyMap());
-		}
+//		if(gudongTeamMap !=null) {
+//			gudongTeamMap.put("总公司", Collections.emptyMap());
+//		}
 	}
 	
 	/**
@@ -985,7 +985,7 @@ public class GDController implements Initializable{
 		ObservableList<GDInputInfo> obList = FXCollections.observableArrayList();
 		//股东列表总和：除了银河股东,用于获取各股东的比例（比拼值）,加上了总人次利润（除去银河股东）
 		Double sum = tableGDSum.getItems().stream()
-				.filter(info->!info.getGudongName().contains("银河") && (!info.getGudongName().contains("总公司")))
+				.filter(info->!info.getGudongName().contains("银河"))
 				.map(info->NumUtil.getNum(info.getGudongProfit()))
 				.reduce(Double::sum).orElseGet(()->0d) + renciProfit;
 		
@@ -994,7 +994,7 @@ public class GDController implements Initializable{
 		
 		//计算各股东的奖励金额
 		tableGDSum.getItems().stream()
-			.filter(info->!info.getGudongName().contains("银河") && (!info.getGudongName().contains("总公司")))
+			.filter(info->!info.getGudongName().contains("银河"))
 			.map(info -> {
 				/********************************************************添加相应股东的人次总利润**********/
 				String gudongId = info.getGudongName().replace("股东", "");
@@ -1080,7 +1080,7 @@ public class GDController implements Initializable{
 		//股东列表：除了银河股东
 		if(tableYSGu.getItems()==null || tableYSGu.getItems().size() == 0 || StringUtil.isBlank(tableYSGu.getItems().get(0).getType())) {
 			tableGDSum.getItems().stream()
-					.filter(info->!info.getGudongName().contains("银河") && (!info.getGudongName().contains("总公司")))
+					.filter(info->!info.getGudongName().contains("银河"))
 					.map(info -> new GDInputInfo(info.getGudongName(),"",""))
 					.forEach(info-> {
 						obList.add(info);
@@ -1130,13 +1130,14 @@ public class GDController implements Initializable{
 	 * @time 2018年2月21日
 	 * @return
 	 */
-	private Double get_Zonggongsi_Profit() {
-		Optional<GudongRateInfo> gudongRateInfoOpt = tableGDSum.getItems().stream().filter(info->info.getGudongName().contains("总公司")).findFirst();
-		if(gudongRateInfoOpt.isPresent())
-			return NumUtil.getNum(gudongRateInfoOpt.get().getGudongProfit());
-		else
-			return 0d;
-	}
+//	@Deprecated
+//	private Double get_Zonggongsi_Profit() {
+//		Optional<GudongRateInfo> gudongRateInfoOpt = tableGDSum.getItems().stream().filter(info->info.getGudongName().contains("总公司")).findFirst();
+//		if(gudongRateInfoOpt.isPresent())
+//			return NumUtil.getNum(gudongRateInfoOpt.get().getGudongProfit());
+//		else
+//			return 0d;
+//	}
 	
 	/**
 	 * 设置客服股数据
