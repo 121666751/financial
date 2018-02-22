@@ -9,9 +9,20 @@ import com.kendy.entity.KaixiaoInfo;
 public class Test {
 
 	public static void main(String[] args) {
-		String str = "[{\"kaixiaoGudong\":\"总公司\",\"kaixiaoID\":\"8771f3c9890e466fa8ef99aac366af25\",\"kaixiaoMoney\":\"200\",\"kaixiaoTime\":\"\",\"kaixiaoType\":\"1\"}]";
-		List<KaixiaoInfo> KaixiaoInfoList = JSON.parseObject(str, new TypeReference<List<KaixiaoInfo>>() {});
-		System.out.println("finishes..." + KaixiaoInfoList);
+		// -0.000000 / -0.000000 = NaN
+		Double a = -895.300000d ;
+		Double b = -0.000000d ;
+		//System.out.println( a / b);
+		if(a.compareTo(0d) == 0 || b.compareTo(0d) == 0 || b.compareTo(-0.0) == 0) {
+			System.out.println(a.compareTo(0d) == 0);
+			System.out.println(b.compareTo(0d) == 0);
+			System.out.println(b.compareTo(-0.0) == 0);
+		}else {
+			System.out.println(a.compareTo(0d) == 0);
+			System.out.println(b.compareTo(0d) == 0);
+			System.out.println(b.compareTo(-0.0) == 0);
+			System.out.printf(" %f / %f = " + a / b +"\n", a, b);
+		}
 	}
 
 }

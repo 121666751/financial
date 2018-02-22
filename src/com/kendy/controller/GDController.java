@@ -301,7 +301,7 @@ public class GDController implements Initializable{
 		//每个股东的利润占比
 		gudongRecordList.forEach((gudong,eachRecordList) -> {
 			Double eachGudong =  getHelirun(eachRecordList);//每个股东的利润
-			String gudongRate = NumUtil.getPercentStr( eachGudong / totalProfits );//每个股东的利润占比
+			String gudongRate = NumUtil.getPercentStr( divide(eachGudong, totalProfits) );//每个股东的利润占比
 			//System.out.println(String.format("股东%s占比%s", gudong,gudongRate));
 			gudongProfitsValueMap.put(gudong, NumUtil.digit0(eachGudong));//股东值占比
 			gudongProfitsRateMap.put(gudong, gudongRate);//股东值
@@ -715,7 +715,7 @@ public class GDController implements Initializable{
 		//整个股东的所有人次（生活）
 		Long gudongRenciCount = teamMap.values().stream().collect(Collectors.summarizingInt(l->l.size())).getSum();
 		Double teamRenci = gudongRenciCount * NumUtil.getNum(getRenci());
-		Double teamRenci_Double =  teamRenci / getComputeTotalProfit(); 
+		Double teamRenci_Double =  divide(teamRenci, getComputeTotalProfit()); 
 		String teamRenciStr = NumUtil.getPercentStr(teamRenci_Double);
 		table.getItems().add(new GudongRateInfo("人次",teamRenciStr,teamRenci.intValue()+""));
 		table.refresh();
@@ -931,7 +931,7 @@ public class GDController implements Initializable{
 	 */
 	private void setTable_YSGu_data_Second() {
 		//获取剩下的30%
-		Double currage_poor_rest = ( getJLPoolAvailable() / getCurrageRate() ) * (1 - getCurrageRate());
+		Double currage_poor_rest = ( divide(getJLPoolAvailable(), getCurrageRate()) ) * (1 - getCurrageRate());
 		//获取原始股比例
 		tableYSGu.getItems().forEach(info-> {
 			String oldVal = info.getValue();
@@ -1002,7 +1002,7 @@ public class GDController implements Initializable{
 				Double gudongTotalRenciProfit = NumUtil.getNumTimes(size.toString(), getRenci());
 				/******************************************************************/
 				
-				Double rate =  (NumUtil.getNum(info.getGudongProfit()) + gudongTotalRenciProfit ) / sum ;
+				Double rate =  divide((NumUtil.getNum(info.getGudongProfit()) + gudongTotalRenciProfit ), sum);
 				Double currageMoney = curragePool * rate;
 				//明细缓存
 				GDDetailInfo gdDetailInfo = detailMap.get(info.getGudongName());
@@ -1037,8 +1037,7 @@ public class GDController implements Initializable{
 		//Double totalYSGu = tableYSGu.getItems().stream().map(info->NumUtil.getNum(info.getValue())).reduce(Double::sum).get();
 		Double totalYSGu = getYinheProfit();
 		//总公司
-		Double Zonggongsi_Profit = get_Zonggongsi_Profit(); //TODO
-		
+		//Double Zonggongsi_Profit = get_Zonggongsi_Profit(); //TODO
 		
 		//客服股
 		Double totalKFGu = tablekfGu.getItems().stream().map(info->NumUtil.getNum(info.getValue())).reduce(Double::sum).get();
@@ -1294,5 +1293,9 @@ public class GDController implements Initializable{
 		}else {
 			ShowUtil.show("保存成功，记录数：0", 2);
 		}
+	}
+	
+	private static Double divide(Double d1, double d2) {
+		return NumUtil.getNumDivide(d1, d2);
 	}
 }

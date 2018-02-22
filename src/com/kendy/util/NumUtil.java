@@ -98,7 +98,8 @@ public class NumUtil {
 	public static Double getNumByPercent(String percentStr) {
 		if(!StringUtil.isBlank(percentStr) && percentStr.contains("%")) {
 			 try {
-				return new Double(percentStr.substring(0, percentStr.indexOf("%"))) / 100;
+				Double res = NumUtil.getNumDivide(new Double(percentStr.substring(0, percentStr.indexOf("%"))) , 100d);
+				return res;
 			} catch (NumberFormatException e) {
 				ErrorUtil.err(percentStr+"把百分比转化为小数失败", e);
 				return 0d;
@@ -178,7 +179,8 @@ public class NumUtil {
 	 * @return
 	 */
 	public static Double getNumDivide(Double d1, Double d2) {
-		if(d1.compareTo(0d) == 0 || d2.compareTo(0d) == 0) {
+		if(d1.compareTo(0d) == 0 || d2.compareTo(0d) == 0
+				|| d1.compareTo(-0d) == 0 || d2.compareTo(-0d) == 0) {
 			return 0d;
 		}else {
 			return d1 / d2;
