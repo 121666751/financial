@@ -2268,7 +2268,7 @@ public class DBUtil {
 	public static void del_gudong_kaixiao_by_id(String kaixiaoID) {
 		try {
 			con = DBConnection.getConnection();
-			String sql  = "delete from gudong_kaixiao where kaixiaoID = '"+ kaixiaoID +"'";
+			String sql  = "delete from gudong_kaixiao where kaixiaoID like '"+ kaixiaoID +"%'";
 			ps = con.prepareStatement(sql);
 			ps.execute();
 		}catch (SQLException e) {

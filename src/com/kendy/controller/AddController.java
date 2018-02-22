@@ -200,8 +200,9 @@ public class AddController implements Initializable{
     					ObservableList<String> gudongList = MyController.getGudongList();
     					String averageKaixiaoMoney = getAverageKaixiaoMoney(kxMoney, gudongList.size());//股东平摊的开销值
     					//有几个股东就保存几条开销记录进数据库
+    					int i=0;
     					for(String gudongName : gudongList) {
-    						kaixiaoID = UUID.randomUUID().toString().replace("-", "");
+    						kaixiaoID = kaixiaoID + "#" + (i++); //共用一个开销ID, 从0编写到N
     						KaixiaoInfo averageInfo = new KaixiaoInfo(kaixiaoID,kxType,averageKaixiaoMoney,gudongName,kaixiaoTime);
     						DBUtil.saveOrUpdate_gudong_kaixiao(averageInfo);
     					}

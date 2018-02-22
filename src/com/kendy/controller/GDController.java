@@ -1170,6 +1170,7 @@ public class GDController implements Initializable{
 	public void clearDataAction(ActionEvent event) {
 		//清空数据来源
 		dataList.clear();
+		gudongKaixiao_dataList.clear();
 		
 		//清空总和表
 		if(tableGDSum.getItems() != null)
