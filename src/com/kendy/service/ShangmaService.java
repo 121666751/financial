@@ -865,6 +865,8 @@ public class ShangmaService {
 		saveSMDetail(playerId);
 		//刷新左表对应记录
 		updateRowByPlayerId(playerId,shangmaVal);
+		//2018-2-22
+		updateTeamYajinAndEdu();
 	}
 	
 	//输入1，获取第01局
