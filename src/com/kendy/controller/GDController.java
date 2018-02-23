@@ -255,7 +255,7 @@ public class GDController implements Initializable{
 	}
 	
 	/**
-	 * 设置计算总利润与场次总利润的差值
+	 * 设置计算总利润与场次总利润的差额
 	 * @time 2018年1月25日
 	 */
 	public void refreshDifTatalValue() {
@@ -265,7 +265,7 @@ public class GDController implements Initializable{
 		changciTotalProfit.setText(NumUtil.digit0(changciTotalProfitVal));
 		//计算差值 
 		Double difProfitVal = NumUtil.getNum(changciTotalProfitVal) - NumUtil.getNum(computeTotalProfitVal);
-		difTotalProfit.setText(NumUtil.digit0(difProfitVal));
+		difTotalProfit.setText(NumUtil.digit2(difProfitVal.toString()));
 	}
 	
 	/**
@@ -296,7 +296,7 @@ public class GDController implements Initializable{
 			ShowUtil.show("当天总利润计算为0", 2);
 			return;
 		}else {
-			computeTotalProfit.setText(NumUtil.digit0(totalProfits));
+			computeTotalProfit.setText(NumUtil.digit2(totalProfits.toString()));
 		}
 		//每个股东的利润占比
 		gudongRecordList.forEach((gudong,eachRecordList) -> {
@@ -692,13 +692,13 @@ public class GDController implements Initializable{
 			.get();
 		table.getColumns().get(1).setText(NumUtil.getPercentStr(rateSum));
 		//具体数值总和
-		Integer valSum = table.getItems().stream()
+		Double valSum = table.getItems().stream()
 				.map(GudongRateInfo::getDescription)
 				.map(val -> { return NumUtil.getNum(val);})
 				.reduce(Double::sum)
 				.get()
-				.intValue();
-		table.getColumns().get(2).setText(valSum+"");
+				.doubleValue();
+		table.getColumns().get(2).setText(NumUtil.digit2(valSum.toString()));
 		table.refresh();
 		
 	}
@@ -734,7 +734,7 @@ public class GDController implements Initializable{
 		Double LM1Zhuofei = getLM1TotalZhuofei(gudong) *(-1);
 		Double LM1Zhuofei_Double =  NumUtil.getNumDivide(LM1Zhuofei , getComputeTotalProfit()); 
 		String LM1ZhuofeiStr = NumUtil.getPercentStr(LM1Zhuofei_Double);
-		table.getItems().add(new GudongRateInfo("联盟桌费",LM1ZhuofeiStr, LM1Zhuofei.intValue()+""));
+		table.getItems().add(new GudongRateInfo("联盟桌费",LM1ZhuofeiStr, LM1Zhuofei+""));
 		table.refresh();
 	}
 	
@@ -749,7 +749,7 @@ public class GDController implements Initializable{
 		Double gudongKaixiao = getKaixiaoByGudong(gudong) ; //*(-1);
 		Double gudongKaixiao_Double =  NumUtil.getNumDivide(gudongKaixiao , getComputeTotalProfit()); 
 		String gudongKaixiaoStr = NumUtil.getPercentStr(gudongKaixiao_Double);
-		table.getItems().add(new GudongRateInfo("累计开销",gudongKaixiaoStr, gudongKaixiao.intValue()+""));
+		table.getItems().add(new GudongRateInfo("累计开销",gudongKaixiaoStr, gudongKaixiao+""));
 		table.refresh();
 	}
 	
@@ -772,7 +772,7 @@ public class GDController implements Initializable{
 		//计算团队占比      公式 = (人次 + 团队服务费) / 当天总利润 
 		Double teamRate_Double =  NumUtil.getNumDivide(teamProfits , getComputeTotalProfit()); 
 		String teamRateStr = NumUtil.getPercentStr(teamRate_Double);
-		table.getItems().add(new GudongRateInfo(getFinalTeamId(teamId,gudong),teamRateStr,NumUtil.digit0(teamProfits)));
+		table.getItems().add(new GudongRateInfo(getFinalTeamId(teamId,gudong),teamRateStr,NumUtil.digit2(teamProfits+"")));
 		
 		table.refresh();
 		
@@ -805,7 +805,7 @@ public class GDController implements Initializable{
 		//Double teamRenci = teamList.size() * NumUtil.getNum(getRenci());
 		Double companyRate_Double = NumUtil.getNumDivide(companyProfit , getComputeTotalProfit()); 
 		String companyRateStr = NumUtil.getPercentStr(companyRate_Double);
-		table.getItems().add(new GudongRateInfo(getFinalTeamId(teamId,gudong),companyRateStr,companyProfit.intValue()+""));
+		table.getItems().add(new GudongRateInfo(getFinalTeamId(teamId,gudong),companyRateStr,companyProfit+""));
 		
 		table.refresh();
 	}
