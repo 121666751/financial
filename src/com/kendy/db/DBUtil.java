@@ -1796,7 +1796,7 @@ public class DBUtil {
 	 * @time 2017年11月14日
 	 * @param playerId
 	 */
-	public static void del_club_and_record() {
+	public static void del_all_record() {
 		try {
 			con = DBConnection.getConnection();
 			String sql;

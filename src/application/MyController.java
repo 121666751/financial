@@ -218,7 +218,7 @@ public class MyController implements Initializable{
 	@FXML private TableColumn<ZijinInfo,String> zijinType;
 	@FXML private TableColumn<ZijinInfo,String> zijinAccount;
 	//=================================================利润表tableView
-	@FXML private TableView<ProfitInfo> tableProfit;
+	@FXML public TableView<ProfitInfo> tableProfit;
 	
 	@FXML private TableColumn<ProfitInfo,String> profitType;
 	@FXML private TableColumn<ProfitInfo,String> profitAccount;

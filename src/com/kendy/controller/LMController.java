@@ -1042,7 +1042,7 @@ public class LMController implements Initializable{
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK){
 			//从数据库中删除相应信息
-			DBUtil.del_club_and_record();
+			DBUtil.del_all_record();
 			
 			/****************前端展示的相应信息都置空****************/
 			

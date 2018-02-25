@@ -18,11 +18,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.kendy.db.DBUtil;
 import com.kendy.entity.ClubZhuofei;
+import com.kendy.entity.CurrentMoneyInfo;
 import com.kendy.entity.GDDetailInfo;
 import com.kendy.entity.GDInputInfo;
 import com.kendy.entity.GudongRateInfo;
 import com.kendy.entity.KaixiaoInfo;
 import com.kendy.entity.Player;
+import com.kendy.entity.ProfitInfo;
 import com.kendy.entity.Record;
 import com.kendy.service.MoneyService;
 import com.kendy.service.TeamProxyService;
@@ -34,6 +36,7 @@ import com.kendy.util.StringUtil;
 import com.kendy.util.TableUtil;
 
 import application.DataConstans;
+import application.Main;
 import application.MyController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,11 +44,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
@@ -103,6 +109,8 @@ public class GDController implements Initializable{
 	@FXML private TableColumn<GDDetailInfo,String> jl7;
 	@FXML private TableColumn<GDDetailInfo,String> total;
 	
+	
+	public static  boolean has_quotar_oneKey = false;
 	
 	public static final String TABLE_KF_DATA_KEY = "table_kf_data";
 	
@@ -288,12 +296,13 @@ public class GDController implements Initializable{
 	 */
 	public  void prepareAllData() {
 		initData();
+		if(CollectUtil.isNullOrEmpty(dataList)) return;
 		Map<String,List<Record>> gudongRecordList = dataList.stream()
 				.collect(Collectors.groupingBy(record -> getGudongByPlayerId((Record)record)));
 		//计算总利润
 		Double totalProfits = getTotalProfits();
 		if(Double.compare(totalProfits, 0) == 0) {
-			ShowUtil.show("当天总利润计算为0", 2);
+			ShowUtil.show("总利润计算为0", 2);
 			return;
 		}else {
 			computeTotalProfit.setText(NumUtil.digit2(totalProfits.toString()));
@@ -846,6 +855,14 @@ public class GDController implements Initializable{
 		clearBtn.fire();
 		//准备数据
 		prepareAllData();
+		if(CollectUtil.isNullOrEmpty(dataList)) {
+			tableGDDetail.getItems().clear();
+			tableYSGu.getItems().clear();
+			tablekfGu.getItems().clear();
+			tableEncourageGu.getItems().clear();
+			ShowUtil.show("当前数据库无历史数据！",2);
+			return;
+		}
 
 		//生成动态股东表
 		dynamicGenerateGDTable();
@@ -1207,13 +1224,14 @@ public class GDController implements Initializable{
 			if(TableUtil.isNullOrEmpty(table)) {
 				
 			}else {
-				table.getItems().forEach(info->{
-					info.setDescription("");
-					info.setId("");
-					//info.setRate("");
-					//info.setType("");
-					info.setValue("");
-				});
+				if(table.getItems() != null)
+					table.getItems().forEach(info->{
+						info.setDescription("");
+						info.setId("");
+						//info.setRate("");
+						//info.setType("");
+						info.setValue("");
+					});
 			}
 			
 		}
@@ -1300,6 +1318,29 @@ public class GDController implements Initializable{
 	private static Double divide(Double d1, double d2) {
 		return NumUtil.getNumDivide(d1, d2);
 	}
+	/**
+	 * 手动删除所有Record数据
+	 * 
+	 * @time 2018年2月25日
+	 * @param event
+	 */
+	public void clear_all_records_Action(ActionEvent event) {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("警告");
+		alert.setHeaderText(null);
+		alert.setContentText("\r\n确定要手动删除数据库中所有白名单数据？");
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK){
+			//删除缓存？
+			clearBtn.fire();
+			
+			//删除数据库
+			DBUtil.del_all_record();
+			
+			log.info("客户手动删除数据库中所有白名单数据成功！！");
+			ShowUtil.show("手动删除成功！", 2);
+		}
+	}
 	
 	/**
 	 * 一键配额
@@ -1308,6 +1349,36 @@ public class GDController implements Initializable{
 	 * @param event
 	 */
 	public void quotar_money_oneKey_Action(ActionEvent event) {
-		
+		if(has_quotar_oneKey) {
+			ShowUtil.show("您已经一键分配过了！");
+			return;
+		}
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("警告");
+		alert.setHeaderText(null);
+		alert.setContentText("\r\n 将清空场次信息中的利润栏以及把股东值赋到金额栏, 确定??");
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK){
+			MyController mc = Main.myController;
+			//金额表
+			TableView<CurrentMoneyInfo> tableMoney = mc.tableCurrentMoneyInfo;
+			//利润表
+			TableView<ProfitInfo> tableProfit = mc.tableProfit;
+			//清空利润表
+			tableProfit.getItems().forEach(info -> info.setProfitAccount("0"));
+			//将股东值赋到金额栏
+			String date = StringUtil.nvl(DataConstans.Date_Str, "2017-01-01");
+			for(GDDetailInfo info : tableGDDetail.getItems()) {
+				String money = StringUtil.nvl(info.getTotal(),"0");
+				String name = date + "#" + info.getName() + "#" + money;
+				CurrentMoneyInfo cmi = new CurrentMoneyInfo(name, money, "", ""); //mingzi, shishiJine,String wanjiaId,String cmiEdu
+				tableMoney.getItems().add(cmi);
+			}
+			tableMoney.refresh();
+			tableProfit.refresh();
+			has_quotar_oneKey = true;
+			
+		}
 	}
+	
 }

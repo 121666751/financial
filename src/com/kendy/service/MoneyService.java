@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.kendy.controller.GDController;
 import com.kendy.db.DBUtil;
 import com.kendy.entity.CurrentMoneyInfo;
 import com.kendy.entity.DangjuInfo;
@@ -905,6 +906,8 @@ public class MoneyService {
 		//2 更新利润表
 		updateTableProfit(tableProfit,sumOfKaixiao);
 		
+		//add 2018-02-25 
+		clearTableProfit(tableProfit);
 		//3 计算利润表总和
 		double sumOfProfit = getSumOfTableProfit(tableProfit);
 		DataConstans.SumMap.put("利润", sumOfProfit);
@@ -930,7 +933,20 @@ public class MoneyService {
 		double sumOfTeamHS = getTeamSum("团队回水及保险总和");//DataConstans.SumMap.get("团队回水及保险总和");
 		setTotalNumOnTable(tableTeam,sumOfTeamHS,4);
 		
-
+	}
+	
+	/**
+	 * 清空利润表
+	 * 
+	 * @time 2018年2月25日
+	 * @param tableProfit
+	 */
+	public static void clearTableProfit(TableView<ProfitInfo> tableProfit) {
+		//清空利润表
+		if(GDController.has_quotar_oneKey) {
+			tableProfit.getItems().forEach(info -> info.setProfitAccount("0"));
+			ShowUtil.show("已经点击过贡献值中的一键分配，清空利润栏！", 2);
+		}
 	}
 	
 	/**
