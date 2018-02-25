@@ -150,7 +150,7 @@ public class MyController implements Initializable{
 	
 	public static DataConstans cons1 = new DataConstans();
 	//自动导入下一场战绩Excel的缓存队列
-	private static Queue<File> excelQueue = new ArrayBlockingQueue<>(300);
+	private static Queue<File> excelQueue = new ArrayBlockingQueue<>(1000);
 	
 	@FXML private TextField sysCode; //系统编码
 	@FXML private TextField membersDir; //人员名单Excel路径
@@ -1063,12 +1063,17 @@ public class MyController implements Initializable{
 				ErrorUtil.err(zjFilePath+"不是一个合法的Excel文件名称，请检查！");
 				return;
 			}
-			selectLM();
-			if(StringUtil.isBlank(selected_LM_type)) {
-				String msg = "导入战绩时没有选择对应的联盟，场次："+tableId+" Excel不准导入！";
-				ShowUtil.show(msg);
-				log.warn(msg);
-				return;
+			if(hbox_autoTestMode.isVisible()) {
+				final_selected_LM_type = "联盟1";
+				selected_LM_type = "联盟1";
+			}else {
+				selectLM();
+				if(StringUtil.isBlank(selected_LM_type)) {
+					String msg = "导入战绩时没有选择对应的联盟，场次："+tableId+" Excel不准导入！";
+					ShowUtil.show(msg);
+					log.warn(msg);
+					return;
+				}
 			}
 			
 			//将人员名单文件缓存起来
@@ -1949,7 +1954,11 @@ public class MyController implements Initializable{
 				DataConstans.Dangju_Team_Huishui_List = new LinkedList<>();
 				
 				//保存所有缓存数据进数据库(与上面的数据顺序不要变换），不然会中途加载时想查看以前的数据会报请撤销或锁定数据
-				DBUtil.saveLastLockedData();
+				//DBUtil.saveLastLockedData();//IO耗时长
+				Platform.runLater(() -> {
+						DBUtil.saveLastLockedData();//IO耗时长
+					}
+				);
 				
 				//联盟对帐：保存当场所有战绩到数据库
 				setLMRecords();

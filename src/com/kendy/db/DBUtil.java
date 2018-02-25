@@ -808,12 +808,14 @@ public class DBUtil {
 //			ps.execute();
 			
 			//插入最新锁定数据
+			long start = System.currentTimeMillis();
 			sql = "insert into last_locked_data values(?,?)";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, ju_size+"");
 			ps.setString(2, json_all_locked_data);
 			ps.execute();
-			log.info("================插入锁定数据进数据库...结束");
+			long end = System.currentTimeMillis();
+			log.info("================插入锁定数据进数据库...结束...局数："+ju_size+ "，耗时："+( end - start) + "毫秒");
 			
 			//删除原先数据
 			String sql = "DELETE from last_locked_data where ju < "+(ju_size);//ju_size-2
