@@ -8,7 +8,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,7 +29,6 @@ import com.kendy.controller.CombineIDController;
 import com.kendy.controller.GDController;
 import com.kendy.controller.LMController;
 import com.kendy.controller.QuotaController;
-import com.kendy.controller.TeamProxyController;
 import com.kendy.db.DBConnection;
 import com.kendy.db.DBUtil;
 import com.kendy.entity.CurrentMoneyInfo;
@@ -47,6 +45,7 @@ import com.kendy.entity.Player;
 import com.kendy.entity.ProfitInfo;
 import com.kendy.entity.ProxySumInfo;
 import com.kendy.entity.ProxyTeamInfo;
+import com.kendy.entity.Record;
 import com.kendy.entity.ShangmaDetailInfo;
 import com.kendy.entity.ShangmaInfo;
 import com.kendy.entity.TeamHuishuiInfo;
@@ -59,6 +58,7 @@ import com.kendy.entity.ZijinInfo;
 import com.kendy.entity.ZonghuiInfo;
 import com.kendy.entity.ZonghuiKaixiaoInfo;
 import com.kendy.excel.ExcelReaderUtil;
+import com.kendy.excel.LM_ExcelReaderUtil;
 import com.kendy.interfaces.Entity;
 import com.kendy.other.Wrap;
 import com.kendy.service.JifenService;
@@ -74,6 +74,7 @@ import com.kendy.util.ConsUtil;
 import com.kendy.util.ErrorUtil;
 import com.kendy.util.InputDialog;
 import com.kendy.util.NumUtil;
+import com.kendy.util.RandomUtil;
 import com.kendy.util.ShowUtil;
 import com.kendy.util.StringUtil;
 import com.kendy.util.TableUtil;
@@ -1081,12 +1082,13 @@ public class MyController implements Initializable{
 			dateLabel.setText(DataConstans.Date_Str);
 			if(wrap.resultSuccess){
 				indexLabel.setText("第"+tableId+"局");
-				//1 填充总信息表
-				MoneyService.fillTablerAfterImportZJ(tableTotalInfo, tablePaiju,tableDangju,tableJiaoshou,tableTeam,(List<UserInfos>)wrap.obj,tableId);
-				//2填充当局表和交收表和团队表的总和
-				MoneyService.setTotalNumOnTable(tableDangju, DataConstans.SumMap.get("当局"));
-				MoneyService.setTotalNumOnTable(tableJiaoshou, DataConstans.SumMap.get("交收"));
-				tableTeam.getColumns().get(4).setText(MoneyService.digit0(DataConstans.SumMap.get("团队回水及保险总和")));
+//				//1 填充总信息表
+//				MoneyService.fillTablerAfterImportZJ(tableTotalInfo, tablePaiju,tableDangju,tableJiaoshou,tableTeam,(List<UserInfos>)wrap.obj,tableId);
+//				//2填充当局表和交收表和团队表的总和
+//				MoneyService.setTotalNumOnTable(tableDangju, DataConstans.SumMap.get("当局"));
+//				MoneyService.setTotalNumOnTable(tableJiaoshou, DataConstans.SumMap.get("交收"));
+//				tableTeam.getColumns().get(4).setText(MoneyService.digit0(DataConstans.SumMap.get("团队回水及保险总和")));
+				importExcelData(tableId,(List<UserInfos>)wrap.obj);
 				
 				importZJBtn.setDisable(true);//导入不可用
 				ShowUtil.show("导入战绩文件成功", 2);
@@ -1094,6 +1096,15 @@ public class MyController implements Initializable{
 				ShowUtil.show("导入失败!!!原因:"+wrap.obj, 2);
 			}
 		}
+	}
+	
+	private void importExcelData(String tableId, List<UserInfos> userInfoList) {
+		//1 填充总信息表
+		MoneyService.fillTablerAfterImportZJ(tableTotalInfo, tablePaiju,tableDangju,tableJiaoshou,tableTeam, userInfoList, tableId);
+		//2填充当局表和交收表和团队表的总和
+		MoneyService.setTotalNumOnTable(tableDangju, DataConstans.SumMap.get("当局"));
+		MoneyService.setTotalNumOnTable(tableJiaoshou, DataConstans.SumMap.get("交收"));
+		tableTeam.getColumns().get(4).setText(MoneyService.digit0(DataConstans.SumMap.get("团队回水及保险总和")));
 	}
 	
 	/**
@@ -3359,6 +3370,33 @@ public class MyController implements Initializable{
      */
     public void saveTeamYajinAndEduAction(ActionEvent event) {
     	ShangmaService.updateTeamYajinAndEdu();
+    }
+    
+    /**
+     * 导入空白表
+     * @time 2018年2月25日
+     * @param event
+     */
+    public void importBlankExcelAction(ActionEvent event) {
+    	String tableId = RandomUtil.getRandomNumber(10000,20000) + "";//随机生成ID
+    	List<UserInfos> blankDataList = new ArrayList<UserInfos>();
+    	//存储数据  {场次=infoList...}
+		DataConstans.zjMap.put(tableId, blankDataList);
+		final_selected_LM_type = "联盟1";
+		selected_LM_type = "联盟1";
+		LMController.currentRecordList = new ArrayList<>();
+
+    	indexLabel.setText("第"+tableId+"局");
+//		//1 填充总信息表
+//		MoneyService.fillTablerAfterImportZJ(tableTotalInfo, tablePaiju,tableDangju,tableJiaoshou,tableTeam,(List<UserInfos>)wrap.obj,tableId);
+//		//2填充当局表和交收表和团队表的总和
+//		MoneyService.setTotalNumOnTable(tableDangju, DataConstans.SumMap.get("当局"));
+//		MoneyService.setTotalNumOnTable(tableJiaoshou, DataConstans.SumMap.get("交收"));
+//		tableTeam.getColumns().get(4).setText(MoneyService.digit0(DataConstans.SumMap.get("团队回水及保险总和")));
+		importExcelData(tableId, blankDataList);
+		
+		importZJBtn.setDisable(true);//导入不可用
+		ShowUtil.show("导入空白战绩文件成功", 2);
     }
 
 }

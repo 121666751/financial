@@ -153,11 +153,11 @@
                           <content>
                             <AnchorPane fx:id="exportSSJE" maxHeight="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="823.0" prefWidth="1324.0">
                                  <children>
-                                    <HBox fx:id="importZJHBox" layoutX="49.0" layoutY="53.0" prefHeight="24.0" prefWidth="652.0">
+                                    <HBox fx:id="importZJHBox" layoutX="89.0" layoutY="55.0" prefHeight="24.0" prefWidth="652.0">
                                        <children>
                                           <Group>
                                              <children>
-                                                <TextField fx:id="excelDir" editable="false" layoutX="156.0" layoutY="53.0" minWidth="100.0" opacity="0.38" prefHeight="23.0" prefWidth="330.0" AnchorPane.leftAnchor="156.0" />
+                                                <TextField fx:id="excelDir" editable="false" layoutX="156.0" layoutY="53.0" minWidth="100.0" opacity="0.38" prefHeight="23.0" prefWidth="249.0" AnchorPane.leftAnchor="156.0" />
                                                 <Button fx:id="importExcelBtn" layoutX="31.0" layoutY="53.0" mnemonicParsing="false" onAction="#openZJExcelAction" prefHeight="23.0" prefWidth="107.0" text="战绩excel" />
                                              </children>
                                           </Group>
@@ -310,6 +310,7 @@
                                           <Button fx:id="importZJBtn3" mnemonicParsing="false" onAction="#importNextZJExcelAction" prefHeight="36.0" prefWidth="99.0" text="导入下一场" />
                                        </children>
                                     </HBox>
+                                    <Button layoutX="22.0" layoutY="56.0" mnemonicParsing="false" onAction="#importBlankExcelAction" text="空白表" />
                                  </children>
                               </AnchorPane>
                           </content>

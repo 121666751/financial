@@ -1300,4 +1300,14 @@ public class GDController implements Initializable{
 	private static Double divide(Double d1, double d2) {
 		return NumUtil.getNumDivide(d1, d2);
 	}
+	
+	/**
+	 * 一键配额
+	 * 
+	 * @time 2018年2月25日
+	 * @param event
+	 */
+	public void quotar_money_oneKey_Action(ActionEvent event) {
+		
+	}
 }
