@@ -52,8 +52,8 @@ public class MemberService {
 		            	String newVal = (String)newValue;
 		            	if(!StringUtil.isBlank(newVal)) {
 		            		//玩家ID和玩家名称赋值
-		            		String wanjiaName = getIdFromStr(newVal);
-		            		memberPlayerId.setText(getNameFromStr(newVal));
+		            		String wanjiaName = getNameFromStr(newVal);
+		            		memberPlayerId.setText(getIdFromStr(newVal));
 		            		memberPlayerName.setText(wanjiaName);
 		            		//根据玩家名称去查询数据
 		            		updateMemberTable(tableMemberZJ,memberPlayerId.getText(),memberSumOfZJ);
