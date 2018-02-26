@@ -515,23 +515,33 @@ public class GDController implements Initializable{
 		tableYSGu.setEditable(true);
 		YS_gudongName.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("type") );
 		YS_gudongName.setCellFactory(TextFieldTableCell.forTableColumn());
+		YS_gudongName.setStyle("-fx-alignment: CENTER;");
 		YS_rate.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("rate") );
 		YS_rate.setCellFactory(TextFieldTableCell.forTableColumn());
+		YS_rate.setStyle("-fx-alignment: CENTER;");
 		YS_value.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("value") );
+		YS_value.setStyle("-fx-alignment: CENTER;");
+		
 		
 		//股东奖励股表
 		tableEncourageGu.setEditable(true);
 		Encourage_gudongName.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("type") );
+		Encourage_gudongName.setStyle("-fx-alignment: CENTER;");
 		Encourage_rate.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("rate") );
+		Encourage_rate.setStyle("-fx-alignment: CENTER;");
 		Encourage_value.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("value") );
+		Encourage_value.setStyle("-fx-alignment: CENTER;");
 		
 		//客服占股表
 		tablekfGu.setEditable(true);
 		KF_gudongName.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("type") );
 		KF_gudongName.setCellFactory(TextFieldTableCell.forTableColumn());
+		KF_gudongName.setStyle("-fx-alignment: CENTER;");
 		KF_rate.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("rate") );
 		KF_rate.setCellFactory(TextFieldTableCell.forTableColumn());
+		KF_rate.setStyle("-fx-alignment: CENTER;");
 		KF_value.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("value") );
+		KF_value.setStyle("-fx-alignment: CENTER;");
 	}
 	
 	/**
@@ -1368,12 +1378,14 @@ public class GDController implements Initializable{
 			tableProfit.getItems().forEach(info -> info.setProfitAccount("0"));
 			//将股东值赋到金额栏
 			String date = StringUtil.nvl(DataConstans.Date_Str, "2017-01-01");
+			date = date.substring(5);
 			for(GDDetailInfo info : tableGDDetail.getItems()) {
 				String money = StringUtil.nvl(info.getTotal(),"0");
 				String name = date + "#" + info.getName() + "#" + money;
 				CurrentMoneyInfo cmi = new CurrentMoneyInfo(name, money, "", ""); //mingzi, shishiJine,String wanjiaId,String cmiEdu
 				tableMoney.getItems().add(cmi);
 			}
+			//添加总利润差额
 			tableMoney.refresh();
 			tableProfit.refresh();
 			has_quotar_oneKey = true;
