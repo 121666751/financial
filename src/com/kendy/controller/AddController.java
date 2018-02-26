@@ -91,7 +91,8 @@ public class AddController implements Initializable{
 		if(!copyGudongList.contains(ALL_COMPANY)) {
 			copyGudongList.add(ALL_COMPANY);
 		}
-		gudongChoice.setItems(copyGudongList);
+		if(gudongChoice != null)
+			gudongChoice.setItems(copyGudongList);
 		
 		
 	}

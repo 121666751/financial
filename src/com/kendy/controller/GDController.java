@@ -75,7 +75,7 @@ public class GDController implements Initializable{
 	//*************************************************************************//
 	@FXML private Label computeTotalProfit;//计算总利润
 	@FXML private Label changciTotalProfit;//场次总利润
-	@FXML private Label difTotalProfit;//总利润差值 （为实时开销与桌费的差值）
+	@FXML private Label difTotalProfit;//总利润差额 （为实时开销与桌费的差值）
 	
 	@FXML private TextField personTime_ProfitRate_Text;//1人次等于多少利润
 	@FXML private Label totalRenciProfitText;//总人次利润
@@ -101,6 +101,7 @@ public class GDController implements Initializable{
 	@FXML private TableColumn<GDInputInfo,String> KF_gudongName;//股东名称
 	@FXML private TableColumn<GDInputInfo,String> KF_rate;//占比
 	@FXML private TableColumn<GDInputInfo,String> KF_value;//数值
+	@FXML private TableColumn<GDInputInfo,String> KF_salary;//底薪
 	//*************************************************************************//明细表
 	@FXML private TableView<GDDetailInfo> tableGDDetail;
 	@FXML private TableColumn<GDDetailInfo,String> name;
@@ -108,6 +109,7 @@ public class GDController implements Initializable{
 	@FXML private TableColumn<GDDetailInfo,String> jl3;
 	@FXML private TableColumn<GDDetailInfo,String> jl7;
 	@FXML private TableColumn<GDDetailInfo,String> total;
+	@FXML private TableColumn<GDDetailInfo,String> salary;
 	
 	
 	public static  boolean has_quotar_oneKey = false;
@@ -500,7 +502,7 @@ public class GDController implements Initializable{
 		setTableMockData(tablekfGu,10);
 		
 		//明细表
-		MyController.bindCellValue(name, ysgu, jl3, jl7, total);
+		MyController.bindCellValue(name, ysgu, jl3, jl7, total, salary);
 		
 	}
 	
@@ -542,6 +544,9 @@ public class GDController implements Initializable{
 		KF_rate.setStyle("-fx-alignment: CENTER;");
 		KF_value.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("value") );
 		KF_value.setStyle("-fx-alignment: CENTER;");
+		KF_salary.setCellValueFactory( new PropertyValueFactory<GDInputInfo,String>("description") );
+		KF_salary.setCellFactory(TextFieldTableCell.forTableColumn());
+		KF_salary.setStyle("-fx-alignment: CENTER;");
 	}
 	
 	/**
@@ -734,7 +739,7 @@ public class GDController implements Initializable{
 		//整个股东的所有人次（生活）
 		Long gudongRenciCount = teamMap.values().stream().collect(Collectors.summarizingInt(l->l.size())).getSum();
 		Double teamRenci = gudongRenciCount * NumUtil.getNum(getRenci());
-		Double teamRenci_Double =  divide(teamRenci, getComputeTotalProfit()); 
+		Double teamRenci_Double =  divide(teamRenci, getComputeTotalProfit_mins_totalSalary()); 
 		String teamRenciStr = NumUtil.getPercentStr(teamRenci_Double);
 		table.getItems().add(new GudongRateInfo("人次",teamRenciStr,teamRenci.intValue()+""));
 		table.refresh();
@@ -838,6 +843,18 @@ public class GDController implements Initializable{
 	public Double getComputeTotalProfit() {
 		return NumUtil.getNum(computeTotalProfit.getText()); 
 	}
+	
+
+	/**
+	 * 获取分配的总利润值（ = 计算总利润 - 客服工资 ）
+	 * @time 2018年1月27日
+	 * @return
+	 */
+	public Double getComputeTotalProfit_mins_totalSalary() {
+		return NumUtil.getNum(computeTotalProfit.getText()) - get_KF_total_salary(); 
+	}
+	
+	
 	
 	/**
 	 * 获取最终的团队名称
@@ -945,7 +962,7 @@ public class GDController implements Initializable{
 		ObservableList<GDDetailInfo> obList = FXCollections.observableArrayList();
 		detailMap.values().forEach(info -> {
 			if(StringUtil.isBlank(info.getTotal())){
-				info.setTotal(NumUtil.getSum(info.getYsgu(),info.getJl3(),info.getJl7()));
+				info.setTotal(NumUtil.getSum(info.getYsgu(),info.getJl3(),info.getJl7(), info.getSalary()));
 			}
 			obList.add(info);
 		});
@@ -1059,7 +1076,7 @@ public class GDController implements Initializable{
 	 */
 	private Double getJLPoolAvailable() {
 		//总利润
-		Double totalProfit = getComputeTotalProfit();
+		Double totalProfit = getComputeTotalProfit_mins_totalSalary();
 		//原始股（银河股东）
 		//Double totalYSGu = tableYSGu.getItems().stream().map(info->NumUtil.getNum(info.getValue())).reduce(Double::sum).get();
 		Double totalYSGu = getYinheProfit();
@@ -1133,7 +1150,9 @@ public class GDController implements Initializable{
 		
 		//缓存明细数据
 		tableYSGu.getItems().forEach(info-> {
-			detailMap.put(info.getType(), new GDDetailInfo(info.getType(),info.getValue()));
+			GDDetailInfo entity = new GDDetailInfo(info.getType(),info.getValue());
+			entity.setSalary(info.getDescription());//备注：此处的描述字段为实体的底薪
+			detailMap.put(info.getType(), entity);
 		});
 	}
 	
@@ -1175,9 +1194,11 @@ public class GDController implements Initializable{
 		tablekfGu.getItems().stream()
 			.forEach(info->{
 				if(!StringUtil.isAnyBlank(info.getType(),info.getRate())) {
-					info.setValue(NumUtil.digit0(NumUtil.getNumByPercent(info.getRate()) * getComputeTotalProfit()));
+					info.setValue(NumUtil.digit0(NumUtil.getNumByPercent(info.getRate()) * getComputeTotalProfit_mins_totalSalary()));
 					//缓存明细数据
-					GDDetailInfo detail = new GDDetailInfo(info.getType(),info.getValue(),info.getValue());
+					GDDetailInfo detail = new GDDetailInfo(info.getType(),info.getValue());
+					detail.setSalary(info.getDescription());
+					detail.setTotal(NumUtil.getSum(info.getValue(),info.getDescription()));
 					detailMap.put(info.getType(), detail);
 				}else {
 					info.setType("");
@@ -1236,7 +1257,7 @@ public class GDController implements Initializable{
 			}else {
 				if(table.getItems() != null)
 					table.getItems().forEach(info->{
-						info.setDescription("");
+						//info.setDescription("");
 						info.setId("");
 						//info.setRate("");
 						//info.setType("");
@@ -1255,6 +1276,22 @@ public class GDController implements Initializable{
 	 */
 	public void renciEnterAction(ActionEvent even) {
 		GDRefreshBtn.fire();
+	}
+	
+	/**
+	 * 客服栏的底薪总计
+	 * 
+	 * @time 2018年2月26日
+	 * @return
+	 */
+	private Double get_KF_total_salary() {
+		Double KF_Total_Salary = 0d;
+		if(TableUtil.isHasValue(tablekfGu)) {
+			KF_Total_Salary = tablekfGu.getItems().stream()
+				.mapToDouble(info -> NumUtil.getNum(info.getDescription()))
+				.sum();
+		}
+		return KF_Total_Salary;
 	}
 	
 	/**
@@ -1386,6 +1423,10 @@ public class GDController implements Initializable{
 				tableMoney.getItems().add(cmi);
 			}
 			//添加总利润差额
+			String dif = difTotalProfit.getText();
+			String name = date + "#贡献值差额#" + dif;
+			CurrentMoneyInfo difCMI = new CurrentMoneyInfo(name, dif, "", ""); //mingzi, shishiJine,String wanjiaId,String cmiEdu
+			tableMoney.getItems().add(difCMI);
 			tableMoney.refresh();
 			tableProfit.refresh();
 			has_quotar_oneKey = true;

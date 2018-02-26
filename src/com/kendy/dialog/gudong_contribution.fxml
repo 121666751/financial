@@ -74,31 +74,32 @@
                         <TableColumn fx:id="YS_value" prefWidth="88.0" text="利润" />
                      </columns>
                   </TableView>
-                  <TableView fx:id="tableEncourageGu" layoutX="555.0" layoutY="362.0" prefHeight="272.0" prefWidth="257.0">
+                  <TableView fx:id="tableEncourageGu" layoutX="530.0" layoutY="362.0" prefHeight="272.0" prefWidth="257.0">
                      <columns>
                         <TableColumn fx:id="Encourage_gudongName" prefWidth="92.0" text="股东" />
                         <TableColumn fx:id="Encourage_rate" prefWidth="75.0" text="比拼值" />
                         <TableColumn fx:id="Encourage_value" prefWidth="87.0" text="利润" />
                      </columns>
                   </TableView>
-                  <TableView fx:id="tablekfGu" layoutX="865.0" layoutY="361.0" prefHeight="273.0" prefWidth="244.0">
+                  <TableView fx:id="tablekfGu" layoutX="805.0" layoutY="361.0" prefHeight="273.0" prefWidth="304.0">
                      <columns>
-                        <TableColumn fx:id="KF_gudongName" prefWidth="90.0" text="股东" />
-                        <TableColumn fx:id="KF_rate" prefWidth="66.0" text="占比" />
-                        <TableColumn fx:id="KF_value" prefWidth="69.0" text="利润" />
+                        <TableColumn fx:id="KF_gudongName" prefWidth="77.0" text="股东" />
+                        <TableColumn fx:id="KF_rate" prefWidth="67.0" text="占比" />
+                        <TableColumn fx:id="KF_value" prefWidth="68.0" text="利润" />
+                        <TableColumn fx:id="KF_salary" prefWidth="74.0" text="底薪" />
                      </columns>
                   </TableView>
-                  <Label contentDisplay="CENTER" layoutX="342.0" layoutY="331.0" prefHeight="30.0" prefWidth="93.0" text="股东原始股">
+                  <Label contentDisplay="CENTER" layoutX="352.0" layoutY="331.0" prefHeight="30.0" prefWidth="93.0" text="股东原始股">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Label contentDisplay="CENTER" layoutX="965.0" layoutY="331.0" prefHeight="30.0" prefWidth="93.0" text="客服占股">
+                  <Label contentDisplay="CENTER" layoutX="922.0" layoutY="331.0" prefHeight="30.0" prefWidth="93.0" text="客服占股">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Label contentDisplay="CENTER" layoutX="650.0" layoutY="331.0" prefHeight="30.0" prefWidth="93.0" text="股东奖励股">
+                  <Label contentDisplay="CENTER" layoutX="629.0" layoutY="331.0" prefHeight="30.0" prefWidth="93.0" text="股东奖励股">
                      <font>
                         <Font size="13.0" />
                      </font>
@@ -113,9 +114,10 @@
                      <columns>
                         <TableColumn fx:id="name" prefWidth="164.0" text="人员分配" />
                         <TableColumn fx:id="ysgu" prefWidth="143.0" text="原始股" />
-                        <TableColumn fx:id="jl3" prefWidth="188.0" text="奖励30%" />
-                        <TableColumn fx:id="jl7" prefWidth="201.0" text="奖励70%" />
-                        <TableColumn fx:id="total" prefWidth="140.0" text="合计" />
+                        <TableColumn fx:id="salary" prefWidth="134.0" text="底薪" />
+                        <TableColumn fx:id="jl3" prefWidth="140.0" text="奖励30%" />
+                        <TableColumn fx:id="jl7" prefWidth="120.0" text="奖励70%" />
+                        <TableColumn fx:id="total" prefWidth="135.0" text="合计" />
                      </columns>
                   </TableView>
                   <Label contentDisplay="CENTER" layoutX="56.0" layoutY="449.0" prefHeight="35.0" prefWidth="89.0" text="总人次利润 :">

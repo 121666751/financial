@@ -15,6 +15,7 @@ public class GDDetailInfo implements Entity{
 	private SimpleStringProperty ysgu = new SimpleStringProperty();
 	private SimpleStringProperty jl3 = new SimpleStringProperty();
 	private SimpleStringProperty jl7 = new SimpleStringProperty();
+	private SimpleStringProperty salary = new SimpleStringProperty();//对应description
 	private SimpleStringProperty total = new SimpleStringProperty();
 	
 	
@@ -89,7 +90,16 @@ public class GDDetailInfo implements Entity{
 		this.totalProperty().set(total);
 	}
 	
-	
+	/*****************************************************************salary***/
+	public SimpleStringProperty salaryProperty() {
+		return this.salary;
+	}
+	public String getSalary() {
+		return this.salaryProperty().get();
+	}
+	public void setSalary(final String salary) {
+		this.salaryProperty().set(salary);
+	}
 	
 
 }
