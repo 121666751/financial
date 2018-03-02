@@ -29,6 +29,7 @@ import com.kendy.controller.CombineIDController;
 import com.kendy.controller.GDController;
 import com.kendy.controller.LMController;
 import com.kendy.controller.QuotaController;
+import com.kendy.controller.TGController;
 import com.kendy.db.DBConnection;
 import com.kendy.db.DBUtil;
 import com.kendy.entity.CurrentMoneyInfo;
@@ -45,7 +46,6 @@ import com.kendy.entity.Player;
 import com.kendy.entity.ProfitInfo;
 import com.kendy.entity.ProxySumInfo;
 import com.kendy.entity.ProxyTeamInfo;
-import com.kendy.entity.Record;
 import com.kendy.entity.ShangmaDetailInfo;
 import com.kendy.entity.ShangmaInfo;
 import com.kendy.entity.TeamHuishuiInfo;
@@ -58,7 +58,6 @@ import com.kendy.entity.ZijinInfo;
 import com.kendy.entity.ZonghuiInfo;
 import com.kendy.entity.ZonghuiKaixiaoInfo;
 import com.kendy.excel.ExcelReaderUtil;
-import com.kendy.excel.LM_ExcelReaderUtil;
 import com.kendy.interfaces.Entity;
 import com.kendy.other.Wrap;
 import com.kendy.service.JifenService;
@@ -710,6 +709,21 @@ public class MyController implements Initializable{
 	    	
 	    } catch (IOException e) {
 	    	ErrorUtil.err("股东贡献值tab加载失败", e);
+	    }
+	    
+	    
+	    try {
+	    	FXMLLoader loader = new FXMLLoader();
+	    	Parent root = loader.load(getClass().getResource("/com/kendy/dialog/tuoguan_tool.fxml").openStream());
+	    	loader.setController(new TGController());
+	    	Tab gdTab = new Tab();
+	    	gdTab.setText("托管小工具");
+	    	gdTab.setClosable(false);
+	    	gdTab.setContent(root);
+	    	tabs.getTabs().add(gdTab);  
+	    	
+	    } catch (IOException e) {
+	    	ErrorUtil.err("托管小工具tab加载失败", e);
 	    }
 	 
 //	    try {

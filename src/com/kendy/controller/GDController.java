@@ -201,12 +201,20 @@ public class GDController implements Initializable{
 				dataList.stream()
 				.collect(Collectors.groupingBy(//先按股东分
 						record -> getGudongByPlayerId((Record)record),
-						Collectors.groupingBy(info -> StringUtil.nvl(info.getTeamId(),UN_KNOWN))));//再按团队分
+						Collectors.groupingBy(info -> { 
+							if(StringUtil.isBlank(info.getTeamId())){
+								System.out.println("========"+info);
+							} 
+						return StringUtil.nvl(info.getTeamId(),UN_KNOWN);})
+		));//再按团队分
 		
-		//add 20182-2-21 手动加入股东总公司
-//		if(gudongTeamMap !=null) {
-//			gudongTeamMap.put("总公司", Collections.emptyMap());
-//		}
+		//add 2018-03-01 
+		ObservableList<String> gudongList = MyController.getGudongList();
+		for(String gudong : gudongList) {
+			if(!gudongTeamMap.keySet().contains(gudong)) {
+				gudongTeamMap.put(gudong, new HashMap<>());
+			}
+		}
 	}
 	
 	/**
@@ -1022,6 +1030,12 @@ public class GDController implements Initializable{
 				dataList.stream()
 				.collect(Collectors.groupingBy(//按股东分
 						record -> getGudongByPlayerId((Record)record)));
+		ObservableList<String> gudongList = MyController.getGudongList();
+		for(String gudong : gudongList) {
+			if(!gudongSizeMap.keySet().contains(gudong)) {
+				gudongSizeMap.put(gudong, new ArrayList<>());
+			}
+		}
 		
 		//获取非银河的股东的所有人次利润
 		Double renciProfit = getRenciTotalProfit_not_yinhe();
