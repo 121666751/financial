@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="539.0" prefWidth="447.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kendy.controller.TGAddCompanyController">
+   <children>
+    <VBox layoutX="59.0" layoutY="99.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" prefHeight="255.0" prefWidth="357.0" spacing="7.0">
+      <children>
+            <HBox prefHeight="245.0" prefWidth="541.0">
+               <children>
+                  <VBox>
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="77.0" text="团队组成：" textAlignment="LEFT" wrapText="true">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <ListView fx:id="tg_team_view" prefHeight="227.0" prefWidth="117.0" />
+                     </children>
+                  </VBox>
+                  <AnchorPane prefHeight="245.0" prefWidth="63.0">
+                     <children>
+                        <Button layoutX="1.0" layoutY="144.0" mnemonicParsing="false" onAction="#removeTGTeamAction" prefHeight="23.0" prefWidth="77.0" text="---&gt;" />
+                        <Button layoutX="1.0" layoutY="58.0" mnemonicParsing="false" onAction="#addTGTeamAction" prefHeight="23.0" prefWidth="77.0" text="&lt;---" />
+                     </children>
+                  </AnchorPane>
+                  <VBox>
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="127.0" text="当前股东所有团队" textAlignment="LEFT" wrapText="true">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <ListView fx:id="gudong_team_view" prefHeight="227.0" prefWidth="129.0" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+      </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+    </VBox>
+      <HBox layoutX="61.0" layoutY="23.0">
+         <children>
+            <Label layoutX="43.0" layoutY="44.0" prefHeight="23.0" prefWidth="71.0" text="托管公司：" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <TextField fx:id="tg_company_field" layoutX="115.0" layoutY="44.0" prefHeight="23.0" prefWidth="254.0" />
+         </children>
+      </HBox>
+      <HBox layoutX="61.0" layoutY="62.0">
+         <children>
+            <Label layoutX="43.0" layoutY="83.0" prefHeight="23.0" prefWidth="71.0" text="选择股东：" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="gudongChoice" prefHeight="23.0" prefWidth="252.0" />
+         </children>
+      </HBox>
+      <HBox layoutX="58.0" layoutY="420.0">
+         <children>
+            <Label fx:id="detailsLabel1112121" layoutX="52.0" layoutY="409.0" prefHeight="23.0" prefWidth="42.0" text="押金：" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <TextField fx:id="yajin" layoutX="93.0" layoutY="446.0" prefHeight="23.0" prefWidth="117.0" />
+            <Label fx:id="detailsLabel11121211" layoutX="51.0" layoutY="447.0" prefHeight="23.0" prefWidth="56.0" text="   额度：" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <TextField fx:id="edu" layoutX="93.0" layoutY="408.0" prefHeight="23.0" prefWidth="117.0" />
+         </children>
+      </HBox>
+      <HBox layoutX="59.0" layoutY="369.0">
+         <children>
+            <Label layoutX="52.0" layoutY="390.0" prefHeight="23.0" prefWidth="84.0" text="分红占比：" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="121.0" layoutY="391.0" prefHeight="23.0" prefWidth="30.0" text="公司" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <TextField fx:id="companyRateField" layoutX="157.0" layoutY="411.0" prefHeight="23.0" prefWidth="48.0" />
+            <Label fx:id="detailsLabel11121221" layoutX="218.0" layoutY="413.0" prefHeight="23.0" prefWidth="48.0" text=" %" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="273.0" layoutY="391.0" prefHeight="23.0" prefWidth="57.0" text="托管公司" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <TextField fx:id="tgCompanyRateField" layoutX="271.0" layoutY="423.0" prefHeight="23.0" prefWidth="48.0" />
+            <Label fx:id="detailsLabel111212211" layoutX="337.0" layoutY="425.0" prefHeight="23.0" prefWidth="25.0" text=" %" textAlignment="LEFT" wrapText="true">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <Button layoutX="56.0" layoutY="470.0" mnemonicParsing="false" onAction="#addNewTGCompanyOKBtnAction" prefHeight="31.0" prefWidth="335.0" text="OK" />
+   </children>
+</AnchorPane>

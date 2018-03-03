@@ -18,6 +18,9 @@ public class Constants {
 	public static final String ADD_CURRENT_MONEY_FRAME = "addCurrentMoney";
 	public static final String COMBINE_ID_FRAME = "combineId";
 	
+	public static final String ADD_COMPANY_FRAME = "newTGCompany";
+	public static final String ADD_TG_KAIXIAAO_FRAME = "newTGCompany";
+	
 	public static final String GU_DONG = "gudong";
 	
 	

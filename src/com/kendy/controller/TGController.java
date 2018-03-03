@@ -1,52 +1,24 @@
 package com.kendy.controller;
 
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
-import com.kendy.db.DBUtil;
-import com.kendy.entity.Club;
-import com.kendy.entity.ClubBankInfo;
-import com.kendy.entity.ClubBankModel;
-import com.kendy.entity.ClubQuota;
-import com.kendy.entity.LMSumInfo;
-import com.kendy.entity.QuotaMoneyInfo;
-import com.kendy.entity.Record;
-import com.kendy.excel.ExportQuotaPayExcel;
-import com.kendy.interfaces.Entity;
-import com.kendy.util.CollectUtil;
-import com.kendy.util.ErrorUtil;
-import com.kendy.util.InputDialog;
-import com.kendy.util.NumUtil;
-import com.kendy.util.ShowUtil;
-import com.kendy.util.StringUtil;
-
+import application.Constants;
 import application.DataConstans;
-import application.MyController;
-import application.PropertiesUtil;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * 处理联盟配额的控制器
@@ -60,11 +32,13 @@ public class TGController implements Initializable{
 	private static Logger log = Logger.getLogger(TGController.class);
 
 //	//=====================================================================
-	@FXML private VBox TG_Company_VBox; // 托管公司
+	@FXML public VBox TG_Company_VBox; // 托管公司
 	
 	@FXML private VBox TG_Team_VBox; // 托管公司的内部托管团队
 	
-//	@FXML private Button LM_Btn1;//联盟1
+	//=====================================================================
+	@FXML private TabPane tabs;
+	
 //	//=====================================================================自动配额表
 //	@FXML private TableView<ClubQuota>  tableQuota;     
 //	@FXML private TableColumn<ClubQuota,String> quotaClubName;
@@ -166,6 +140,47 @@ public class TGController implements Initializable{
 //
 	}
 	
+	
+    /**
+     * 打开对话框
+     * @param path fxml名称
+     * @param title 对话框标题
+     * @param windowName 对话框关闭时的名称
+     */
+    public void openBasedDialog(String path,String title,String windowName) {
+    	try {
+    		if(DataConstans.framesNameMap.get(windowName) == null){
+    			//打开新对话框
+    			String filePath = "/com/kendy/dialog/"+path;
+	    		Parent root = FXMLLoader.load(getClass().getResource(filePath));
+	    		Stage addNewPlayerWindow=new Stage();  
+	    		Scene scene=new Scene(root);  
+	    		addNewPlayerWindow.setTitle(title);  
+	    		addNewPlayerWindow.setScene(scene);
+	    		try {
+	    			addNewPlayerWindow.getIcons().add(new javafx.scene.image.Image("file:resource/images/icon.png"));
+				} catch (Exception e) {
+					log.debug("找不到icon图标！");
+					e.printStackTrace();
+				}
+	    		addNewPlayerWindow.show();  
+	    		//缓存该对话框实例
+	    		DataConstans.framesNameMap.put(windowName, addNewPlayerWindow);
+	    		addNewPlayerWindow.setOnCloseRequest(new EventHandler<WindowEvent>() {
+	                @Override
+	                public void handle(WindowEvent event) {
+	                    DataConstans.framesNameMap.remove(windowName);
+	                }
+	            });
+
+    		}
+    	
+    	} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+	
+	
 	/**
 	 * 新增托管公司
 	 * 
@@ -173,7 +188,7 @@ public class TGController implements Initializable{
 	 * @param event
 	 */
 	public void addNewTGCompanyAction(ActionEvent event) {
-		
+		openBasedDialog("TG_add_company_frame.fxml","新增托管公司",Constants.ADD_COMPANY_FRAME);
 	}
 	
 	/**
@@ -184,6 +199,26 @@ public class TGController implements Initializable{
 	 */
 	public void exportTGExcelAction(ActionEvent event) {
 		
+	}
+	
+	/**
+	 * 新增托管开销
+	 * 
+	 * @time 2018年3月3日
+	 * @param event
+	 */
+	public void addKaixiaoAction(ActionEvent event) {
+		openBasedDialog("TG_add_kaixiao_frame.fxml","新增托管开销",Constants.ADD_TG_KAIXIAAO_FRAME);
+	}
+	
+	/**
+	 * 新增托管开销
+	 * 
+	 * @time 2018年3月3日
+	 * @param event
+	 */
+	public void addPlayerCommentAction(ActionEvent event) {
+		openBasedDialog("TG_add_player_comment_frame.fxml","新增玩家备注",Constants.ADD_TG_KAIXIAAO_FRAME);
 	}
 //	
 //	public static void autoSelectLM1() {

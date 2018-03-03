@@ -3,6 +3,7 @@ package application;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import com.kendy.controller.TGController;
 import com.kendy.controller.TeamProxyController;
 import com.kendy.util.ErrorUtil;
 
@@ -23,6 +24,8 @@ public class Main extends Application {
 	private static Logger log = Logger.getLogger(Main.class);
 	
 	public static TeamProxyController teamProxyController  = new TeamProxyController();
+	
+	public static TGController tgController = new TGController();
 	
 	static {
 		try {
