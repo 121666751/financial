@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -46,23 +45,29 @@ import javafx.scene.control.TextInputDialog;
  * @author 林泽涛
  * @time 2018年3月3日 下午2:25:46
  */
-public class TGAddKaixiaoController implements Initializable{
+public class TGAddCommentController implements Initializable{
 	
-	private static Logger log = Logger.getLogger(TGAddKaixiaoController.class);
+	private static Logger log = Logger.getLogger(TGAddCommentController.class);
 	
 	@FXML private TextField searchField; //玩家名称(模糊搜索)
 	
 	@FXML private TextField FinalPlaerNameField; //玩家名称
 	
+	@FXML private TextField FinalPlaerIdField; //玩家ID
+	
 	@FXML private ListView<String> playersView; // 待补充的玩家视图
 
-	@FXML private ChoiceBox<String> payItemsChoice; // 支出项目
+	@FXML private ChoiceBox<String> typeChoice; // 类别
 	
-	@FXML private TextField kaixiaoMoneyField; // 开销金额
+	@FXML private TextField IDField; // ID
 	
-	private static final String PAY_ITEMS_DB_KEY = "tg_pay_items"; //保存到数据库的key
+	@FXML private TextField nameField; // 名称
 	
-	private static List<String> payItems = new ArrayList<>();
+	@FXML private TextField beizhuField; // 备注
+	
+	private static final String TG_WANGJIA_COMMENT_DB_KEY = "tg_wangjia_comment"; //保存到数据库的key
+	
+	private static List<String> typeItems = new ArrayList<>();
 	
 	private static List<Player> players = new ArrayList<>();
 	
@@ -74,12 +79,12 @@ public class TGAddKaixiaoController implements Initializable{
 		//添加文本框监听
 		addListener();
 		
-		//初始化支出项目数据
-		initPayItemChoice();
+		//初始化类别数据
+		initTypeChoice();
 		
 		//自动选值第一个
-		if(CollectUtil.isHaveValue(payItems)) {
-			payItemsChoice.getSelectionModel().select(0);
+		if(CollectUtil.isHaveValue(typeItems)) {
+			typeChoice.getSelectionModel().select(0);
 		}
 
 	}
@@ -106,11 +111,9 @@ public class TGAddKaixiaoController implements Initializable{
 			String text = searchField.getText();
 			List<String> playerNames =  players.parallelStream()
 					   .filter(info -> ((Player)info).getPlayerName().contains(text))
-					   .map(Player::getPlayerName)
+					   .map(info -> info.getPlayerName() + "##" + info.getgameId())
 					   .collect(Collectors.toList());
 			playersView.setItems(FXCollections.observableArrayList(playerNames));
-//			if(CollectUtil.isHaveValue(playerNames))
-//				playersView.getSelectionModel().select(0);
 		});
 		
 		//监听ListView点击框
@@ -118,70 +121,72 @@ public class TGAddKaixiaoController implements Initializable{
 			String text = playersView.getSelectionModel().getSelectedItem();
 			if(StringUtil.isBlank(text)) {
 				FinalPlaerNameField.setText("");
+				FinalPlaerIdField.setText("");
 			}else {
-				FinalPlaerNameField.setText(text);
+				FinalPlaerNameField.setText(text.split("##")[0]);
+				FinalPlaerIdField.setText(text.split("##")[1]);
 			}
 		});
 	}
 	
 	/**
-	 * 初始化支出项目数据
+	 * 初始化类别数据
 	 * 
 	 * @time 2018年3月3日
 	 */
-	private void initPayItemChoice() {
-		String payItemsJson = DBUtil.getValueByKey(PAY_ITEMS_DB_KEY);
-		if(StringUtil.isNotBlank(payItemsJson) && !"{}".equals(payItemsJson)) {
-			payItems = JSON.parseObject(payItemsJson, new TypeReference<List<String>>() {});
+	private void initTypeChoice() {
+		String typeItemsJson = DBUtil.getValueByKey(TG_WANGJIA_COMMENT_DB_KEY);
+		if(StringUtil.isNotBlank(typeItemsJson) && !"{}".equals(typeItemsJson)) {
+			typeItems = JSON.parseObject(typeItemsJson, new TypeReference<List<String>>() {});
 		}else {
-			if(payItems == null || payItems.isEmpty()) {
-				payItems = new ArrayList<>(Arrays.asList("推荐奖励","金币","打牌奖励"));
-				savePayItem();
+			if(typeItems == null || typeItems.isEmpty()) {
+				typeItems = new ArrayList<>(Arrays.asList("推荐玩家","改号","小号"));
+				saveTypeItem();
 			}
 		}
-		payItemsChoice.setItems(FXCollections.observableArrayList(payItems));
+		typeChoice.setItems(FXCollections.observableArrayList(typeItems));
 	}
 	
 	
 	/**
-	 * 添加支出项目
+	 * 添加类别选项
 	 * 
 	 * @time 2018年3月3日
 	 * @param event
 	 */
-	public void addPayItemAction(ActionEvent event) {
+	public void addTypeItemAction(ActionEvent event) {
 		TextInputDialog dialog = new TextInputDialog();
 		dialog.setTitle("添加");
 		dialog.setHeaderText(null);
-		dialog.setContentText("新增支出项目:");
+		dialog.setContentText("新增类别选项:");
 		
 		Optional<String> result = dialog.showAndWait();
 		if (result.isPresent()){
 			String newPayItem = result.get();
-			if(payItems.contains(newPayItem)) {
-				ShowUtil.show("已经存在支出项目：" + newPayItem);
+			if(typeItems.contains(newPayItem)) {
+				ShowUtil.show("已经存在类别选项：" + newPayItem);
 			}else {
 				//修改界面和缓存 
-				payItems.add(newPayItem);
-				payItemsChoice.setItems(FXCollections.observableArrayList(payItems));
+				typeItems.add(newPayItem);
+				typeChoice.setItems(FXCollections.observableArrayList(typeItems));
 				//更新到数据库
-				savePayItem();
+				saveTypeItem();
 				//刷新
-				initPayItemChoice();
+				initTypeChoice();
 				//自动选值
-				payItemsChoice.getSelectionModel().select(newPayItem);
+				typeChoice.getSelectionModel().select(newPayItem);
 			}
 		}
 	}
 	
 	/**
-	 * 保存支出项目到数据库
+	 * 保存类别选项到数据库
 	 * 
 	 * @time 2018年3月3日
 	 */
-	private void savePayItem() {
-		String payItemsJson = JSON.toJSONString(payItems);
-		DBUtil.saveOrUpdateOthers(PAY_ITEMS_DB_KEY, payItemsJson);
+	private void saveTypeItem() {
+		String typeItemsJson = JSON.toJSONString(typeItems);
+		DBUtil.saveOrUpdateOthers(TG_WANGJIA_COMMENT_DB_KEY, typeItemsJson);
 	}
 	
 	/**
@@ -192,8 +197,11 @@ public class TGAddKaixiaoController implements Initializable{
 	private boolean hasAnyParamBlank() {
 		return StringUtil.isAnyBlank(
 				FinalPlaerNameField.getText(),
-				kaixiaoMoneyField.getText(),
-				payItemsChoice.getSelectionModel().getSelectedItem()
+				FinalPlaerIdField.getText(),
+				typeChoice.getSelectionModel().getSelectedItem(),
+				IDField.getText(),
+				nameField.getText(),
+				beizhuField.getText()
 				);
 	}
 	
@@ -202,16 +210,15 @@ public class TGAddKaixiaoController implements Initializable{
 	 * @time 2018年3月3日
 	 * @return
 	 */
-	private TGKaixiaoInfo getSubmitData() {
-		TGKaixiaoInfo TGKaixiaoEntity = new TGKaixiaoInfo(
-				TimeUtil.getDateString(),
-				FinalPlaerNameField.getText(),
-				payItemsChoice.getSelectionModel().getSelectedItem(),
-				kaixiaoMoneyField.getText()
-				);
-		TGKaixiaoEntity.setEntityId(UUID.randomUUID().toString());
-		return TGKaixiaoEntity;
-	}
+//	private TGKaixiaoInfo getSubmitData() {
+//		TG TGKaixiaoEntity = new TGKaixiaoInfo(
+//				TimeUtil.getDateString(),
+//				FinalPlaerNameField.getText(),
+//				typeChoice.getSelectionModel().getSelectedItem(),
+//				kaixiaoMoneyField.getText()
+//				);
+//		return TGKaixiaoEntity;
+//	}
 	
 	
 	
@@ -228,9 +235,9 @@ public class TGAddKaixiaoController implements Initializable{
 			return;
 		}
 		//传递给主控制类处理逻辑 TODO
-		TGKaixiaoInfo TGKaixiaoEntity = getSubmitData();
-
-		TGController tgController = Main.tgController;
+//		TGKaixiaoInfo TGKaixiaoEntity = getSubmitData();
+//
+//		TGController tgController = Main.tgController;
 //		ObservableList<Node> companyList = tgController.TG_Company_VBox.getChildren();
 //		if(CollectUtil.isHaveValue(companyList)) {
 //			companyList.add(new Button(tgCompanyModel.getTgCompanyName()));

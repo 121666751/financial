@@ -120,8 +120,8 @@
                         <TableView layoutY="32.0" prefHeight="593.0" prefWidth="692.0">
                            <columns>
                               <TableColumn prefWidth="102.0" text="日期" />
-                              <TableColumn prefWidth="93.0" text="ID" />
-                              <TableColumn prefWidth="88.0" text="名称" />
+                              <TableColumn prefWidth="93.0" text="玩家ID" />
+                              <TableColumn prefWidth="88.0" text="玩家名称" />
                               <TableColumn prefWidth="86.0" text="类别" />
                               <TableColumn prefWidth="112.0" text="ID" />
                               <TableColumn prefWidth="100.0" text="名称" />
