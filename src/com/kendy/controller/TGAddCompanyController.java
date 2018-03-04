@@ -215,13 +215,16 @@ public class TGAddCompanyController implements Initializable{
 			return;
 		}
 		//传递给主控制类处理逻辑 TODO
+		//保存到数据库由主控制类去刷新全部
 		TGCompanyModel tgCompanyModel = getSubmitData();
-		System.out.println(tgCompanyModel);
-		TGController tgController = MyController.tgController;
-		ObservableList<Node> companyList = tgController.TG_Company_VBox.getChildren();
-		if(CollectUtil.isHaveValue(companyList)) {
-			companyList.add(new Button(tgCompanyModel.getTgCompanyName()));
-		}
+	
+		DBUtil.saveOrUpdate_tg_company(tgCompanyModel);
+		ShowUtil.show("添加成功",1);
+//		TGController tgController = MyController.tgController;
+//		ObservableList<Node> companyList = tgController.TG_Company_VBox.getChildren();
+//		if(CollectUtil.isHaveValue(companyList)) {
+//			companyList.add(new Button(tgCompanyModel.getTgCompanyName()));
+//		}
 	}
 
 }

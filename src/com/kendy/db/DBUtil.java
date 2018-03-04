@@ -29,6 +29,7 @@ import com.kendy.entity.Player;
 import com.kendy.entity.Record;
 import com.kendy.entity.ShangmaNextday;
 import com.kendy.entity.TGCommentInfo;
+import com.kendy.entity.TGCompanyModel;
 import com.kendy.entity.TGKaixiaoInfo;
 import com.kendy.util.ErrorUtil;
 import com.kendy.util.NumUtil;
@@ -2506,6 +2507,113 @@ public class DBUtil {
 			ps.execute();
 		}catch (SQLException e) {
 			ErrorUtil.err("根据ID删除玩家备注失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	/***************************************************************************
+	 * 
+	 * 				托管公司表
+	 * 
+	 **************************************************************************/
+	/**
+	 * 保存或修改托管公司表
+	 * 
+	 */
+	public static boolean saveOrUpdate_tg_company(final TGCompanyModel company) {
+		boolean isOK = false;
+		
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			sql = "replace into tg_company(tg_company_name, company_rate, tg_company_rate, yajin, edu, tg_teams_str, beizhu) values(?,?,?,?,?,?,?)";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, company.getTgCompanyName());
+			ps.setString(2, company.getCompanyRate());
+			ps.setString(3, company.getTgCompanyRate());
+			ps.setString(4, company.getYajin());
+			ps.setString(5, company.getEdu());
+			ps.setString(6, company.getTgTeamsStr());
+			ps.setString(7, company.getBeizhu());
+			ps.execute();
+			isOK = true;
+		}catch (SQLException e) {
+			ErrorUtil.err(company.toString()+",保存或修改托管公司失败", e);
+			isOK = false;
+		}finally{
+			close(con,ps);
+		}
+		return isOK;
+	}
+	
+	/**
+	 * 获取所有托管公司
+	 * 
+	 * @time 2018年3月4日
+	 * @return
+	 */
+	public static List<TGCompanyModel> get_all_tg_company() {
+		List<TGCompanyModel> list = new ArrayList<>();
+		try {
+			con = DBConnection.getConnection();
+			String sql = "select * from tg_company";
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				//tgCompanyName, companyRate, tgCompanyRate, yajin, edu, tgTeamsStr
+				TGCompanyModel company = new TGCompanyModel(
+						rs.getString(1),
+						rs.getString(2),
+						rs.getString(3),
+						rs.getString(4),
+						rs.getString(5),
+						rs.getString(6)
+						);
+				company.setBeizhu(rs.getString(7));
+				list.add(company);
+			}
+		} catch (SQLException e) {
+			ErrorUtil.err("获取所有托管公司失败",e);
+		}finally{
+			close(con,ps);
+		}
+		return list;
+	}
+	
+	/**
+	 * 删除所有的托管公司
+	 * 
+	 * @time 2018年3月4日
+	 * @param key
+	 */
+	public static void del_all_tg_company() {
+		try {
+			con = DBConnection.getConnection();
+			String sql  = "delete from tg_company ";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("删除所有的托管公司失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	/**
+	 * 根据ID删除托管公司
+	 * 
+	 * @time 2018年3月4日
+	 * @param key
+	 */
+	public static void del_tg_company_by_id(String companyName) {
+		try {
+			con = DBConnection.getConnection();
+			String sql  = "delete from tg_company where tg_company_name = '"+ companyName +"'";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("根据托管公司名称删除托管公司失败", e);
 		}finally{
 			close(con,ps);
 		}
