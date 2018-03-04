@@ -5,8 +5,12 @@ import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
+import com.kendy.entity.TGCommentInfo;
+import com.kendy.entity.TGKaixiaoInfo;
+
 import application.Constants;
 import application.DataConstans;
+import application.MyController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -14,8 +18,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -51,20 +56,22 @@ public class TGController implements Initializable{
 //	@FXML private TableColumn<ClubQuota,String> quotaHedgeFive;
 //	
 //	
-//	//=====================================================================俱乐部结账表
-//	@FXML private TableView<QuotaMoneyInfo>  tableQuotaPay;     
-//	@FXML private TableColumn<QuotaMoneyInfo,String> quotaMoneyPaytor;
-//	@FXML private TableColumn<QuotaMoneyInfo,String> quotaMoney;
-//	@FXML private TableColumn<QuotaMoneyInfo,String> quotaMoneyGather;
-//	
-//	//=====================================================================银行信息表
-//	@FXML private TableView<ClubBankInfo>  tableQuotaBank;    
-//	@FXML private TableColumn<ClubBankInfo,String> clubName;
-//	@FXML private TableColumn<ClubBankInfo,String> mobilePayType;
-//	@FXML private TableColumn<ClubBankInfo,String> personName;
-//	@FXML private TableColumn<ClubBankInfo,String> phoneNumber;
-//	@FXML private TableColumn<ClubBankInfo,String> bankType;
-//	@FXML private TableColumn<ClubBankInfo,String> bankAccountInfo;
+	//=====================================================================托管开销表
+	@FXML public TableView<TGKaixiaoInfo>  tableTGKaixiao;     
+	@FXML private TableColumn<TGKaixiaoInfo,String> tgKaixiaoDate;
+	@FXML private TableColumn<TGKaixiaoInfo,String> tgKaixiaoPlayerName;
+	@FXML private TableColumn<TGKaixiaoInfo,String> tgKaixiaoPayItem;
+	@FXML private TableColumn<TGKaixiaoInfo,String> tgKaixiaoMoney;
+
+	//=====================================================================托管玩家备注表
+	@FXML public TableView<TGCommentInfo>  tableTGComment;     
+	@FXML private TableColumn<TGCommentInfo,String> tgCommentDate;
+	@FXML private TableColumn<TGCommentInfo,String> tgCommentPlayerId;
+	@FXML private TableColumn<TGCommentInfo,String> tgCommentPlayerName;
+	@FXML private TableColumn<TGCommentInfo,String> tgCommentType;
+	@FXML private TableColumn<TGCommentInfo,String> tgCommentId;
+	@FXML private TableColumn<TGCommentInfo,String> tgCommentName;
+	@FXML private TableColumn<TGCommentInfo,String> tgCommentBeizhu;
 //	
 //	//引用联盟控制类
 //	public  LMController lmController ;
@@ -128,13 +135,20 @@ public class TGController implements Initializable{
 //		
 //		_LM_Btn1 = LM_Btn1;
 //		lmController = MyController.lmController;
+//		@FXML private TableColumn<TGCommentInfo,String> tgCommentDate;
+//		@FXML private TableColumn<TGCommentInfo,String> tgCommentPlayerId;
+//		@FXML private TableColumn<TGCommentInfo,String> tgCommentPlayerName;
+//		@FXML private TableColumn<TGCommentInfo,String> tgCommentType;
+//		@FXML private TableColumn<TGCommentInfo,String> tgCommentId;
+//		@FXML private TableColumn<TGCommentInfo,String> tgCommentName;
+//		@FXML private TableColumn<TGCommentInfo,String> tgCommentBeizhu;
 //		
 //		//绑定列值属性
-//		bindCellValue(quotaClubName,quotaJieyu,quotaRest,quotaHedgeFirst,quotaHedgeSecond,quotaHedgeThree,quotaHedgeFour,quotaHedgeFive);
+		MyController.bindCellValue(tgKaixiaoDate,tgKaixiaoPlayerName,tgKaixiaoPayItem,tgKaixiaoMoney);
 //		bindCellValue(quotaMoneyPaytor,quotaMoney,quotaMoneyGather);
 //		bindCellValue(clubName,mobilePayType,personName,phoneNumber,bankType,bankAccountInfo);
 //		//绑定列值红色属性
-//		bindRedColor(quotaJieyu,quotaRest,quotaHedgeFirst,quotaHedgeSecond,quotaHedgeThree,quotaHedgeFour,quotaHedgeFive);
+		MyController.bindCellValue(tgCommentDate,tgCommentPlayerId,tgCommentPlayerName,tgCommentType,tgCommentId,tgCommentName,tgCommentBeizhu);
 //		quotaJieyu.setStyle("-fx-font-weight: bold;-fx-alignment: CENTER;");
 //		
 //

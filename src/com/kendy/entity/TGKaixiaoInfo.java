@@ -3,91 +3,101 @@ package com.kendy.entity;
 import com.kendy.interfaces.Entity;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
 
 /**
- * 托管开销模糊
+ * 托管开销模型
  * 
  * @author 林泽涛
  * @time 2018年3月3日 下午9:15:20
  */
 public class TGKaixiaoInfo implements Entity{
-
-	private SimpleStringProperty entityId = new SimpleStringProperty();//ID
-	private SimpleStringProperty date = new SimpleStringProperty();//日期
-	private SimpleStringProperty playerName = new SimpleStringProperty();//玩家名称
-	private SimpleStringProperty payOutItem = new SimpleStringProperty();//支出项目
-	private SimpleStringProperty payMoney = new SimpleStringProperty();//玩家名称
+	
+	private SimpleStringProperty tgKaixiaoEntityId = new SimpleStringProperty();//ID
+	private SimpleStringProperty tgKaixiaoDate = new SimpleStringProperty();//日期
+	private SimpleStringProperty tgKaixiaoPlayerName = new SimpleStringProperty();//玩家名称
+	private SimpleStringProperty tgKaixiaoPayItem = new SimpleStringProperty();//支出项目
+	private SimpleStringProperty tgKaixiaoMoney = new SimpleStringProperty();//玩家名称
 	
 	public TGKaixiaoInfo() {
 		super();
 	}
 
-	public TGKaixiaoInfo(String date, String playerName, String payOutItem, String payMoney) {
-		this.date = new SimpleStringProperty(date);
-		this.playerName = new SimpleStringProperty(playerName);
-		this.payOutItem = new SimpleStringProperty(payOutItem);
-		this.payMoney = new SimpleStringProperty(payMoney);
+	public TGKaixiaoInfo(String tgKaixiaoDate, String tgKaixiaoPlayerName, String tgKaixiaoPayItem, String tgKaixiaoMoney) {
+		this.tgKaixiaoDate = new SimpleStringProperty(tgKaixiaoDate);
+		this.tgKaixiaoPlayerName = new SimpleStringProperty(tgKaixiaoPlayerName);
+		this.tgKaixiaoPayItem = new SimpleStringProperty(tgKaixiaoPayItem);
+		this.tgKaixiaoMoney = new SimpleStringProperty(tgKaixiaoMoney);
+	}
+	
+	public TGKaixiaoInfo(String tgKaixiaoEntityId, String tgKaixiaoDate, String tgKaixiaoPlayerName, String tgKaixiaoPayItem, String tgKaixiaoMoney) {
+		this.tgKaixiaoEntityId = new SimpleStringProperty(tgKaixiaoEntityId);
+		this.tgKaixiaoDate = new SimpleStringProperty(tgKaixiaoDate);
+		this.tgKaixiaoPlayerName = new SimpleStringProperty(tgKaixiaoPlayerName);
+		this.tgKaixiaoPayItem = new SimpleStringProperty(tgKaixiaoPayItem);
+		this.tgKaixiaoMoney = new SimpleStringProperty(tgKaixiaoMoney);
 	}
 	
 	//=====================
-	public SimpleStringProperty dateProperty() {
-		return this.date;
+	public SimpleStringProperty tgKaixiaoDateProperty() {
+		return this.tgKaixiaoDate;
 	}
-	public String getDate() {
-		return this.dateProperty().get();
+	public String getTgKaixiaoDate() {
+		return this.tgKaixiaoDateProperty().get();
 	}
-	public void setDate(final String date) {
-		this.dateProperty().set(date);
-	}
-	
-
-	//=====================
-	public SimpleStringProperty playerNameProperty() {
-		return this.playerName;
-	}
-	public String getPlayerName() {
-		return this.playerNameProperty().get();
-	}
-	public void setPlayerName(final String playerName) {
-		this.playerNameProperty().set(playerName);
-	}
-	
-	//=====================
-	public SimpleStringProperty payOutItemProperty() {
-		return this.payOutItem;
-	}
-	public String getPayOutItem() {
-		return this.payOutItemProperty().get();
-	}
-	public void setPayOutItem(final String payOutItem) {
-		this.payOutItemProperty().set(payOutItem);
+	public void setTgKaixiaoDate(final String tgKaixiaoDate) {
+		this.tgKaixiaoDateProperty().set(tgKaixiaoDate);
 	}
 	
 
 	//=====================
-	public SimpleStringProperty payMoneyProperty() {
-		return this.payMoney;
+	public SimpleStringProperty tgKaixiaoPlayerNameProperty() {
+		return this.tgKaixiaoPlayerName;
 	}
-
-	public String getPayMoney() {
-		return this.payMoneyProperty().get();
+	public String getTgKaixiaoPlayerName() {
+		return this.tgKaixiaoPlayerNameProperty().get();
 	}
-
-	public void setPayMoney(final String payMoney) {
-		this.payMoneyProperty().set(payMoney);
+	public void setTgKaixiaoPlayerName(final String tgKaixiaoPlayerName) {
+		this.tgKaixiaoPlayerNameProperty().set(tgKaixiaoPlayerName);
 	}
 	
 	//=====================
-	public SimpleStringProperty entityIdProperty() {
-		return this.entityId;
+	public SimpleStringProperty tgKaixiaoPayItemProperty() {
+		return this.tgKaixiaoPayItem;
+	}
+	public String getTgKaixiaoPayItem() {
+		return this.tgKaixiaoPayItemProperty().get();
+	}
+	public void setTgKaixiaoPayItem(final String tgKaixiaoPayItem) {
+		this.tgKaixiaoPayItemProperty().set(tgKaixiaoPayItem);
+	}
+	
+
+	//=====================
+	public SimpleStringProperty tgKaixiaoMoneyProperty() {
+		return this.tgKaixiaoMoney;
 	}
 
-	public String getEntityId() {
-		return this.entityIdProperty().get();
+	public String getTgKaixiaoMoney() {
+		return this.tgKaixiaoMoneyProperty().get();
 	}
 
-	public void setEntityId(final String entityId) {
-		this.entityIdProperty().set(entityId);
+	public void setTgKaixiaoMoney(final String tgKaixiaoMoney) {
+		this.tgKaixiaoMoneyProperty().set(tgKaixiaoMoney);
+	}
+	
+	//=====================
+	public SimpleStringProperty tgKaixiaoEntityIdProperty() {
+		return this.tgKaixiaoEntityId;
+	}
+
+	public String getTgKaixiaoEntityId() {
+		return this.tgKaixiaoEntityIdProperty().get();
+	}
+
+	public void setTgKaixiaoEntityId(final String tgKaixiaoEntityId) {
+		this.tgKaixiaoEntityIdProperty().set(tgKaixiaoEntityId);
 	}
 	
 

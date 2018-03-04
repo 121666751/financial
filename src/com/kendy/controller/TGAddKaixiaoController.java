@@ -3,7 +3,6 @@ package com.kendy.controller;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,26 +16,24 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.kendy.db.DBUtil;
 import com.kendy.entity.Player;
-import com.kendy.entity.TGCompanyModel;
 import com.kendy.entity.TGKaixiaoInfo;
 import com.kendy.util.CollectUtil;
 import com.kendy.util.MapUtil;
 import com.kendy.util.ShowUtil;
 import com.kendy.util.StringUtil;
+import com.kendy.util.TableUtil;
 import com.kendy.util.TimeUtil;
 
 import application.DataConstans;
 import application.Main;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 
@@ -209,7 +206,7 @@ public class TGAddKaixiaoController implements Initializable{
 				payItemsChoice.getSelectionModel().getSelectedItem(),
 				kaixiaoMoneyField.getText()
 				);
-		TGKaixiaoEntity.setEntityId(UUID.randomUUID().toString());
+		TGKaixiaoEntity.setTgKaixiaoEntityId(UUID.randomUUID().toString());
 		return TGKaixiaoEntity;
 	}
 	
@@ -231,10 +228,18 @@ public class TGAddKaixiaoController implements Initializable{
 		TGKaixiaoInfo TGKaixiaoEntity = getSubmitData();
 
 		TGController tgController = Main.tgController;
-//		ObservableList<Node> companyList = tgController.TG_Company_VBox.getChildren();
-//		if(CollectUtil.isHaveValue(companyList)) {
-//			companyList.add(new Button(tgCompanyModel.getTgCompanyName()));
-//		}
+		TableView<TGKaixiaoInfo> tableTGKaixiao = tgController.tableTGKaixiao;
+		if(TableUtil.isNullOrEmpty(tableTGKaixiao)) {
+			ObservableList<TGKaixiaoInfo> obList = FXCollections.observableArrayList();
+			obList.add(TGKaixiaoEntity);
+			tableTGKaixiao.setItems(obList);
+		}else {
+			tableTGKaixiao.getItems().add(TGKaixiaoEntity);
+		}
+		tableTGKaixiao.refresh();
+		ShowUtil.show("添加完成",2);
+		//保存到数据库
+		DBUtil.saveOrUpdate_tg_kaixiao(TGKaixiaoEntity);
 	}
 	
 

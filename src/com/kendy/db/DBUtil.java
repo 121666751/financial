@@ -28,6 +28,8 @@ import com.kendy.entity.KaixiaoInfo;
 import com.kendy.entity.Player;
 import com.kendy.entity.Record;
 import com.kendy.entity.ShangmaNextday;
+import com.kendy.entity.TGCommentInfo;
+import com.kendy.entity.TGKaixiaoInfo;
 import com.kendy.util.ErrorUtil;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
@@ -1489,6 +1491,26 @@ public class DBUtil {
 	}
 	
 	/**
+	 * 更改团队
+	 * 备注：这个功能其实可以做成关联人员表，而不必这么麻烦
+	 */
+	public static void updateRecordTeamId(final String playerId, final String teamId) {
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			if(!StringUtil.isBlank(playerId)) {
+				sql = "update record r set r.teamId = '"+teamId+"' where r.playerId = '"+playerId+"'";
+				ps = con.prepareStatement(sql);
+				ps.execute();
+			}
+		}catch (SQLException e) {
+			ErrorUtil.err("更改玩家团队失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	/**
 	 * 删除某一场的战绩记录
 	 * 
 	 * @time 2017年11月23日
@@ -2275,6 +2297,212 @@ public class DBUtil {
 			ps.execute();
 		}catch (SQLException e) {
 			ErrorUtil.err("根据ID删除股东开销失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	
+	
+	/***************************************************************************
+	 * 
+	 * 				托管开销表
+	 * 
+	 **************************************************************************/
+	/**
+	 * 保存或修改托管开销表
+	 * 
+	 */
+	public static boolean saveOrUpdate_tg_kaixiao(final TGKaixiaoInfo kaixiao) {
+		boolean isOK = false;
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			sql = "replace into tg_kaixiao(tg_id, tg_date, tg_player_name, tg_pay_items, tg_money) values(?,?,?,?,?)";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, kaixiao.getTgKaixiaoEntityId());
+			ps.setString(2, kaixiao.getTgKaixiaoDate());
+			ps.setString(3, kaixiao.getTgKaixiaoPlayerName());
+			ps.setString(4, kaixiao.getTgKaixiaoPayItem());
+			ps.setString(5, kaixiao.getTgKaixiaoMoney());
+			ps.execute();
+			isOK = true;
+		}catch (SQLException e) {
+			ErrorUtil.err(kaixiao.toString()+",保存或修改托管开销失败", e);
+			isOK = false;
+		}finally{
+			close(con,ps);
+		}
+		return isOK;
+	}
+	
+	/**
+	 * 获取所有托管开销
+	 * 
+	 * @time 2018年3月4日
+	 * @return
+	 */
+	public static List<TGKaixiaoInfo> get_all_tg_kaixiao() {
+		List<TGKaixiaoInfo> list = new ArrayList<>();
+		try {
+			con = DBConnection.getConnection();
+			String sql = "select * from tg_kaixiao";
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				TGKaixiaoInfo kaixiao = new TGKaixiaoInfo(rs.getString(1),rs.getString(2),rs.getString(3),
+						rs.getString(4),rs.getString(5));
+				list.add(kaixiao);
+			}
+		} catch (SQLException e) {
+			ErrorUtil.err("获取所有托管开销失败",e);
+		}finally{
+			close(con,ps);
+		}
+		return list;
+	}
+	
+	/**
+	 * 删除所有的托管开销
+	 * 
+	 * @time 2018年3月4日
+	 * @param key
+	 */
+	public static void del_all_tg_kaixiao() {
+		try {
+			con = DBConnection.getConnection();
+			String sql  = "delete from tg_kaixiao ";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("删除所有的托管开销失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	/**
+	 * 根据ID删除托管开销
+	 * 
+	 * @time 2018年3月4日
+	 * @param key
+	 */
+	public static void del_tg_kaixiao_by_id(String kaixiaoID) {
+		try {
+			con = DBConnection.getConnection();
+			String sql  = "delete from tg_kaixiao where tg_id = '"+ kaixiaoID +"'";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("根据ID删除托管开销失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	/***************************************************************************
+	 * 
+	 * 				托管玩家备注表
+	 * 
+	 **************************************************************************/
+	/**
+	 * 保存或修改玩家备注表
+	 * 
+	 */
+	public static boolean saveOrUpdate_tg_comment(final TGCommentInfo comment) {
+		boolean isOK = false;
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			sql = "replace into tg_comment(id, tg_date, tg_player_id, tg_player_name, tg_type, tg_id, tg_name, tg_beizhu) values(?,?,?,?,?)";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, comment.getTgCommentDateEntityId());
+			ps.setString(2, comment.getTgCommentDate());
+			ps.setString(3, comment.getTgCommentPlayerId());
+			ps.setString(4, comment.getTgCommentPlayerName());
+			ps.setString(5, comment.getTgCommentType());
+			ps.setString(6, comment.getTgCommentId());
+			ps.setString(7, comment.getTgCommentName());
+			ps.setString(8, comment.getTgCommentBeizhu());
+			ps.execute();
+			isOK = true;
+		}catch (SQLException e) {
+			ErrorUtil.err(comment.toString()+",保存或修改玩家备注失败", e);
+			isOK = false;
+		}finally{
+			close(con,ps);
+		}
+		return isOK;
+	}
+	
+	/**
+	 * 获取所有玩家备注
+	 * 
+	 * @time 2018年3月4日
+	 * @return
+	 */
+	public static List<TGCommentInfo> get_all_tg_comment() {
+		List<TGCommentInfo> list = new ArrayList<>();
+		try {
+			con = DBConnection.getConnection();
+			String sql = "select * from tg_comment";
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				//id,  tg_date,  tg_player_id,  tg_player_name,  tg_type, tg_id,  tg_name,  tg_beizhu
+				TGCommentInfo comment = new TGCommentInfo(
+						rs.getString(1),
+						rs.getString(2),
+						rs.getString(3),
+						rs.getString(4),
+						rs.getString(5),
+						rs.getString(6),
+						rs.getString(7),
+						rs.getString(8)
+						);
+				list.add(comment);
+			}
+		} catch (SQLException e) {
+			ErrorUtil.err("获取所有玩家备注失败",e);
+		}finally{
+			close(con,ps);
+		}
+		return list;
+	}
+	
+	/**
+	 * 删除所有的玩家备注
+	 * 
+	 * @time 2018年3月4日
+	 * @param key
+	 */
+	public static void del_all_tg_comment() {
+		try {
+			con = DBConnection.getConnection();
+			String sql  = "delete from tg_comment ";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("删除所有的玩家备注失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	/**
+	 * 根据ID删除玩家备注
+	 * 
+	 * @time 2018年3月4日
+	 * @param key
+	 */
+	public static void del_tg_comment_by_id(String commentID) {
+		try {
+			con = DBConnection.getConnection();
+			String sql  = "delete from tg_comment where id = '"+ commentID +"'";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("根据ID删除玩家备注失败", e);
 		}finally{
 			close(con,ps);
 		}

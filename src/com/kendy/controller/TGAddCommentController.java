@@ -40,7 +40,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 
 /**
- * 新增托管开销控制类
+ * 新增玩家备注控制类
  * 
  * @author 林泽涛
  * @time 2018年3月3日 下午2:25:46
