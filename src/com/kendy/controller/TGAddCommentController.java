@@ -3,11 +3,11 @@ package com.kendy.controller;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.kendy.db.DBUtil;
 import com.kendy.entity.Player;
-import com.kendy.entity.TGCompanyModel;
+import com.kendy.entity.TGCommentInfo;
 import com.kendy.entity.TGKaixiaoInfo;
 import com.kendy.util.CollectUtil;
 import com.kendy.util.MapUtil;
@@ -25,15 +25,11 @@ import com.kendy.util.StringUtil;
 import com.kendy.util.TimeUtil;
 
 import application.DataConstans;
-import application.Main;
-import javafx.application.Platform;
+import application.MyController;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -67,7 +63,7 @@ public class TGAddCommentController implements Initializable{
 	
 	private static final String TG_WANGJIA_COMMENT_DB_KEY = "tg_wangjia_comment"; //保存到数据库的key
 	
-	private static List<String> typeItems = new ArrayList<>();
+	public static List<String> typeItems = new ArrayList<>();
 	
 	private static List<Player> players = new ArrayList<>();
 	
@@ -210,15 +206,24 @@ public class TGAddCommentController implements Initializable{
 	 * @time 2018年3月3日
 	 * @return
 	 */
-//	private TGKaixiaoInfo getSubmitData() {
-//		TG TGKaixiaoEntity = new TGKaixiaoInfo(
-//				TimeUtil.getDateString(),
-//				FinalPlaerNameField.getText(),
-//				typeChoice.getSelectionModel().getSelectedItem(),
-//				kaixiaoMoneyField.getText()
-//				);
-//		return TGKaixiaoEntity;
-//	}
+	private TGCommentInfo getSubmitData() {
+		TGController tgController = MyController.tgController;
+		//获取当前托管公司
+		String tgCompany = tgController.getCurrentTGCompany();
+		
+		TGCommentInfo entity = new TGCommentInfo(
+				UUID.randomUUID().toString(),
+				TimeUtil.getDateString(),
+				FinalPlaerIdField.getText(),
+				FinalPlaerNameField.getText(),
+				typeChoice.getSelectionModel().getSelectedItem(),
+				IDField.getText(),
+				nameField.getText(),
+				beizhuField.getText(),
+				tgCompany
+				);
+		return entity;
+	}
 	
 	
 	
@@ -228,20 +233,20 @@ public class TGAddCommentController implements Initializable{
 	 * @time 2018年3月3日
 	 * @param event
 	 */
-	public void addTGKaixiaoBtnAction(ActionEvent event) {
+	public void addTGCommentBtnAction(ActionEvent event) {
 		//检验参数
 		if(hasAnyParamBlank()) {
 			ShowUtil.show("Sorry, 提交信息不完整，请查看！");
 			return;
 		}
 		//传递给主控制类处理逻辑 TODO
-//		TGKaixiaoInfo TGKaixiaoEntity = getSubmitData();
-//
-//		TGController tgController = Main.tgController;
-//		ObservableList<Node> companyList = tgController.TG_Company_VBox.getChildren();
-//		if(CollectUtil.isHaveValue(companyList)) {
-//			companyList.add(new Button(tgCompanyModel.getTgCompanyName()));
-//		}
+		TGCommentInfo tgCommentInfo = getSubmitData();
+		TGController tgController = MyController.tgController;
+		//保存到数据库
+		DBUtil.saveOrUpdate_tg_comment(tgCommentInfo);
+		//刷新界面
+		tgController.refreshTableTGComment();
+		ShowUtil.show("添加完成",1);
 	}
 	
 

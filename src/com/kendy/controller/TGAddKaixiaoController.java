@@ -25,7 +25,7 @@ import com.kendy.util.TableUtil;
 import com.kendy.util.TimeUtil;
 
 import application.DataConstans;
-import application.Main;
+import application.MyController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -59,7 +59,7 @@ public class TGAddKaixiaoController implements Initializable{
 	
 	private static final String PAY_ITEMS_DB_KEY = "tg_pay_items"; //保存到数据库的key
 	
-	private static List<String> payItems = new ArrayList<>();
+	public static List<String> payItems = new ArrayList<>();
 	
 	private static List<Player> players = new ArrayList<>();
 	
@@ -200,13 +200,18 @@ public class TGAddKaixiaoController implements Initializable{
 	 * @return
 	 */
 	private TGKaixiaoInfo getSubmitData() {
+		TGController tgController = MyController.tgController;
+		//获取当前托管公司
+		String tgCompany = tgController.getCurrentTGCompany();
+		
 		TGKaixiaoInfo TGKaixiaoEntity = new TGKaixiaoInfo(
+				UUID.randomUUID().toString(),
 				TimeUtil.getDateString(),
 				FinalPlaerNameField.getText(),
 				payItemsChoice.getSelectionModel().getSelectedItem(),
-				kaixiaoMoneyField.getText()
+				kaixiaoMoneyField.getText(),
+				tgCompany
 				);
-		TGKaixiaoEntity.setTgKaixiaoEntityId(UUID.randomUUID().toString());
 		return TGKaixiaoEntity;
 	}
 	
@@ -226,20 +231,12 @@ public class TGAddKaixiaoController implements Initializable{
 		}
 		//传递给主控制类处理逻辑 TODO
 		TGKaixiaoInfo TGKaixiaoEntity = getSubmitData();
-
-		TGController tgController = Main.tgController;
-		TableView<TGKaixiaoInfo> tableTGKaixiao = tgController.tableTGKaixiao;
-		if(TableUtil.isNullOrEmpty(tableTGKaixiao)) {
-			ObservableList<TGKaixiaoInfo> obList = FXCollections.observableArrayList();
-			obList.add(TGKaixiaoEntity);
-			tableTGKaixiao.setItems(obList);
-		}else {
-			tableTGKaixiao.getItems().add(TGKaixiaoEntity);
-		}
-		tableTGKaixiao.refresh();
-		ShowUtil.show("添加完成",2);
+		TGController tgController = MyController.tgController;
 		//保存到数据库
 		DBUtil.saveOrUpdate_tg_kaixiao(TGKaixiaoEntity);
+		//刷新界面
+		tgController.refreshTableTGKaixiao();
+		ShowUtil.show("添加完成",1);
 	}
 	
 

@@ -388,6 +388,8 @@ public class MyController implements Initializable{
 	public static LMController lmController = new LMController();
 	public static TableView<ProfitInfo> table_Profit;
 	
+	public static TGController tgController; //托管控制类
+	
 	
 	/* 每点击结算按钮就往这个静态变更累加（只针对当局）
 	 * 撤销时清空为0
@@ -714,14 +716,16 @@ public class MyController implements Initializable{
 	    
 	    try {
 	    	FXMLLoader loader = new FXMLLoader();
-	    	Parent root = loader.load(getClass().getResource("/com/kendy/dialog/tuoguan_tool.fxml").openStream());
+	    	Parent root = loader.load(getClass().getResource("/com/kendy/dialog/TG_tool.fxml").openStream());
 //	    	loader.setController(new TGController());
-	    	loader.setController(Main.tgController);
+	    	//loader.setController(new TGController());
 	    	Tab gdTab = new Tab();
-	    	gdTab.setText("托管小工具");
+	    	gdTab.setText("托管工具");
 	    	gdTab.setClosable(false);
 	    	gdTab.setContent(root);
 	    	tabs.getTabs().add(gdTab);  
+	    	
+	    	tgController = (TGController) loader.getController();
 	    	
 	    } catch (IOException e) {
 	    	ErrorUtil.err("托管小工具tab加载失败", e);

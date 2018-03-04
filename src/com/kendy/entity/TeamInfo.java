@@ -79,20 +79,14 @@ public class TeamInfo implements Entity{
 	public SimpleStringProperty teamHSProperty() {
 		return this.teamHS;
 	}
-	
-
 
 	public String getTeamHS() {
 		return this.teamHSProperty().get();
 	}
-	
-
 
 	public void setTeamHS(final String teamHS) {
 		this.teamHSProperty().set(teamHS);
 	}
-	
-
 
 	public SimpleStringProperty teamBSProperty() {
 		return this.teamBS;

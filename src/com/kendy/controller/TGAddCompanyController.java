@@ -217,7 +217,7 @@ public class TGAddCompanyController implements Initializable{
 		//传递给主控制类处理逻辑 TODO
 		TGCompanyModel tgCompanyModel = getSubmitData();
 		System.out.println(tgCompanyModel);
-		TGController tgController = Main.tgController;
+		TGController tgController = MyController.tgController;
 		ObservableList<Node> companyList = tgController.TG_Company_VBox.getChildren();
 		if(CollectUtil.isHaveValue(companyList)) {
 			companyList.add(new Button(tgCompanyModel.getTgCompanyName()));

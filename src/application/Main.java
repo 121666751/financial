@@ -25,8 +25,6 @@ public class Main extends Application {
 	
 	public static TeamProxyController teamProxyController  = new TeamProxyController();
 	
-	public static TGController tgController;
-	
 	static {
 		try {
 			////生产环境可用
@@ -123,9 +121,6 @@ public class Main extends Application {
 //			Pane p = fxmlLoader.load(getClass().getResource("MainStage4.fxml").openStream());
 //			Parent root = p.getParent()
 			MyController mc = (MyController) fxmlLoader.getController();
-			
-			tgController = new TGController();
-			
 			
 			
 //			try {

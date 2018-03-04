@@ -19,24 +19,20 @@ public class TGKaixiaoInfo implements Entity{
 	private SimpleStringProperty tgKaixiaoPlayerName = new SimpleStringProperty();//玩家名称
 	private SimpleStringProperty tgKaixiaoPayItem = new SimpleStringProperty();//支出项目
 	private SimpleStringProperty tgKaixiaoMoney = new SimpleStringProperty();//玩家名称
+	private SimpleStringProperty tgKaixiaoCompany = new SimpleStringProperty();//从属托管公司
 	
 	public TGKaixiaoInfo() {
 		super();
 	}
 
-	public TGKaixiaoInfo(String tgKaixiaoDate, String tgKaixiaoPlayerName, String tgKaixiaoPayItem, String tgKaixiaoMoney) {
-		this.tgKaixiaoDate = new SimpleStringProperty(tgKaixiaoDate);
-		this.tgKaixiaoPlayerName = new SimpleStringProperty(tgKaixiaoPlayerName);
-		this.tgKaixiaoPayItem = new SimpleStringProperty(tgKaixiaoPayItem);
-		this.tgKaixiaoMoney = new SimpleStringProperty(tgKaixiaoMoney);
-	}
-	
-	public TGKaixiaoInfo(String tgKaixiaoEntityId, String tgKaixiaoDate, String tgKaixiaoPlayerName, String tgKaixiaoPayItem, String tgKaixiaoMoney) {
+	public TGKaixiaoInfo(String tgKaixiaoEntityId, String tgKaixiaoDate, String tgKaixiaoPlayerName
+			,String tgKaixiaoPayItem, String tgKaixiaoMoney, String tgKaixiaoCompany) {
 		this.tgKaixiaoEntityId = new SimpleStringProperty(tgKaixiaoEntityId);
 		this.tgKaixiaoDate = new SimpleStringProperty(tgKaixiaoDate);
 		this.tgKaixiaoPlayerName = new SimpleStringProperty(tgKaixiaoPlayerName);
 		this.tgKaixiaoPayItem = new SimpleStringProperty(tgKaixiaoPayItem);
 		this.tgKaixiaoMoney = new SimpleStringProperty(tgKaixiaoMoney);
+		this.tgKaixiaoCompany = new SimpleStringProperty(tgKaixiaoCompany);
 	}
 	
 	//=====================
@@ -98,6 +94,16 @@ public class TGKaixiaoInfo implements Entity{
 
 	public void setTgKaixiaoEntityId(final String tgKaixiaoEntityId) {
 		this.tgKaixiaoEntityIdProperty().set(tgKaixiaoEntityId);
+	}
+	//=====================
+	public SimpleStringProperty tgKaixiaoCompanyProperty() {
+		return this.tgKaixiaoCompany;
+	}
+	public String getTgKaixiaoCompany() {
+		return this.tgKaixiaoCompanyProperty().get();
+	}
+	public void setTgKaixiaoCompany(final String tgKaixiaoCompany) {
+		this.tgKaixiaoCompanyProperty().set(tgKaixiaoCompany);
 	}
 	
 

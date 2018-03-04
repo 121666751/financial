@@ -14,7 +14,7 @@ import javafx.scene.control.TableColumn;
  */
 public class TGCommentInfo implements Entity{
 
-	private SimpleStringProperty tgCommentDateEntityId = new SimpleStringProperty();//ID
+	private SimpleStringProperty tgCommentEntityId = new SimpleStringProperty();//ID
 	private SimpleStringProperty tgCommentDate = new SimpleStringProperty();//日期
 	private SimpleStringProperty tgCommentPlayerId = new SimpleStringProperty();//玩家名称
 	private SimpleStringProperty tgCommentPlayerName = new SimpleStringProperty();//支出项目
@@ -24,14 +24,16 @@ public class TGCommentInfo implements Entity{
 	private SimpleStringProperty tgCommentName = new SimpleStringProperty();//支出项目
 	private SimpleStringProperty tgCommentBeizhu = new SimpleStringProperty();//玩家名称
 	
+	private SimpleStringProperty tgCommentGudong = new SimpleStringProperty();//玩家名称
+	
 	public TGCommentInfo() {
 		super();
 	}
 
 	
-	public TGCommentInfo(String tgCommentDateEntityId, String tgCommentDate, String tgCommentPlayerId, String tgCommentPlayerName, String tgCommentType
-			,String tgCommentId, String tgCommentName, String tgCommentBeizhu) {
-		this.tgCommentDateEntityId = new SimpleStringProperty(tgCommentDateEntityId);
+	public TGCommentInfo(String tgCommentEntityId, String tgCommentDate, String tgCommentPlayerId, String tgCommentPlayerName, String tgCommentType
+			,String tgCommentId, String tgCommentName, String tgCommentBeizhu, String tgCommentGudong) {
+		this.tgCommentEntityId = new SimpleStringProperty(tgCommentEntityId);
 		this.tgCommentDate = new SimpleStringProperty(tgCommentDate);
 		this.tgCommentPlayerId = new SimpleStringProperty(tgCommentPlayerId);
 		this.tgCommentPlayerName = new SimpleStringProperty(tgCommentPlayerName);
@@ -39,6 +41,7 @@ public class TGCommentInfo implements Entity{
 		this.tgCommentId = new SimpleStringProperty(tgCommentId);
 		this.tgCommentName = new SimpleStringProperty(tgCommentName);
 		this.tgCommentBeizhu = new SimpleStringProperty(tgCommentBeizhu);
+		this.tgCommentGudong = new SimpleStringProperty(tgCommentGudong);
 	}
 	
 	//=====================
@@ -90,16 +93,16 @@ public class TGCommentInfo implements Entity{
 	}
 	
 	//=====================
-	public SimpleStringProperty tgCommentDateEntityIdProperty() {
-		return this.tgCommentDateEntityId;
+	public SimpleStringProperty tgCommentEntityIdProperty() {
+		return this.tgCommentEntityId;
 	}
 
-	public String getTgCommentDateEntityId() {
-		return this.tgCommentDateEntityIdProperty().get();
+	public String getTgCommentEntityId() {
+		return this.tgCommentEntityIdProperty().get();
 	}
 
-	public void setTgCommentDateEntityId(final String id) {
-		this.tgCommentDateEntityIdProperty().set(id);
+	public void setTgCommentEntityId(final String id) {
+		this.tgCommentEntityIdProperty().set(id);
 	}
 	
 	//=====================
@@ -137,5 +140,16 @@ public class TGCommentInfo implements Entity{
 	public void setTgCommentBeizhu(final String tgCommentBeizhu) {
 		this.tgCommentBeizhuProperty().set(tgCommentBeizhu);
 	}
+	//=====================
+	public SimpleStringProperty tgCommentGudongProperty() {
+		return this.tgCommentGudong;
+	}
 
+	public String getTgCommentGudong() {
+		return this.tgCommentGudongProperty().get();
+	}
+
+	public void setTgCommentGudong(final String tgCommentGudong) {
+		this.tgCommentGudongProperty().set(tgCommentGudong);
+	}
 }

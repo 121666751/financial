@@ -2318,13 +2318,14 @@ public class DBUtil {
 		try {
 			con = DBConnection.getConnection();
 			String sql;
-			sql = "replace into tg_kaixiao(tg_id, tg_date, tg_player_name, tg_pay_items, tg_money) values(?,?,?,?,?)";
+			sql = "replace into tg_kaixiao(tg_id, tg_date, tg_player_name, tg_pay_items, tg_money, tg_company) values(?,?,?,?,?,?)";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, kaixiao.getTgKaixiaoEntityId());
 			ps.setString(2, kaixiao.getTgKaixiaoDate());
 			ps.setString(3, kaixiao.getTgKaixiaoPlayerName());
 			ps.setString(4, kaixiao.getTgKaixiaoPayItem());
 			ps.setString(5, kaixiao.getTgKaixiaoMoney());
+			ps.setString(6, kaixiao.getTgKaixiaoCompany());
 			ps.execute();
 			isOK = true;
 		}catch (SQLException e) {
@@ -2351,7 +2352,7 @@ public class DBUtil {
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				TGKaixiaoInfo kaixiao = new TGKaixiaoInfo(rs.getString(1),rs.getString(2),rs.getString(3),
-						rs.getString(4),rs.getString(5));
+						rs.getString(4),rs.getString(5),rs.getString(6));
 				list.add(kaixiao);
 			}
 		} catch (SQLException e) {
@@ -2414,9 +2415,9 @@ public class DBUtil {
 		try {
 			con = DBConnection.getConnection();
 			String sql;
-			sql = "replace into tg_comment(id, tg_date, tg_player_id, tg_player_name, tg_type, tg_id, tg_name, tg_beizhu) values(?,?,?,?,?)";
+			sql = "replace into tg_comment(id, tg_date, tg_player_id, tg_player_name, tg_type, tg_id, tg_name, tg_beizhu, tg_gudong) values(?,?,?,?,?,?,?,?,?)";
 			ps = con.prepareStatement(sql);
-			ps.setString(1, comment.getTgCommentDateEntityId());
+			ps.setString(1, comment.getTgCommentEntityId());
 			ps.setString(2, comment.getTgCommentDate());
 			ps.setString(3, comment.getTgCommentPlayerId());
 			ps.setString(4, comment.getTgCommentPlayerName());
@@ -2424,6 +2425,7 @@ public class DBUtil {
 			ps.setString(6, comment.getTgCommentId());
 			ps.setString(7, comment.getTgCommentName());
 			ps.setString(8, comment.getTgCommentBeizhu());
+			ps.setString(9, comment.getTgCommentGudong());
 			ps.execute();
 			isOK = true;
 		}catch (SQLException e) {
@@ -2458,7 +2460,8 @@ public class DBUtil {
 						rs.getString(5),
 						rs.getString(6),
 						rs.getString(7),
-						rs.getString(8)
+						rs.getString(8),
+						rs.getString(9)
 						);
 				list.add(comment);
 			}

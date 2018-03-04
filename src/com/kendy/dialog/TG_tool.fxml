@@ -21,7 +21,7 @@
       <VBox fx:id="TG_Company_VBox" layoutX="44.0" layoutY="126.0" prefHeight="688.0" prefWidth="118.0" style="-fx-background-color: #F5FF90;" />
       <VBox fx:id="TG_Team_VBox" layoutX="179.0" layoutY="126.0" prefHeight="688.0" prefWidth="106.0" style="-fx-background-color: #FF8FFF;" />
       <Button layoutX="1041.0" layoutY="51.0" mnemonicParsing="false" onAction="#exportTGExcelAction" prefHeight="30.0" prefWidth="160.0" text="导出托管Excel" />
-      <Button layoutX="45.0" layoutY="87.0" mnemonicParsing="false" onAction="#addNewTGCompanyAction" prefHeight="30.0" prefWidth="118.0" text="新建托管公司" />
+      <Button layoutX="44.0" layoutY="87.0" mnemonicParsing="false" onAction="#addNewTGCompanyAction" prefHeight="30.0" prefWidth="118.0" text="新建托管公司" />
       <HBox layoutX="304.0" layoutY="95.0">
          <children>
             <Label layoutX="197.0" layoutY="87.0" prefHeight="30.0" prefWidth="30.0" text="押金" />
@@ -90,9 +90,10 @@
                         <TableView fx:id="tableTGKaixiao" layoutY="32.0" prefHeight="593.0" prefWidth="692.0">
                            <columns>
                               <TableColumn fx:id="tgKaixiaoDate" prefWidth="147.0" text="日期" />
-                              <TableColumn fx:id="tgKaixiaoPlayerName" prefWidth="152.0" text="名字" />
-                              <TableColumn fx:id="tgKaixiaoPayItem" prefWidth="227.0" text="支出项目" />
-                              <TableColumn fx:id="tgKaixiaoMoney" prefWidth="152.0" text="金额" />
+                              <TableColumn fx:id="tgKaixiaoCompany" prefWidth="88.0" text="托管公司" />
+                              <TableColumn fx:id="tgKaixiaoPlayerName" prefWidth="148.0" text="名字" />
+                              <TableColumn fx:id="tgKaixiaoPayItem" prefWidth="136.0" text="支出项目" />
+                              <TableColumn fx:id="tgKaixiaoMoney" prefWidth="151.0" text="金额" />
                            </columns>
                         </TableView>
                         <VBox layoutX="741.0" layoutY="32.0" prefHeight="346.0" prefWidth="150.0">
@@ -102,11 +103,11 @@
                                     <Font size="21.0" />
                                  </font>
                               </Label>
-                              <ListView prefHeight="200.0" prefWidth="145.0" />
+                              <ListView fx:id="tgKaixiaoSumView" prefHeight="200.0" prefWidth="145.0" />
                               <AnchorPane prefHeight="38.0" prefWidth="107.0" />
                               <Button layoutX="741.0" layoutY="32.0" mnemonicParsing="false" onAction="#addKaixiaoAction" prefHeight="30.0" prefWidth="149.0" text="新建" />
                               <AnchorPane prefHeight="18.0" prefWidth="107.0" />
-                              <Button layoutX="741.0" layoutY="83.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="删除" />
+                              <Button layoutX="741.0" layoutY="83.0" mnemonicParsing="false" onAction="#delTGKaixiaoAction" prefHeight="30.0" prefWidth="150.0" text="删除" />
                            </children>
                         </VBox>
                      </children>
@@ -135,11 +136,11 @@
                                     <Font size="21.0" />
                                  </font>
                               </Label>
-                              <ListView prefHeight="200.0" prefWidth="145.0" />
+                              <ListView fx:id="tgCommentSumView" prefHeight="200.0" prefWidth="145.0" />
                               <AnchorPane prefHeight="38.0" prefWidth="107.0" />
                               <Button layoutX="741.0" layoutY="32.0" mnemonicParsing="false" onAction="#addPlayerCommentAction" prefHeight="30.0" prefWidth="150.0" text="新建" />
                               <AnchorPane prefHeight="18.0" prefWidth="107.0" />
-                              <Button layoutX="741.0" layoutY="83.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="151.0" text="删除" />
+                              <Button layoutX="741.0" layoutY="83.0" mnemonicParsing="false" onAction="#delTGCommentAction" prefHeight="30.0" prefWidth="151.0" text="删除" />
                            </children>
                         </VBox>
                      </children>
@@ -149,5 +150,18 @@
         </tabs>
       </TabPane>
       <Button layoutX="1041.0" layoutY="95.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" text="修改后保存比例或服务费" />
+      <Label layoutX="50.0" layoutY="36.0" prefHeight="44.0" prefWidth="134.0" text="当前托管公司：" textFill="#a82121">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <Label fx:id="currentTGCompanyLabel" layoutX="180.0" layoutY="36.0" prefHeight="44.0" prefWidth="118.0" text="SJ" textFill="#1427f8">
+         <font>
+            <Font name="System Bold" size="19.0" />
+         </font>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </Label>
    </children>
  </AnchorPane>

@@ -44,7 +44,7 @@
             <TextField fx:id="IDField" layoutX="93.0" layoutY="446.0" prefHeight="23.0" prefWidth="171.0" />
          </children>
       </HBox>
-      <Button layoutX="67.0" layoutY="457.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="241.0" text="OK " />
+      <Button layoutX="67.0" layoutY="457.0" mnemonicParsing="false" onAction="#addTGCommentBtnAction" prefHeight="23.0" prefWidth="241.0" text="OK " />
       <ListView fx:id="playersView" layoutX="61.0" layoutY="55.0" prefHeight="159.0" prefWidth="241.0" />
       <HBox layoutX="51.0" layoutY="264.0">
          <children>
@@ -73,7 +73,7 @@
                   <Font size="13.0" />
                </font>
             </Label>
-            <TextField layoutX="93.0" layoutY="446.0" prefHeight="23.0" prefWidth="171.0" />
+            <TextField fx:id="beizhuField" layoutX="93.0" layoutY="446.0" prefHeight="23.0" prefWidth="171.0" />
          </children>
       </HBox>
       <HBox layoutX="51.0" layoutY="231.0">
