@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.kendy.db.DBUtil;
 import com.kendy.entity.TGCommentInfo;
+import com.kendy.entity.TGCompanyModel;
 import com.kendy.entity.TGKaixiaoInfo;
 import com.kendy.util.CollectUtil;
 import com.kendy.util.NumUtil;
@@ -28,14 +30,17 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -57,6 +62,7 @@ public class TGController implements Initializable{
 	@FXML private VBox TG_Team_VBox; // 托管公司的内部托管团队
 	
 	@FXML private Label currentTGCompanyLabel; //当前托管公司
+	@FXML private Label currentTGTeamLabel; //当前托管团队
 	
 	//=====================================================================
 	@FXML private TabPane tabs;
@@ -94,6 +100,9 @@ public class TGController implements Initializable{
 		
 		//tabs切换事件
 		tabsAction();
+		
+		//加载托管公司数据
+		loadDataLastest();
 	}
 	
 	
@@ -324,6 +333,110 @@ public class TGController implements Initializable{
 		tgCommentSumView.refresh();
 		
 	}
+	
+	
+	/**
+	 * 清空界面数据
+	 */
+	private void clearUIData() {
+		
+	}
+	
+	/**
+	 * 加载最新的数据
+	 * 
+	 * @time 2018年3月5日
+	 */
+	public void loadDataLastest() {
+		//清空数据
+		
+		//获取数据
+		List<TGCompanyModel> tgCompanys = DBUtil.get_all_tg_company();
+		
+		if(CollectUtil.isHaveValue(tgCompanys)) {
+			// 获取特定结构 {托管公司 ：｛ 团队名称 ： 团队数据列表 ｝｝ TODO
+			
+			
+			ObservableList<Node> companyButtons = TG_Company_VBox.getChildren();
+			TG_Company_VBox.setPrefWidth(120);
+			if(CollectUtil.isHaveValue(companyButtons)) {
+				companyButtons.clear();
+			}
+			tgCompanys.forEach(company -> {
+				Button companyBtn = getCompanyButton(company);
+				companyButtons.add(companyBtn);
+			});
+		}
+	}
+	
+	private Button getCompanyButton(TGCompanyModel companyEntity ) {
+		String company = companyEntity.getTgCompanyName();
+		List<String> teamList = companyEntity.getTgTeamList();
+		Button companyBtn = new Button(company);
+		companyBtn.setPrefWidth(110);
+		companyBtn.setOnAction(event -> {
+			//改前景颜色
+			//TG_Company_VBox.getStylesheets().add("-fx-background-color:red");
+			//修改当前托管公司名称
+			currentTGCompanyLabel.setText(company);
+			currentTGTeamLabel.setText("");
+			//加载托管公司名下的团队按钮数据  {托管公司 ：｛ 团队名称 ： 团队数据列表 ｝｝
+			if(CollectUtil.isHaveValue(teamList)) {
+				loadTeamBtnView(teamList);
+			}
+		});
+		
+		return companyBtn;
+	}
+	
+	private void loadTeamBtnView(List<String> teamList) {
+		ObservableList<Node> teamBtns = TG_Team_VBox.getChildren();
+		TG_Team_VBox.setPrefWidth(100);
+		if(CollectUtil.isHaveValue(teamBtns)) {
+			teamBtns.clear();
+		}
+		teamList.forEach(teamId -> {
+			Button teamBtn = getTeamButton(teamId);
+			teamBtns.add(teamBtn);
+		});
+	}
+	
+	
+	private Button getTeamButton(String teamId) {
+		Button teamBtn = new Button(teamId);
+		teamBtn.setPrefWidth(90);
+		teamBtn.setOnAction(event -> {
+			currentTGTeamLabel.setText(teamId);
+//			//修改当前托管公司名称
+//			currentTGCompanyLabel.setText(company);
+//			//加载托管公司名下的团队按钮数据  {托管公司 ：｛ 团队名称 ： 团队数据列表 ｝｝
+//			if(CollectUtil.isHaveValue(teamList)) {
+//				
+//			}
+		});
+		
+		return teamBtn;
+	}
+	
+	
+	/** 
+     * 获取十六进制的颜色代码.例如  "#6E36B4" , For HTML , 
+     * @return String 
+     */  
+	public static String getRandColorCode(){  
+		  String r,g,b;  
+		  Random random = new Random();  
+		  r = Integer.toHexString(random.nextInt(256)).toUpperCase();  
+		  g = Integer.toHexString(random.nextInt(256)).toUpperCase();  
+		  b = Integer.toHexString(random.nextInt(256)).toUpperCase();  
+		    
+		  r = r.length()==1 ? "0" + r : r ;  
+		  g = g.length()==1 ? "0" + g : g ;  
+		  b = b.length()==1 ? "0" + b : b ;  
+		    
+		  return r+g+b;  
+	 }
+	
 
     
     

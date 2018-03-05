@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -2571,6 +2572,10 @@ public class DBUtil {
 						rs.getString(6)
 						);
 				company.setBeizhu(rs.getString(7));
+				if(StringUtil.isNotBlank(company.getTgTeamsStr())) {
+					String[] teamArr = company.getTgTeamsStr().split("#");
+					company.setTgTeamList(new ArrayList<String>(Arrays.asList(teamArr)));
+				}
 				list.add(company);
 			}
 		} catch (SQLException e) {
@@ -2610,6 +2615,25 @@ public class DBUtil {
 		try {
 			con = DBConnection.getConnection();
 			String sql  = "delete from tg_company where tg_company_name = '"+ companyName +"'";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("根据托管公司名称删除托管公司失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	/**
+	 * 根据名称获取托管公司
+	 * 
+	 * @time 2018年3月4日
+	 * @param key
+	 */
+	public static void get_tg_company_by_name(String companyName) {
+		try {
+			con = DBConnection.getConnection();
+			String sql  = "select from tg_company where tg_company_name = '"+ companyName +"'";
 			ps = con.prepareStatement(sql);
 			ps.execute();
 		}catch (SQLException e) {

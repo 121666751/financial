@@ -892,6 +892,9 @@ public class MyController implements Initializable{
             		//自动加载联盟1的数据
             		QuotaController.autoSelectLM1();
             	}
+            	if("托管工具".equals(tab.getText())) {
+            		tgController.loadDataLastest();
+            	}
             }
 		});
 	}

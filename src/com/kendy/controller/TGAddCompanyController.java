@@ -220,7 +220,9 @@ public class TGAddCompanyController implements Initializable{
 	
 		DBUtil.saveOrUpdate_tg_company(tgCompanyModel);
 		ShowUtil.show("添加成功",1);
-//		TGController tgController = MyController.tgController;
+		
+		TGController tgController = MyController.tgController;
+		tgController.loadDataLastest();
 //		ObservableList<Node> companyList = tgController.TG_Company_VBox.getChildren();
 //		if(CollectUtil.isHaveValue(companyList)) {
 //			companyList.add(new Button(tgCompanyModel.getTgCompanyName()));
