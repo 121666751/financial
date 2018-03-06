@@ -67,15 +67,15 @@
                      <children>
                         <TableView fx:id="tableTGZhanji" layoutY="32.0" prefHeight="593.0" prefWidth="723.0">
                            <columns>
-                              <TableColumn fx:id="tgKaixiaoDate1" prefWidth="96.0" text="玩家ID" />
-                              <TableColumn fx:id="tgKaixiaoCompany1" prefWidth="117.0" text="玩家名称" />
-                              <TableColumn fx:id="tgKaixiaoPlayerName1" prefWidth="64.0" text="原始战绩" />
-                              <TableColumn fx:id="tgKaixiaoPayItem1" prefWidth="74.0" text="保险" />
-                              <TableColumn fx:id="tgKaixiaoMoney1" prefWidth="75.0" text="战绩2.5%" />
-                              <TableColumn fx:id="tgKaixiaoMoney11" prefWidth="72.0" text="战绩0%" />
-                              <TableColumn fx:id="tgKaixiaoMoney111" prefWidth="64.0" text="回保" />
-                              <TableColumn fx:id="tgKaixiaoMoney1111" prefWidth="71.0" text="利润" />
-                              <TableColumn fx:id="tgKaixiaoMoney11111" prefWidth="74.0" text="场次" />
+                              <TableColumn fx:id="tgPlayerId" prefWidth="96.0" text="玩家ID" />
+                              <TableColumn fx:id="tgPlayerName" prefWidth="117.0" text="玩家名称" />
+                              <TableColumn fx:id="tgYSZJ" prefWidth="64.0" text="原始战绩" />
+                              <TableColumn fx:id="tgBaoxian" prefWidth="74.0" text="保险" />
+                              <TableColumn fx:id="tgZJ25" prefWidth="75.0" text="战绩2.5%" />
+                              <TableColumn fx:id="tgZJUnknow" prefWidth="72.0" text="战绩0%" />
+                              <TableColumn fx:id="tgHuiBao" prefWidth="64.0" text="回保" />
+                              <TableColumn fx:id="tgProfit" prefWidth="71.0" text="利润" />
+                              <TableColumn fx:id="tgChangci" prefWidth="74.0" text="场次" />
                            </columns>
                         </TableView>
                         <VBox layoutX="741.0" layoutY="32.0" prefHeight="248.0" prefWidth="150.0">

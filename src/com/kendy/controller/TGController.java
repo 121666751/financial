@@ -2,7 +2,6 @@ package com.kendy.controller;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,10 +14,13 @@ import org.apache.log4j.Logger;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.kendy.db.DBUtil;
+import com.kendy.entity.ProxyTeamInfo;
 import com.kendy.entity.TGCommentInfo;
 import com.kendy.entity.TGCompanyModel;
 import com.kendy.entity.TGKaixiaoInfo;
+import com.kendy.entity.TGTeamInfo;
 import com.kendy.entity.TypeValueInfo;
+import com.kendy.service.TeamProxyService;
 import com.kendy.util.CollectUtil;
 import com.kendy.util.InputDialog;
 import com.kendy.util.NumUtil;
@@ -75,12 +77,22 @@ public class TGController implements Initializable{
 	//=====================================================================
 	@FXML private TabPane tabs;
 	
+	//=====================================================================团队战绩表
+	@FXML public TableView<TGTeamInfo> tableTGZhanji;
+	@FXML private TableColumn<TGTeamInfo,String> tgPlayerId;
+	@FXML private TableColumn<TGTeamInfo,String> tgPlayerName;
+	@FXML private TableColumn<TGTeamInfo,String> tgYSZJ;
+	@FXML private TableColumn<TGTeamInfo,String> tgZJ25;
+	@FXML private TableColumn<TGTeamInfo,String> tgZJUnknow;
+	@FXML private TableColumn<TGTeamInfo,String> tgProfit;
+	@FXML private TableColumn<TGTeamInfo,String> tgHuiBao;
+	@FXML private TableColumn<TGTeamInfo,String> tgBaoxian;
+	@FXML private TableColumn<TGTeamInfo,String> tgChangci;
 	
 	//=====================================================================托管团队映射表
 	@FXML public TableView<TypeValueInfo> tableTGTeamRate;
 	@FXML private TableColumn<TypeValueInfo,String> tgTeamId;
 	@FXML private TableColumn<TypeValueInfo,String> tgTeamRate;
-	//=====================================================================表
 
 	//=====================================================================托管开销表
 	@FXML public TableView<TGKaixiaoInfo>  tableTGKaixiao;     
@@ -113,6 +125,7 @@ public class TGController implements Initializable{
 		MyController.bindCellValue(tgCommentDate,tgCommentPlayerId,tgCommentPlayerName,tgCommentType,tgCommentId,tgCommentName,tgCommentBeizhu);
 		binCellValueDiff(tgTeamId,"type");
 		binCellValueDiff(tgTeamRate,"value");
+		MyController.bindCellValue(tgPlayerId,tgPlayerName,tgYSZJ,tgZJ25,tgZJUnknow,tgProfit,tgHuiBao,tgBaoxian,tgChangci);
 		
 		//tabs切换事件
 		tabsAction();
@@ -439,9 +452,66 @@ public class TGController implements Initializable{
 //			if(CollectUtil.isHaveValue(teamList)) {
 //				
 //			}
+			//获取代理查询的团队数据
+			final List<ProxyTeamInfo> proxyTeamInfoList = getProxyTeamInfoList(teamId);
+			//转化为托管公司的团队数据
+			List<TGTeamInfo> tgTeamList = convert2TGTeamInfo(proxyTeamInfoList);
+			tableTGZhanji.setItems(FXCollections.observableArrayList(tgTeamList));
 		});
 		
 		return teamBtn;
+	}
+	
+	private List<TGTeamInfo> convert2TGTeamInfo(List<ProxyTeamInfo> proxyTeamInfoList){
+		List<TGTeamInfo> list = new ArrayList<>();
+		if(CollectUtil.isHaveValue(proxyTeamInfoList)) {
+			list = proxyTeamInfoList.stream().map(info -> {
+				TGTeamInfo tgTeam = new TGTeamInfo();
+				tgTeam.setTgPlayerId(info.getProxyPlayerId());
+				tgTeam.setTgPlayerName(info.getProxyPlayerName());
+				tgTeam.setTgYSZJ(info.getProxyYSZJ());
+				tgTeam.setTgBaoxian(info.getProxyBaoxian());
+				tgTeam.setTgHuiBao(info.getProxyHuiBao());
+				tgTeam.setTgChangci(info.getProxyTableId());
+				//TODO 设置2.5% 和 未知%
+				
+				return tgTeam;
+			}).collect(Collectors.toList());
+		}
+		return list;
+	}
+	
+	/**
+	 * 模拟获取代理查询中的团队数据
+	 * 
+	 * @time 2018年3月6日
+	 * @param teamId
+	 * @return
+	 */
+	private List<ProxyTeamInfo> getProxyTeamInfoList(String teamId){
+
+		List<ProxyTeamInfo> proxyTeamList = new ArrayList<>();
+		ObservableList<String> obList = TeamProxyService.teamIDCombox.getItems();
+		if(!CollectUtil.isHaveValue(obList)) {
+			ShowUtil.show("小林提示：代理查询团队下拉框没有数据！",2);
+			return proxyTeamList;
+		}else {
+			if(StringUtil.isNotBlank(teamId) && obList.contains(teamId.toUpperCase())) {
+				for(String _teamId : obList) {
+					if(_teamId.equals(teamId.toUpperCase())) {
+						TeamProxyService.teamIDCombox.getSelectionModel().select(_teamId);
+						log.info("模拟获取代理查询中的团队数据: "+ teamId);
+						ObservableList<ProxyTeamInfo> teamList = TeamProxyService.tableProxyTeam.getItems();
+						if(CollectUtil.isHaveValue(teamList)) {
+							for(ProxyTeamInfo info : teamList) {
+								proxyTeamList.add(info);
+							}
+						}
+					}
+				}
+			}
+		}
+		return proxyTeamList;
 	}
 	
 	
