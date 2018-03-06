@@ -65,13 +65,17 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="tableTGKaixiao1" layoutY="32.0" prefHeight="593.0" prefWidth="692.0">
+                        <TableView fx:id="tableTGZhanji" layoutY="32.0" prefHeight="593.0" prefWidth="723.0">
                            <columns>
-                              <TableColumn fx:id="tgKaixiaoDate1" prefWidth="147.0" text="日期" />
-                              <TableColumn fx:id="tgKaixiaoCompany1" prefWidth="88.0" text="托管公司" />
-                              <TableColumn fx:id="tgKaixiaoPlayerName1" prefWidth="148.0" text="名字" />
-                              <TableColumn fx:id="tgKaixiaoPayItem1" prefWidth="136.0" text="支出项目" />
-                              <TableColumn fx:id="tgKaixiaoMoney1" prefWidth="151.0" text="金额" />
+                              <TableColumn fx:id="tgKaixiaoDate1" prefWidth="96.0" text="玩家ID" />
+                              <TableColumn fx:id="tgKaixiaoCompany1" prefWidth="117.0" text="玩家名称" />
+                              <TableColumn fx:id="tgKaixiaoPlayerName1" prefWidth="64.0" text="原始战绩" />
+                              <TableColumn fx:id="tgKaixiaoPayItem1" prefWidth="74.0" text="保险" />
+                              <TableColumn fx:id="tgKaixiaoMoney1" prefWidth="75.0" text="战绩2.5%" />
+                              <TableColumn fx:id="tgKaixiaoMoney11" prefWidth="72.0" text="战绩0%" />
+                              <TableColumn fx:id="tgKaixiaoMoney111" prefWidth="64.0" text="回保" />
+                              <TableColumn fx:id="tgKaixiaoMoney1111" prefWidth="71.0" text="利润" />
+                              <TableColumn fx:id="tgKaixiaoMoney11111" prefWidth="74.0" text="场次" />
                            </columns>
                         </TableView>
                         <VBox layoutX="741.0" layoutY="32.0" prefHeight="248.0" prefWidth="150.0">
@@ -85,6 +89,18 @@
                               <AnchorPane prefHeight="18.0" prefWidth="107.0" />
                            </children>
                         </VBox>
+                        <TableView fx:id="tableTGTeamRate" layoutX="740.0" layoutY="300.0" prefHeight="325.0" prefWidth="151.0">
+                           <columns>
+                              <TableColumn fx:id="tgTeamId" prefWidth="71.0" text="托管团队" />
+                              <TableColumn fx:id="tgTeamRate" prefWidth="68.0" text="比例" />
+                           </columns>
+                        </TableView>
+                        <HBox layoutX="831.0" layoutY="269.0">
+                           <children>
+                              <Button layoutX="744.0" layoutY="269.0" mnemonicParsing="false" onAction="#AddTGTeamRateBtnAction" prefHeight="23.0" prefWidth="30.0" text="+" />
+                              <Button layoutX="774.0" layoutY="269.0" mnemonicParsing="false" onAction="#delTGTeamRateBtnAction" prefHeight="23.0" prefWidth="30.0" text="-" />
+                           </children>
+                        </HBox>
                      </children>
                   </AnchorPane>
                </content>

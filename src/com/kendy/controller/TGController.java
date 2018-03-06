@@ -2,21 +2,28 @@ package com.kendy.controller;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.kendy.db.DBUtil;
 import com.kendy.entity.TGCommentInfo;
 import com.kendy.entity.TGCompanyModel;
 import com.kendy.entity.TGKaixiaoInfo;
+import com.kendy.entity.TypeValueInfo;
 import com.kendy.util.CollectUtil;
+import com.kendy.util.InputDialog;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
+import com.kendy.util.StringUtil;
 
 import application.Constants;
 import application.DataConstans;
@@ -40,10 +47,11 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.Background;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Pair;
 
 /**
  * 处理联盟配额的控制器
@@ -67,6 +75,12 @@ public class TGController implements Initializable{
 	//=====================================================================
 	@FXML private TabPane tabs;
 	
+	
+	//=====================================================================托管团队映射表
+	@FXML public TableView<TypeValueInfo> tableTGTeamRate;
+	@FXML private TableColumn<TypeValueInfo,String> tgTeamId;
+	@FXML private TableColumn<TypeValueInfo,String> tgTeamRate;
+	//=====================================================================表
 
 	//=====================================================================托管开销表
 	@FXML public TableView<TGKaixiaoInfo>  tableTGKaixiao;     
@@ -87,7 +101,7 @@ public class TGController implements Initializable{
 	@FXML private TableColumn<TGCommentInfo,String> tgCommentBeizhu;
 	@FXML public ListView<String> tgCommentSumView; // 玩家备注合计
 
-	
+	private static final String TG_TEAM_RATE_DB_KEY = "tg_team_rate"; //保存到数据库的key
 	
 	/**
 	 * DOM加载完后的事件
@@ -97,12 +111,24 @@ public class TGController implements Initializable{
 		//绑定列值属性
 		MyController.bindCellValue(tgKaixiaoDate,tgKaixiaoPlayerName,tgKaixiaoPayItem,tgKaixiaoMoney,tgKaixiaoCompany);
 		MyController.bindCellValue(tgCommentDate,tgCommentPlayerId,tgCommentPlayerName,tgCommentType,tgCommentId,tgCommentName,tgCommentBeizhu);
+		binCellValueDiff(tgTeamId,"type");
+		binCellValueDiff(tgTeamRate,"value");
 		
 		//tabs切换事件
 		tabsAction();
 		
+		//加载托管团队比例数据
+		refreshTableTGTeam();
+		
 		//加载托管公司数据
 		loadDataLastest();
+		
+	}
+	
+	private <T>  void   binCellValueDiff(TableColumn<T, String> column, String bindName) {
+        column.setStyle("-fx-alignment: CENTER;");
+        column.setCellValueFactory(
+        		new PropertyValueFactory<T, String>(bindName));
 	}
 	
 	
@@ -436,6 +462,79 @@ public class TGController implements Initializable{
 		    
 		  return r+g+b;  
 	 }
+	
+	
+	/**
+	 * 获取托管团队表内容
+	 * @time 2018年3月6日
+	 * @return
+	 */
+	private List<TypeValueInfo> getTableTGTeams(){
+		ObservableList<TypeValueInfo> tgTeamRates = tableTGTeamRate.getItems();
+		return CollectUtil.isNullOrEmpty(tgTeamRates) ? FXCollections.observableArrayList() : tgTeamRates;
+	}
+	
+	/**
+	 * 刷新托管团队表
+	 * 
+	 * @time 2018年3月3日
+	 */
+	private void refreshTableTGTeam() {
+		List<TypeValueInfo> list ;
+		String teamsJson = DBUtil.getValueByKey(TG_TEAM_RATE_DB_KEY);
+		if(StringUtil.isNotBlank(teamsJson) && !"{}".equals(teamsJson)) {
+			list = JSON.parseObject(teamsJson, new TypeReference<List<TypeValueInfo>>() {});
+		}else {
+			list = new ArrayList<>();
+		}
+		tableTGTeamRate.setItems(FXCollections.observableArrayList(list));
+	}
+	
+	
+	/**
+	 * 添加托管团队
+	 */
+	public void AddTGTeamRateBtnAction(ActionEvent event){
+		InputDialog dialog = new InputDialog("添加托管团队","托管团队","团队比例");
+		
+		Optional<Pair<String, String>> result = dialog.getResult();
+		if (result.isPresent()){
+			try {
+				Pair<String, String> map = result.get();
+				String teamId = map.getKey().trim();
+				String teamRate = map.getValue().trim();
+				//是否重复
+				List<TypeValueInfo> tableTGTeams = getTableTGTeams();
+				boolean repeatTeamId = tableTGTeams.stream().anyMatch(info->teamId.equals(info.getType()));
+				if(repeatTeamId) {
+					ShowUtil.show(teamId + "团队已经存在！");
+					return;
+				}
+				if(!teamRate.endsWith("%")) {
+					ShowUtil.show("比例必须包含百分比符号%");
+					return;
+				}
+				//添加
+				tableTGTeams.add(new TypeValueInfo(teamId, teamRate));
+				String teamsJson = JSON.toJSONString(tableTGTeams);
+				DBUtil.saveOrUpdateOthers(TG_TEAM_RATE_DB_KEY, teamsJson);
+				//刷新当前表(战绩) TODO
+				refreshTableTGTeam();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * 删除托管团队
+	 */
+	public void delTGTeamRateBtnAction(ActionEvent event){
+		
+	}
+	
+	
+	
 	
 
     

@@ -2,6 +2,7 @@ package com.kendy.controller;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.kendy.db.DBUtil;
 import com.kendy.entity.Huishui;
 import com.kendy.entity.TGCompanyModel;
@@ -140,6 +143,9 @@ public class TGAddCompanyController implements Initializable{
 			tg_team_view.getItems().remove(selectedTeam);
 		}
 	}
+	
+	
+
 	
 	/**
 	 * 增加托管团队（右表转到左表）
