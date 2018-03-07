@@ -80,13 +80,17 @@
                         </TableView>
                         <VBox layoutX="741.0" layoutY="32.0" prefHeight="248.0" prefWidth="150.0">
                            <children>
-                              <Label prefHeight="30.0" prefWidth="107.0" text="合计：" textFill="#cd2753">
+                              <Label prefHeight="30.0" prefWidth="150.0" text="         合计" textAlignment="CENTER" textFill="#8a726a">
                                  <font>
                                     <Font size="21.0" />
                                  </font>
                               </Label>
-                              <ListView fx:id="tgKaixiaoSumView1" prefHeight="200.0" prefWidth="145.0" />
-                              <AnchorPane prefHeight="18.0" prefWidth="107.0" />
+                              <TableView fx:id="tableZJSum" prefHeight="200.0" prefWidth="145.0">
+                                <columns>
+                                  <TableColumn fx:id="tgZJSumType" prefWidth="90.0" text="类型" />
+                                  <TableColumn fx:id="tgZJSumValue" prefWidth="57.0" text="值" />
+                                </columns>
+                              </TableView>
                            </children>
                         </VBox>
                         <TableView fx:id="tableTGTeamRate" layoutX="740.0" layoutY="300.0" prefHeight="325.0" prefWidth="151.0">

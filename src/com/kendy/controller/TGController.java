@@ -2,6 +2,8 @@ package com.kendy.controller;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,6 +28,7 @@ import com.kendy.util.InputDialog;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
 import com.kendy.util.StringUtil;
+import com.kendy.util.TableUtil;
 
 import application.Constants;
 import application.DataConstans;
@@ -89,6 +92,11 @@ public class TGController implements Initializable{
 	@FXML private TableColumn<TGTeamInfo,String> tgBaoxian;
 	@FXML private TableColumn<TGTeamInfo,String> tgChangci;
 	
+	//=====================================================================托管团队战绩总和表
+	@FXML public TableView<TypeValueInfo> tableZJSum;
+	@FXML private TableColumn<TypeValueInfo,String> tgZJSumType;
+	@FXML private TableColumn<TypeValueInfo,String> tgZJSumValue;
+	
 	//=====================================================================托管团队映射表
 	@FXML public TableView<TypeValueInfo> tableTGTeamRate;
 	@FXML private TableColumn<TypeValueInfo,String> tgTeamId;
@@ -125,7 +133,10 @@ public class TGController implements Initializable{
 		MyController.bindCellValue(tgCommentDate,tgCommentPlayerId,tgCommentPlayerName,tgCommentType,tgCommentId,tgCommentName,tgCommentBeizhu);
 		binCellValueDiff(tgTeamId,"type");
 		binCellValueDiff(tgTeamRate,"value");
+		binCellValueDiff(tgZJSumType,"type");
+		binCellValueDiff(tgZJSumValue,"value");
 		MyController.bindCellValue(tgPlayerId,tgPlayerName,tgYSZJ,tgZJ25,tgZJUnknow,tgProfit,tgHuiBao,tgBaoxian,tgChangci);
+		bindColorColumn(tgYSZJ, tgZJ25, tgZJUnknow, tgProfit, tgHuiBao, tgBaoxian);
 		
 		//tabs切换事件
 		tabsAction();
@@ -142,6 +153,11 @@ public class TGController implements Initializable{
         column.setStyle("-fx-alignment: CENTER;");
         column.setCellValueFactory(
         		new PropertyValueFactory<T, String>(bindName));
+	}
+	
+	private  void bindColorColumn(TableColumn<TGTeamInfo, String>... columns) {
+		for(TableColumn<TGTeamInfo, String> column  : columns)
+			column.setCellFactory(MyController.getColorCellFactory(new TGTeamInfo()));
 	}
 	
 	
@@ -408,6 +424,12 @@ public class TGController implements Initializable{
 		}
 	}
 	
+	/**
+	 * 获取一个动态的公司按钮
+	 * @time 2018年3月7日
+	 * @param companyEntity
+	 * @return
+	 */
 	private Button getCompanyButton(TGCompanyModel companyEntity ) {
 		String company = companyEntity.getTgCompanyName();
 		List<String> teamList = companyEntity.getTgTeamList();
@@ -419,6 +441,8 @@ public class TGController implements Initializable{
 			//修改当前托管公司名称
 			currentTGCompanyLabel.setText(company);
 			currentTGTeamLabel.setText("");
+			//清空表数据
+			clearTableTGTeamDataAndSum();
 			//加载托管公司名下的团队按钮数据  {托管公司 ：｛ 团队名称 ： 团队数据列表 ｝｝
 			if(CollectUtil.isHaveValue(teamList)) {
 				loadTeamBtnView(teamList);
@@ -428,6 +452,11 @@ public class TGController implements Initializable{
 		return companyBtn;
 	}
 	
+	/**
+	 * 加载动态的按钮列表图
+	 * @time 2018年3月7日
+	 * @param teamList
+	 */
 	private void loadTeamBtnView(List<String> teamList) {
 		ObservableList<Node> teamBtns = TG_Team_VBox.getChildren();
 		TG_Team_VBox.setPrefWidth(100);
@@ -440,7 +469,13 @@ public class TGController implements Initializable{
 		});
 	}
 	
-	
+	/**
+	 * 获取动态的团队按钮
+	 * 
+	 * @time 2018年3月7日
+	 * @param teamId
+	 * @return
+	 */
 	private Button getTeamButton(String teamId) {
 		Button teamBtn = new Button(teamId);
 		teamBtn.setPrefWidth(90);
@@ -455,15 +490,31 @@ public class TGController implements Initializable{
 			//获取代理查询的团队数据
 			final List<ProxyTeamInfo> proxyTeamInfoList = getProxyTeamInfoList(teamId);
 			//转化为托管公司的团队数据
-			List<TGTeamInfo> tgTeamList = convert2TGTeamInfo(proxyTeamInfoList);
+			List<TGTeamInfo> tgTeamList = convert2TGTeamInfo(teamId, proxyTeamInfoList);
 			tableTGZhanji.setItems(FXCollections.observableArrayList(tgTeamList));
+			//设置团队合计
+			refreshTableTGTeamSum();
 		});
 		
 		return teamBtn;
 	}
 	
-	private List<TGTeamInfo> convert2TGTeamInfo(List<ProxyTeamInfo> proxyTeamInfoList){
+	/**
+	 * 代理查询中的数据转成托管中的团队信息数据
+	 * @time 2018年3月7日
+	 * @param teamId
+	 * @param proxyTeamInfoList
+	 * @return
+	 */
+	private List<TGTeamInfo> convert2TGTeamInfo(String teamId, List<ProxyTeamInfo> proxyTeamInfoList){
 		List<TGTeamInfo> list = new ArrayList<>();
+		Map<String, Double> tgTeamRateMap = getTgTeamRateMap();
+		System.out.println("tgTeamRateMap:"+tgTeamRateMap);
+		
+		Double teamUnknowValue = tgTeamRateMap.getOrDefault(teamId, 0d);
+		//更改列名称
+		changeColumnName_TeamUnknowRate(teamUnknowValue);
+		
 		if(CollectUtil.isHaveValue(proxyTeamInfoList)) {
 			list = proxyTeamInfoList.stream().map(info -> {
 				TGTeamInfo tgTeam = new TGTeamInfo();
@@ -471,14 +522,41 @@ public class TGController implements Initializable{
 				tgTeam.setTgPlayerName(info.getProxyPlayerName());
 				tgTeam.setTgYSZJ(info.getProxyYSZJ());
 				tgTeam.setTgBaoxian(info.getProxyBaoxian());
-				tgTeam.setTgHuiBao(info.getProxyHuiBao());
+				tgTeam.setTgHuiBao(StringUtil.nvl(info.getProxyHuiBao(), "0.00"));
 				tgTeam.setTgChangci(info.getProxyTableId());
-				//TODO 设置2.5% 和 未知%
+				//设置战绩2.5% 
+				String percent25Str = NumUtil.digit2(NumUtil.getNum(info.getProxyYSZJ()) * 0.025 + "");
+				tgTeam.setTgZJ25(percent25Str);
+				//设置战绩未知%
+				String teamUnknowStr = NumUtil.digit2(NumUtil.getNum(info.getProxyYSZJ()) * teamUnknowValue + "");
+				tgTeam.setTgZJUnknow(teamUnknowStr);
+				//设置利润
+				String profit = getRecordProfit(tgTeam);
+				tgTeam.setTgProfit(profit);
 				
 				return tgTeam;
 			}).collect(Collectors.toList());
 		}
 		return list;
+	}
+	
+	
+	/**
+	 * 获取每一行的利润
+	 * 公式 = 原始战绩 * （2.5% - unknow%） + 保险 * （-0.975） - 回保
+	 * 
+	 * @time 2018年3月7日
+	 * @param info
+	 * @return
+	 */
+	private String getRecordProfit(TGTeamInfo info) {
+		String teamRate25 = info.getTgZJ25();
+		String teamRateUnknow = info.getTgZJUnknow();
+		String baoxian = info.getTgBaoxian();
+		String huibao = info.getTgHuiBao();
+		Double recordProfit = NumUtil.getNum(teamRate25) - NumUtil.getNum(teamRateUnknow) 
+		 + ( NumUtil.getNum(baoxian) * (-0.975)  - NumUtil.getNum(huibao) ); 
+		return NumUtil.digit2(recordProfit + "");
 	}
 	
 	/**
@@ -532,6 +610,29 @@ public class TGController implements Initializable{
 		    
 		  return r+g+b;  
 	 }
+	
+	/**
+	 * 获取团队比例映射
+	 * 
+	 * @time 2018年3月7日
+	 * @return
+	 */
+	private Map<String,Double> getTgTeamRateMap(){
+		List<TypeValueInfo> tableTGTeams = getTableTGTeams();
+		//toMap方法，当key相同时会报错
+		Map<String,Double> map = tableTGTeams.stream().distinct()
+				.collect(Collectors.toMap(TypeValueInfo::getType, info -> 
+						NumUtil.getNumByPercent(info.getValue())));
+		return map == null ? new HashMap<>() : map;
+	}
+	
+	private void changeColumnName_TeamUnknowRate(Double teamUnknowRate) {
+		String newColumnName = "0%";
+		if(teamUnknowRate.intValue() >= 0) {
+			newColumnName = NumUtil.getPercentStr(teamUnknowRate);
+		}
+		tableTGZhanji.getColumns().get(5).setText("战绩"+newColumnName);
+	}
 	
 	
 	/**
@@ -613,6 +714,61 @@ public class TGController implements Initializable{
 		refreshTableTGTeam();
 		
 	}
+	
+	/**
+	 * 刷新托管团队总和数据（合计）
+	 */
+	public void refreshTableTGTeamSum() {
+		// 1 战绩2.5%：
+		double zjRate25Sum = tableTGZhanji.getItems().stream()
+			.mapToDouble(info-> NumUtil.getNum(info.getTgZJ25()))
+			.sum();
+		
+		// 2 战绩未知
+		String columnName = tableTGZhanji.getColumns().get(5).getText();
+		double zjRateUnknowSum = tableTGZhanji.getItems().stream()
+				.mapToDouble(info-> NumUtil.getNum(info.getTgZJUnknow()))
+				.sum();
+		
+		// 3 保险
+		double zjBaoxianSum = tableTGZhanji.getItems().stream()
+				.mapToDouble(info-> NumUtil.getNum(info.getTgBaoxian()))
+				.sum();
+		
+		// 4 回保
+		double zjHuibaoSum = tableTGZhanji.getItems().stream()
+				.mapToDouble(info-> NumUtil.getNum(info.getTgHuiBao()))
+				.sum();
+		
+		// 5 总和
+		double zjProfitSum = zjRate25Sum - zjRateUnknowSum + zjBaoxianSum - zjHuibaoSum;
+		
+		List<TypeValueInfo> list = new ArrayList<TypeValueInfo>();
+		list.add(new TypeValueInfo("战绩2.5%合计", zjRate25Sum+""));
+		list.add(new TypeValueInfo(columnName + "合计", zjRateUnknowSum+""));
+		list.add(new TypeValueInfo("保险合计", zjBaoxianSum+""));
+		list.add(new TypeValueInfo("回保合计", zjHuibaoSum+""));
+		list.add(new TypeValueInfo("总利润合计", zjProfitSum+""));
+				
+		ObservableList<TypeValueInfo> obList = FXCollections.observableArrayList(list);
+		tableZJSum.setItems(obList);
+
+	}
+	
+	/**
+	 * 刷新托管团队战绩以及总和数据（合计）
+	 */
+	private void clearTableTGTeamDataAndSum() {
+		tableTGZhanji.getColumns().get(5).setText("战绩0%");
+		if(TableUtil.isHasValue(tableTGZhanji)) {
+			tableTGZhanji.getItems().clear();
+		}
+		if(TableUtil.isHasValue(tableZJSum)) {
+			tableZJSum.getItems().clear();
+		}
+	}
+	
+	
 	
 	
 	
