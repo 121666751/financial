@@ -597,9 +597,20 @@ public class TGController implements Initializable{
 	}
 	
 	/**
-	 * 删除托管团队
+	 * 删除托管团队比例
 	 */
 	public void delTGTeamRateBtnAction(ActionEvent event){
+		TypeValueInfo selectedItem = tableTGTeamRate.getSelectionModel().getSelectedItem();
+		if(selectedItem == null ) {
+			ShowUtil.show("请先选择记录!");
+			return;
+		}
+		tableTGTeamRate.getItems().remove(selectedItem);
+		ObservableList<TypeValueInfo> items = tableTGTeamRate.getItems();
+		String teamsJson = JSON.toJSONString(items);
+		DBUtil.saveOrUpdateOthers(TG_TEAM_RATE_DB_KEY, teamsJson);
+		//刷新当前表(战绩) TODO
+		refreshTableTGTeam();
 		
 	}
 	
