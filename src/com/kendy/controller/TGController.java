@@ -2,7 +2,6 @@ package com.kendy.controller;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +22,7 @@ import com.kendy.entity.TGKaixiaoInfo;
 import com.kendy.entity.TGTeamInfo;
 import com.kendy.entity.TypeValueInfo;
 import com.kendy.service.TeamProxyService;
+import com.kendy.service.TgWaizhaiService;
 import com.kendy.util.CollectUtil;
 import com.kendy.util.InputDialog;
 import com.kendy.util.NumUtil;
@@ -32,6 +32,7 @@ import com.kendy.util.TableUtil;
 
 import application.Constants;
 import application.DataConstans;
+import application.Main;
 import application.MyController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -53,6 +54,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -120,6 +122,16 @@ public class TGController implements Initializable{
 	@FXML private TableColumn<TGCommentInfo,String> tgCommentName;
 	@FXML private TableColumn<TGCommentInfo,String> tgCommentBeizhu;
 	@FXML public ListView<String> tgCommentSumView; // 玩家备注合计
+	
+	//=====================================================================托管团队外债表
+	@FXML public TableView<TypeValueInfo> tgWZTeam;
+	@FXML private TableColumn<TypeValueInfo,String> tgWZTeamId;
+	@FXML private TableColumn<TypeValueInfo,String> tgWZTeamValue;
+	
+	@FXML private HBox tgWZTeamHBox; // 存储动态的团队外债数据表
+	
+	
+	
 
 	private static final String TG_TEAM_RATE_DB_KEY = "tg_team_rate"; //保存到数据库的key
 	
@@ -135,6 +147,8 @@ public class TGController implements Initializable{
 		binCellValueDiff(tgTeamRate,"value");
 		binCellValueDiff(tgZJSumType,"type");
 		binCellValueDiff(tgZJSumValue,"value");
+		binCellValueDiff(tgWZTeamId,"type");
+		binCellValueDiff(tgWZTeamValue,"value");
 		MyController.bindCellValue(tgPlayerId,tgPlayerName,tgYSZJ,tgZJ25,tgZJUnknow,tgProfit,tgHuiBao,tgBaoxian,tgChangci);
 		bindColorColumn(tgYSZJ, tgZJ25, tgZJUnknow, tgProfit, tgHuiBao, tgBaoxian);
 		
@@ -177,6 +191,9 @@ public class TGController implements Initializable{
             	}
             	if("玩家备注".equals(tab.getText().trim())) {
             		refreshTableTGComment();//刷新
+            	}
+            	if("托管外债".equals(tab.getText().trim())) {
+            		refreshTabTGWaizhai();//刷新
             	}
             }
 		});
@@ -768,6 +785,16 @@ public class TGController implements Initializable{
 		}
 	}
 	
+	
+	/**
+	 * 刷新外债Tab
+	 * @time 2018年3月8日
+	 */
+	public void refreshTabTGWaizhai() {
+		MyController myController = Main.myController;
+		TgWaizhaiService.generateWaizhaiTables(tgWZTeam, tgWZTeamHBox 
+				,myController.tableCurrentMoneyInfo, myController.tableTeam);
+	}
 	
 	
 	

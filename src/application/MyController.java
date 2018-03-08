@@ -254,7 +254,7 @@ public class MyController implements Initializable{
 	@FXML private TableColumn<WanjiaInfo,String> copy;//复制
 	
 	//=================================================牌局表tableView
-	@FXML private TableView<TeamInfo> tableTeam;
+	@FXML public TableView<TeamInfo> tableTeam;
 	
 	@FXML private TableColumn<TeamInfo,String> teamID;//团ID
 	@FXML private TableColumn<TeamInfo,String> teamZJ;//团战绩
