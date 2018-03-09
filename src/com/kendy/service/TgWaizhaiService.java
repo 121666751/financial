@@ -279,7 +279,7 @@ public class TgWaizhaiService {
 		Map<String,CurrentMoneyInfo> ssje_map = get_SSJE_Map(SSJE_obList);
 		//handlePersonWaizhai(tgTeamIdMap,ssje_map); TODO
 		System.out.println("===============================================以上外债信息为：处理个人外债和有联合额度的外债finishes");
-		
+		tgTeamCMIMap = getFinalTGTeamMap(SSJE_obList);
 		return tgTeamCMIMap;
 	}
 	
@@ -311,25 +311,33 @@ public class TgWaizhaiService {
 				.collect(Collectors.toList());
 		
 		// 4 把子节点赋值给父节点 {父ID : 子ID列表}
-		Map<String, List<CurrentMoneyInfo>> subMap = sub_list.stream().collect(Collectors.groupingBy(info->{
-			CurrentMoneyInfo cmi = (CurrentMoneyInfo)info;
-			 String superId = DataConstans.Combine_Sub_Id_Map.get(cmi.getWanjiaId());
-			 if(StringUtil.isBlank(superId)) {
-				 log.error("玩家"+cmi.getWanjiaId()+"的父节点为空！处理托管团队数据有误！");
-				 superId = "";
-			 }
-			 return superId;
-		}));
-		
-		
-//		super_list.stream().map(info -> {
-//			
-//		})
+		Map<String, Double> subSumMap = getSubSumMap(sub_list);
+		List<CurrentMoneyInfo> superComputedList = super_list.stream().map(superInfo -> {
+			Double subSum = subSumMap.getOrDefault(superInfo.getWanjiaId(), 0d);
+			superInfo.setCmSuperIdSum(NumUtil.getSum(superInfo.getShishiJine(), subSum + ""));
+			return superInfo;
+		}).collect(Collectors.toList());
 		
 		// 5 整合A+B
+		List<CurrentMoneyInfo> totalList = new ArrayList<>();
+		totalList.addAll(not_supter_not_sub_list);
+		totalList.addAll(superComputedList);
+		
+		Map<String, List<CurrentMoneyInfo>> finalList = totalList.stream()
+			.collect(Collectors.groupingBy(
+				info->{
+					 CurrentMoneyInfo cmi = (CurrentMoneyInfo)info;
+					 Player p = DataConstans.membersMap.get(cmi.getWanjiaId());
+					 if(p == null) {
+						 log.error("玩家"+cmi.getWanjiaId()+",找不到！");
+						 return UNKNOW_TG_TEAM;
+					 }
+					 return p.getTeamName();
+				}
+			));
 		
 		
-		return null;
+		return finalList;
 	}
 	
 	private static boolean not_supter_not_sub(CurrentMoneyInfo cmi) {
@@ -348,6 +356,34 @@ public class TgWaizhaiService {
 		boolean isSuperId = DataConstans.Combine_Super_Id_Map.containsKey(cmi.getWanjiaId());
 		boolean isSubId = DataConstans.Combine_Sub_Id_Map.containsKey(cmi.getWanjiaId());
 		return isSuperId && !isSubId;
+	}
+	
+	/*
+	 * 获取子节点的实时金额总和
+	 */
+	private static Map<String, Double> getSubSumMap(List<CurrentMoneyInfo> sub_list){
+		Map<String, List<CurrentMoneyInfo>> _temSubMap = sub_list.stream().collect(
+				Collectors.groupingBy(info->{
+					CurrentMoneyInfo cmi = (CurrentMoneyInfo)info;
+					 String superId = DataConstans.Combine_Sub_Id_Map.get(cmi.getWanjiaId());
+					 if(StringUtil.isBlank(superId)) {
+						 log.error("玩家"+cmi.getWanjiaId()+"的父节点为空！处理托管团队数据有误！");
+						 superId = "";
+					 }
+					 return superId;
+				})
+				//,Collectors.countint())  // 要是可以使用这个方法的话，就不用下面的代码 了
+		);
+		
+		/*
+		 * 把父列表中的值与子列表集合中的金额总和进行合并
+		 * 备注：有一种，就是子节点中有更多的父ID信息，此情况是子ID在金额表中，但父ID不在金额表中
+		 */
+		Map<String, Double> subMap = new HashMap<>();
+		_temSubMap.forEach((superId, subList) -> 
+			subMap.put(superId, subList.stream().mapToDouble(cmi -> NumUtil.getNum(cmi.getShishiJine())).sum()));
+		log.info(subMap.keySet());
+		return subMap;
 	}
 	
 	
