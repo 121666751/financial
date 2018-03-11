@@ -20,6 +20,7 @@ import com.kendy.entity.TGCommentInfo;
 import com.kendy.entity.TGCompanyModel;
 import com.kendy.entity.TGKaixiaoInfo;
 import com.kendy.entity.TGTeamInfo;
+import com.kendy.entity.TGTeamModel;
 import com.kendy.entity.TypeValueInfo;
 import com.kendy.service.TeamProxyService;
 import com.kendy.service.TgWaizhaiService;
@@ -53,6 +54,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -78,6 +80,13 @@ public class TGController implements Initializable{
 	
 	@FXML private Label currentTGCompanyLabel; //当前托管公司
 	@FXML private Label currentTGTeamLabel; //当前托管团队
+	
+	@FXML private TextField tgTeamHSRate; //托管团队回水比例
+	@FXML private TextField tgTeamHBRate; //托管团队回保比例
+	@FXML private TextField tgTeamFWF; //托管团队服务费
+	
+	@FXML private TextField tgCompanyYajin; //托管公司押金
+	@FXML private TextField tgCompanyEdu; //托管公司额度
 	
 	//=====================================================================
 	@FXML private TabPane tabs;
@@ -329,8 +338,16 @@ public class TGController implements Initializable{
 	 * @time 2018年3月4日
 	 */
 	public void refreshTableTGKaixiao() {
+		
 		//从数据库获取最新数据
 		List<TGKaixiaoInfo> tgKaixiaoList = DBUtil.get_all_tg_kaixiao();
+		String company = currentTGCompanyLabel.getText();
+		if(StringUtil.isAnyBlank(company)) {
+			ShowUtil.show("请请求托管公司！");
+		}else if(CollectUtil.isHaveValue(tgKaixiaoList)) {
+			tgKaixiaoList  = tgKaixiaoList.stream().filter(info -> company.equals(info.getTgKaixiaoCompany())).collect(Collectors.toList());
+		}
+		
 		//过滤某个托管公司 TODO 
 		
 		//赋值
@@ -458,12 +475,17 @@ public class TGController implements Initializable{
 			//修改当前托管公司名称
 			currentTGCompanyLabel.setText(company);
 			currentTGTeamLabel.setText("");
+			
 			//清空表数据
 			clearTableTGTeamDataAndSum();
+			clearWhenChangeCompanyBtn();
+			
 			//加载托管公司名下的团队按钮数据  {托管公司 ：｛ 团队名称 ： 团队数据列表 ｝｝
 			if(CollectUtil.isHaveValue(teamList)) {
 				loadTeamBtnView(teamList);
 			}
+			//设置托管公司的相关信息
+			setTGCompanyInfo(company);
 		});
 		
 		return companyBtn;
@@ -497,13 +519,10 @@ public class TGController implements Initializable{
 		Button teamBtn = new Button(teamId);
 		teamBtn.setPrefWidth(90);
 		teamBtn.setOnAction(event -> {
+			//清空数据
+			clearWhenChangeTeamBtn();
+			
 			currentTGTeamLabel.setText(teamId);
-//			//修改当前托管公司名称
-//			currentTGCompanyLabel.setText(company);
-//			//加载托管公司名下的团队按钮数据  {托管公司 ：｛ 团队名称 ： 团队数据列表 ｝｝
-//			if(CollectUtil.isHaveValue(teamList)) {
-//				
-//			}
 			//获取代理查询的团队数据
 			final List<ProxyTeamInfo> proxyTeamInfoList = getProxyTeamInfoList(teamId);
 			//转化为托管公司的团队数据
@@ -511,9 +530,68 @@ public class TGController implements Initializable{
 			tableTGZhanji.setItems(FXCollections.observableArrayList(tgTeamList));
 			//设置团队合计
 			refreshTableTGTeamSum();
+			//设置团队的托管回水比例、回保比例、服务费
+			setTGTeamRateInfo(teamId);
 		});
 		
 		return teamBtn;
+	}
+	
+	
+	/**
+	 * 点击托管公司按钮后先清空相应值
+	 * @time 2018年3月11日
+	 */
+	private void clearWhenChangeCompanyBtn() {
+		clearWhenChangeTeamBtn();
+		
+		tgCompanyYajin.setText("");
+		tgCompanyEdu.setText("");
+	}
+	
+	/**
+	 * 点击托管团队按钮后先清空相应值
+	 * @time 2018年3月11日
+	 */
+	private void clearWhenChangeTeamBtn() {
+		tgTeamHSRate.setText("");
+		tgTeamHBRate.setText("");
+		tgTeamFWF.setText("");
+	}
+	
+	/**
+	 * 设置公司的托管押金、额度。其他？
+	 * @time 2018年3月11日
+	 * @param teamId
+	 */
+	private void setTGCompanyInfo(String tgCompany) {
+		TGCompanyModel tgCompanyModel = DBUtil.get_tg_company_by_id(tgCompany);
+		if(tgCompanyModel == null) {
+			return;
+		}
+		//设置
+		tgCompanyYajin.setText(tgCompanyModel.getYajin());
+		tgCompanyEdu.setText(tgCompanyModel.getEdu());
+		//其他更新
+		
+	}
+	
+	/**
+	 * 设置团队的托管回水比例、回保比例、服务费
+	 * @time 2018年3月11日
+	 * @param teamId
+	 */
+	private void setTGTeamRateInfo(String teamId) {
+		TGTeamModel tgTeamModel = DBUtil.get_tg_team_by_id(teamId);
+		if(tgTeamModel == null) {
+			return;
+		}
+		//设置
+		tgTeamHSRate.setText(tgTeamModel.getTgHuishui());
+		tgTeamHBRate.setText(tgTeamModel.getTgHuiBao());
+		tgTeamFWF.setText(tgTeamModel.getTgFWF());
+		//其他更新
+		
 	}
 	
 	/**
@@ -809,6 +887,58 @@ public class TGController implements Initializable{
 		MyController myController = Main.myController;
 		TgWaizhaiService.generateWaizhaiTables(tgWZTeam, tgWZTeamHBox 
 				,myController.tableCurrentMoneyInfo, myController.tableTeam);
+	}
+	
+	/**
+	 * 保存托管团的各个比例
+	 * @time 2018年3月11日
+	 */
+	public void saveTGTeamAction() {
+		String tgTeamId = currentTGTeamLabel.getText();
+		if(StringUtil.isBlank(tgTeamId)) {
+			ShowUtil.show("请先选择托管团队！");
+			return;
+		}
+		//托管团队回水比例
+		String teamHSRate = StringUtil.nvl(tgTeamHSRate.getText(),"0%");
+		//托管团队回保比例
+		String teamHBRate = StringUtil.nvl(tgTeamHBRate.getText(),"0%");
+		//托管团队服务费
+		String teamFWF = StringUtil.nvl(tgTeamFWF.getText(),"0");
+		
+		TGTeamModel team = new TGTeamModel(tgTeamId, teamHSRate, teamHBRate, teamFWF);
+		
+		DBUtil.saveOrUpdate_tg_team(team);
+		ShowUtil.show("保存成功", 2);
+	}
+	
+	/**
+	 * 保存或修改公司信息（押金和额度）
+	 * 
+	 * @time 2018年3月11日
+	 * @param event
+	 */
+	public void saveCompanyInfoAction(ActionEvent event) {
+		String tgCompany = currentTGCompanyLabel.getText();
+		if(StringUtil.isBlank(tgCompany)) {
+			ShowUtil.show("请先选择托管公司！");
+			return;
+		}
+		TGCompanyModel db_company = DBUtil.get_tg_company_by_id(tgCompany);
+		if(db_company == null) {
+			ShowUtil.show("数据库中没有存储此托管公司！");
+			return;
+		}
+		//托管公司押金
+		String companyYajin = StringUtil.nvl(tgCompanyYajin.getText(),"0");
+		//托管公司额度
+		String companyEdu = StringUtil.nvl(tgCompanyEdu.getText(),"0");
+		
+		db_company.setYajin(companyYajin);
+		db_company.setEdu(companyEdu);
+		
+		DBUtil.saveOrUpdate_tg_company(db_company);
+		ShowUtil.show("保存成功", 2);
 	}
 	
 	

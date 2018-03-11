@@ -32,6 +32,8 @@ import com.kendy.entity.ShangmaNextday;
 import com.kendy.entity.TGCommentInfo;
 import com.kendy.entity.TGCompanyModel;
 import com.kendy.entity.TGKaixiaoInfo;
+import com.kendy.entity.TGTeamInfo;
+import com.kendy.entity.TGTeamModel;
 import com.kendy.util.ErrorUtil;
 import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
@@ -2605,6 +2607,32 @@ public class DBUtil {
 		}
 	}
 	
+	
+	public static TGCompanyModel get_tg_company_by_id(String company) {
+		TGCompanyModel model = null;
+		try {
+			con = DBConnection.getConnection();
+			String sql = "select * from tg_company where tg_company_name = '"+company+"'";
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				model = new TGCompanyModel(
+						rs.getString(1),
+						rs.getString(2),
+						rs.getString(3),
+						rs.getString(4),
+						rs.getString(5),
+						rs.getString(6)
+						);
+			}
+		} catch (SQLException e) {
+			ErrorUtil.err(company + ", 获有托管公司（根据公司名）失败",e);
+		}finally{
+			close(con,ps);
+		}
+		return model;
+	}
+	
 	/**
 	 * 根据ID删除托管公司
 	 * 
@@ -2638,6 +2666,131 @@ public class DBUtil {
 			ps.execute();
 		}catch (SQLException e) {
 			ErrorUtil.err("根据托管公司名称删除托管公司失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	
+	/***************************************************************************
+	 * 
+	 * 				托管团队比例表
+	 * 
+	 **************************************************************************/
+	/**
+	 * 保存或修改团队比例表
+	 * 
+	 */
+	public static boolean saveOrUpdate_tg_team(final TGTeamModel team) {
+		boolean isOK = false;
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			sql = "replace into tg_team(tg_team_id, tg_hs_rate, tg_hb_rate, tg_fwf) values(?,?,?,?)";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, team.getTgTeamId());
+			ps.setString(2, team.getTgHuishui());
+			ps.setString(3, team.getTgHuiBao());
+			ps.setString(4, team.getTgFWF());
+			ps.execute();
+			isOK = true;
+		}catch (SQLException e) {
+			ErrorUtil.err(team.toString()+",保存或修改团队比例失败", e);
+			isOK = false;
+		}finally{
+			close(con,ps);
+		}
+		return isOK;
+	}
+	
+	/**
+	 * 获取所有团队比例
+	 * 
+	 * @time 2018年3月4日
+	 * @return
+	 */
+	public static List<TGTeamModel> get_all_tg_team() {
+		List<TGTeamModel> list = new ArrayList<>();
+		try {
+			con = DBConnection.getConnection();
+			String sql = "select * from tg_team";
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				//id,  tg_date,  tg_player_id,  tg_player_name,  tg_type, tg_id,  tg_name,  tg_beizhu
+				TGTeamModel team = new TGTeamModel(
+						rs.getString(1),
+						rs.getString(2),
+						rs.getString(3),
+						rs.getString(4)
+						);
+				list.add(team);
+			}
+		} catch (SQLException e) {
+			ErrorUtil.err("获取所有团队比例失败",e);
+		}finally{
+			close(con,ps);
+		}
+		return list;
+	}
+	
+	public static TGTeamModel get_tg_team_by_id(String teamId) {
+		TGTeamModel model = null;
+		try {
+			con = DBConnection.getConnection();
+			String sql = "select * from tg_team where tg_team_id = '"+teamId+"'";
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				//id,  tg_date,  tg_player_id,  tg_player_name,  tg_type, tg_id,  tg_name,  tg_beizhu
+				model = new TGTeamModel(
+						rs.getString(1),
+						rs.getString(2),
+						rs.getString(3),
+						rs.getString(4)
+						);
+			}
+		} catch (SQLException e) {
+			ErrorUtil.err(teamId + ", 获有团队比例失败",e);
+		}finally{
+			close(con,ps);
+		}
+		return model;
+	}
+	
+	/**
+	 * 删除所有的团队比例
+	 * 
+	 * @time 2018年3月4日
+	 * @param key
+	 */
+	public static void del_all_tg_team() {
+		try {
+			con = DBConnection.getConnection();
+			String sql  = "delete from tg_team ";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("删除所有的团队比例失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	/**
+	 * 根据ID删除团队比例
+	 * 
+	 * @time 2018年3月4日
+	 * @param key
+	 */
+	public static void del_tg_team_by_id(String teamId) {
+		try {
+			con = DBConnection.getConnection();
+			String sql  = "delete from tg_comment where tg_team_id = '"+ teamId +"'";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("根据ID删除团队比例失败", e);
 		}finally{
 			close(con,ps);
 		}

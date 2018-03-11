@@ -38,25 +38,25 @@
       <HBox layoutX="280.0" layoutY="95.0" prefHeight="32.0" prefWidth="968.0" style="-fx-background-color: #FF8FFF;">
          <children>
             <Label prefHeight="30.0" prefWidth="107.0" text="         托管回水比例" />
-            <TextField prefHeight="26.0" prefWidth="78.0">
+            <TextField fx:id="tgTeamHSRate" prefHeight="26.0" prefWidth="78.0">
                <HBox.margin>
                   <Insets top="3.0" />
                </HBox.margin>
             </TextField>
             <Label prefHeight="30.0" prefWidth="106.0" text="       团队回保比例" />
-            <TextField prefHeight="26.0" prefWidth="78.0">
+            <TextField fx:id="tgTeamHBRate" prefHeight="26.0" prefWidth="78.0">
                <HBox.margin>
                   <Insets top="3.0" />
                </HBox.margin>
             </TextField>
             <Label prefHeight="30.0" prefWidth="115.0" text="      托管团队服务费" />
-            <TextField prefHeight="26.0" prefWidth="78.0">
+            <TextField fx:id="tgTeamFWF" prefHeight="26.0" prefWidth="78.0">
                <HBox.margin>
                   <Insets top="3.0" />
                </HBox.margin>
             </TextField>
             <Label prefHeight="30.0" prefWidth="54.0" />
-            <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="160.0" text="保存比例或服务费">
+            <Button mnemonicParsing="false" onAction="#saveTGTeamAction" prefHeight="25.0" prefWidth="160.0" text="保存比例或服务费">
                <HBox.margin>
                   <Insets top="3.0" />
                </HBox.margin>
@@ -69,20 +69,23 @@
             </Button>
          </children>
       </HBox>
-      <HBox layoutX="308.0" layoutY="48.0" prefHeight="30.0" prefWidth="936.0">
+      <HBox layoutX="308.0" layoutY="48.0" prefHeight="30.0" prefWidth="909.0">
          <children>
             <Label prefHeight="30.0" prefWidth="30.0" text="押金">
                <font>
                   <Font size="13.0" />
                </font>
             </Label>
-            <TextField prefHeight="29.0" prefWidth="64.0" />
+            <TextField fx:id="tgCompanyYajin" prefHeight="29.0" prefWidth="64.0">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin></TextField>
             <Label prefHeight="30.0" prefWidth="65.0" text="          额度">
                <font>
                   <Font size="13.0" />
                </font>
             </Label>
-            <TextField prefHeight="29.0" prefWidth="59.0" />
+            <TextField fx:id="tgCompanyEdu" prefHeight="29.0" prefWidth="59.0" />
             <Label layoutX="329.0" layoutY="42.0" prefHeight="30.0" prefWidth="64.0" text="      外债：">
                <font>
                   <Font size="13.0" />
@@ -111,10 +114,11 @@
                <font>
                   <Font size="13.0" />
                </font></Label>
-            <Label layoutX="899.0" layoutY="64.0" prefHeight="30.0" prefWidth="51.0" text="0.0" textFill="#9a1d1d">
+            <Label layoutX="899.0" layoutY="64.0" prefHeight="30.0" prefWidth="72.0" text="0.0" textFill="#9a1d1d">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font></Label>
+            <Button mnemonicParsing="false" onAction="#saveCompanyInfoAction" prefHeight="25.0" prefWidth="135.0" text="保存押金与额度" />
          </children>
       </HBox>
       <TabPane fx:id="tabs" layoutX="304.0" layoutY="149.0" prefHeight="664.0" prefWidth="944.0" tabClosingPolicy="UNAVAILABLE">
