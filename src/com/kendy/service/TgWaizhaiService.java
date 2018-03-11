@@ -303,27 +303,29 @@ public class TgWaizhaiService {
 			.collect(Collectors.toList());
 		
 		// 2 获取子节点
-		List<CurrentMoneyInfo> sub_list = SSJE_obList.stream()
-				.filter(info-> subList(info))
-				.collect(Collectors.toList());
+//		List<CurrentMoneyInfo> sub_list = SSJE_obList.stream()
+//				.filter(info-> subList(info))
+//				.collect(Collectors.toList());
 		
 		// 3 获取父节点 
 		List<CurrentMoneyInfo> super_list = SSJE_obList.stream()
 				.filter(info-> superList(info))
+				.map(superCMI -> {superCMI.setShishiJine(superCMI.getCmSuperIdSum()); return superCMI;})//直接把联合总和赋值到父节点的实时金额
 				.collect(Collectors.toList());
 		
 		// 4 把子节点赋值给父节点 {父ID : 子ID列表}
-		Map<String, Double> subSumMap = getSubSumMap(sub_list);
-		List<CurrentMoneyInfo> superComputedList = super_list.stream().map(superInfo -> {
-			Double subSum = subSumMap.getOrDefault(superInfo.getWanjiaId(), 0d);
-			superInfo.setShishiJine(NumUtil.getSum(superInfo.getShishiJine(), subSum + ""));
-			return superInfo;
-		}).collect(Collectors.toList());
+//		Map<String, Double> subSumMap = getSubSumMap(sub_list);
+//		List<CurrentMoneyInfo> superComputedList = super_list.stream().map(superInfo -> {
+//			Double subSum = subSumMap.getOrDefault(superInfo.getWanjiaId(), 0d);
+//			superInfo.setShishiJine(NumUtil.getSum(superInfo.getShishiJine(), subSum + ""));
+//			return superInfo;
+//		}).collect(Collectors.toList());
 		
 		// 5 整合A+B
 		List<CurrentMoneyInfo> totalList = new ArrayList<>();
 		totalList.addAll(not_supter_not_sub_list);
-		totalList.addAll(superComputedList);
+//		totalList.addAll(superComputedList);
+		totalList.addAll(super_list);
 		
 		Map<String, List<CurrentMoneyInfo>> finalList = totalList.stream()
 			.filter(cmi -> cmi.getShishiJine().contains("-"))
