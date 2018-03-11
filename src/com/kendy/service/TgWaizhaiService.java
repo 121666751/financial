@@ -134,17 +134,19 @@ public class TgWaizhaiService {
 	 
         	//设置列
 	        TableColumn firstNameCol = new TableColumn("团队"+tgTeamName);
-	        firstNameCol.setPrefWidth(110);
+	        firstNameCol.setSortable(false);//禁止排序
+	        firstNameCol.setPrefWidth(80);
 	        firstNameCol.setCellValueFactory(
 	                new PropertyValueFactory<CurrentMoneyInfo, String>("mingzi"));
 	 
 	        TableColumn lastNameCol = new TableColumn(sumMap.get(tgTeamName));
+	        lastNameCol.setSortable(false);//禁止排序
 	        lastNameCol.setStyle("-fx-alignment: CENTER;");
-	        lastNameCol.setPrefWidth(95);
+	        lastNameCol.setPrefWidth(65);
 	        lastNameCol.setCellValueFactory(
 	                new PropertyValueFactory<CurrentMoneyInfo, String>("shishiJine"));
 	        lastNameCol.setCellFactory(MyController.getColorCellFactory(new CurrentMoneyInfo()));
-	        table.setPrefWidth(210);
+	        table.setPrefWidth(150);
 	        table.getColumns().addAll(firstNameCol, lastNameCol);
 	 
 	        //设置数据
@@ -235,7 +237,7 @@ public class TgWaizhaiService {
 				if(player == null || StringUtil.isBlank(player.getTeamName()) || !tgTeamIdSet.contains(player.getTeamName().toUpperCase())) {
 					continue;
 				}else if(tgTeamIdSet.contains(player.getTeamName().toUpperCase() )){
-					SSJE_obList.add(infos);
+					SSJE_obList.add(copyCurrentMoneyInfo(infos)); //深层克隆
 				}
 			}
 		}
@@ -263,7 +265,7 @@ public class TgWaizhaiService {
 					return true;
 				}
 			)
-			.map(info -> copyCurrentMoneyInfo(info)) //复制一份
+			//.map(info -> copyCurrentMoneyInfo(info)) //复制一份
 			.collect(Collectors.groupingBy(info-> {
 				CurrentMoneyInfo cmi = (CurrentMoneyInfo)info; 
 				Player p = DataConstans.membersMap.get(cmi.getWanjiaId());
@@ -276,7 +278,7 @@ public class TgWaizhaiService {
 			
 		
 		//步骤2：处理个人外债和有联合额度的外债
-		Map<String,CurrentMoneyInfo> ssje_map = get_SSJE_Map(SSJE_obList);
+		//Map<String,CurrentMoneyInfo> ssje_map = get_SSJE_Map(SSJE_obList);
 		//handlePersonWaizhai(tgTeamIdMap,ssje_map); TODO
 		System.out.println("===============================================以上外债信息为：处理个人外债和有联合额度的外债finishes");
 		tgTeamCMIMap = getFinalTGTeamMap(SSJE_obList);
@@ -314,7 +316,7 @@ public class TgWaizhaiService {
 		Map<String, Double> subSumMap = getSubSumMap(sub_list);
 		List<CurrentMoneyInfo> superComputedList = super_list.stream().map(superInfo -> {
 			Double subSum = subSumMap.getOrDefault(superInfo.getWanjiaId(), 0d);
-			superInfo.setCmSuperIdSum(NumUtil.getSum(superInfo.getShishiJine(), subSum + ""));
+			superInfo.setShishiJine(NumUtil.getSum(superInfo.getShishiJine(), subSum + ""));
 			return superInfo;
 		}).collect(Collectors.toList());
 		
@@ -324,6 +326,7 @@ public class TgWaizhaiService {
 		totalList.addAll(superComputedList);
 		
 		Map<String, List<CurrentMoneyInfo>> finalList = totalList.stream()
+			.filter(cmi -> cmi.getShishiJine().contains("-"))
 			.collect(Collectors.groupingBy(
 				info->{
 					 CurrentMoneyInfo cmi = (CurrentMoneyInfo)info;

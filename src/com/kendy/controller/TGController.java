@@ -673,9 +673,24 @@ public class TGController implements Initializable{
 		if(StringUtil.isNotBlank(teamsJson) && !"{}".equals(teamsJson)) {
 			list = JSON.parseObject(teamsJson, new TypeReference<List<TypeValueInfo>>() {});
 		}else {
-			list = new ArrayList<>();
+			//list = new ArrayList<>();
+			list = getMoniTGTeamRate();
+			String teamJson = JSON.toJSONString(list);
+			DBUtil.saveOrUpdateOthers(TG_TEAM_RATE_DB_KEY, teamJson);
 		}
 		tableTGTeamRate.setItems(FXCollections.observableArrayList(list));
+	}
+	
+	
+	private List<TypeValueInfo> getMoniTGTeamRate(){
+		//DBUtil.delValueByKey(TG_TEAM_RATE_DB_KEY);
+		List<TypeValueInfo> list = new ArrayList<>();
+		Random random = new Random();
+		for(int i=1; i<=40; i++ ) {
+			double nextDouble = random.nextDouble();
+			list.add(new TypeValueInfo("S"+i, NumUtil.digit1(1+nextDouble+"")+"%"));
+		}
+		return list;
 	}
 	
 	
@@ -761,11 +776,11 @@ public class TGController implements Initializable{
 		double zjProfitSum = zjRate25Sum - zjRateUnknowSum + zjBaoxianSum - zjHuibaoSum;
 		
 		List<TypeValueInfo> list = new ArrayList<TypeValueInfo>();
-		list.add(new TypeValueInfo("战绩2.5%合计", zjRate25Sum+""));
-		list.add(new TypeValueInfo(columnName + "合计", zjRateUnknowSum+""));
-		list.add(new TypeValueInfo("保险合计", zjBaoxianSum+""));
-		list.add(new TypeValueInfo("回保合计", zjHuibaoSum+""));
-		list.add(new TypeValueInfo("总利润合计", zjProfitSum+""));
+		list.add(new TypeValueInfo("战绩2.5%合计", NumUtil.digit2(zjRate25Sum+"")));
+		list.add(new TypeValueInfo(columnName + "合计", NumUtil.digit2(zjRateUnknowSum+"")));
+		list.add(new TypeValueInfo("保险合计", NumUtil.digit2(zjBaoxianSum+"")));
+		list.add(new TypeValueInfo("回保合计", NumUtil.digit2(zjHuibaoSum+"")));
+		list.add(new TypeValueInfo("总利润合计", NumUtil.digit2(zjProfitSum+"")));
 				
 		ObservableList<TypeValueInfo> obList = FXCollections.observableArrayList(list);
 		tableZJSum.setItems(obList);
