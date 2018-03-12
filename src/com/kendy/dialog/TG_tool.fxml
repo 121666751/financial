@@ -206,18 +206,19 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="626.0" prefWidth="924.0">
                      <children>
-                        <TableView fx:id="tableTGComment" layoutY="32.0" prefHeight="593.0" prefWidth="692.0">
+                        <TableView fx:id="tableTGComment" layoutY="32.0" prefHeight="593.0" prefWidth="754.0">
                            <columns>
-                              <TableColumn fx:id="tgCommentDate" prefWidth="102.0" text="日期" />
-                              <TableColumn fx:id="tgCommentPlayerId" prefWidth="93.0" text="玩家ID" />
+                              <TableColumn fx:id="tgCommentDate" prefWidth="94.0" text="日期" />
+                              <TableColumn fx:id="tgCommentBeizhu1" prefWidth="71.0" text="托管公司" />
+                              <TableColumn fx:id="tgCommentPlayerId" prefWidth="106.0" text="玩家ID" />
                               <TableColumn fx:id="tgCommentPlayerName" prefWidth="88.0" text="玩家名称" />
                               <TableColumn fx:id="tgCommentType" prefWidth="86.0" text="类别" />
-                              <TableColumn fx:id="tgCommentId" prefWidth="112.0" text="ID" />
+                              <TableColumn fx:id="tgCommentId" prefWidth="99.0" text="ID" />
                               <TableColumn fx:id="tgCommentName" prefWidth="100.0" text="名称" />
                               <TableColumn fx:id="tgCommentBeizhu" prefWidth="97.0" text="备注" />
                            </columns>
                         </TableView>
-                        <VBox layoutX="741.0" layoutY="32.0" prefHeight="346.0" prefWidth="150.0">
+                        <VBox layoutX="780.0" layoutY="32.0" prefHeight="346.0" prefWidth="150.0">
                            <children>
                               <Label prefHeight="30.0" prefWidth="107.0" text="合计：" textFill="#cd2753">
                                  <font>
@@ -231,6 +232,34 @@
                               <Button layoutX="741.0" layoutY="83.0" mnemonicParsing="false" onAction="#delTGCommentAction" prefHeight="30.0" prefWidth="151.0" text="删除" />
                            </children>
                         </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="      托管外债      ">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="536.0">
+                     <children>
+                        <ScrollPane layoutX="8.0" layoutY="14.0" prefHeight="635.0" prefWidth="944.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="613.0" prefWidth="3024.0">
+                                 <children>
+                                    <TableView fx:id="tgWZTeam" layoutY="32.0" prefHeight="587.0" prefWidth="191.0">
+                                      <columns>
+                                        <TableColumn fx:id="tgWZTeamId" prefWidth="88.0" text="托管团队" />
+                                        <TableColumn fx:id="tgWZTeamValue" prefWidth="83.0" text="外债" />
+                                      </columns>
+                                    </TableView>
+                                    <HBox fx:id="tgWZTeamHBox" layoutX="210.0" layoutY="32.0" prefHeight="582.0" prefWidth="2806.0" />
+                                    <Label layoutX="6.0" layoutY="4.0" prefHeight="30.0" prefWidth="51.0" text="合计：" textFill="#9a1d1d">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </ScrollPane>
                      </children>
                   </AnchorPane>
                </content>
@@ -268,30 +297,39 @@
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab text="      托管外债      ">
+            <Tab text="   服务费明细   ">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="536.0">
                      <children>
-                        <ScrollPane layoutX="8.0" layoutY="14.0" prefHeight="635.0" prefWidth="944.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="613.0" prefWidth="3024.0">
-                                 <children>
-                                    <TableView fx:id="tgWZTeam" layoutY="32.0" prefHeight="587.0" prefWidth="191.0">
-                                      <columns>
-                                        <TableColumn fx:id="tgWZTeamId" prefWidth="88.0" text="托管团队" />
-                                        <TableColumn fx:id="tgWZTeamValue" prefWidth="83.0" text="外债" />
-                                      </columns>
-                                    </TableView>
-                                    <HBox fx:id="tgWZTeamHBox" layoutX="210.0" layoutY="32.0" prefHeight="582.0" prefWidth="2806.0" />
-                                    <Label layoutX="6.0" layoutY="4.0" prefHeight="30.0" prefWidth="51.0" text="合计：" textFill="#9a1d1d">
-                                       <font>
-                                          <Font name="System Bold" size="14.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </AnchorPane>
-                          </content>
-                        </ScrollPane>
+                        <TableView layoutY="32.0" prefHeight="593.0" prefWidth="764.0">
+                           <columns>
+                              <TableColumn prefWidth="72.0" text="托管公司" />
+                              <TableColumn prefWidth="77.0" text="托管团队" />
+                              <TableColumn prefWidth="66.0" text="回水" />
+                              <TableColumn prefWidth="70.0" text="回保" />
+                              <TableColumn prefWidth="82.0" text="总利润合计" />
+                              <TableColumn prefWidth="85.0" text="返水" />
+                              <TableColumn prefWidth="82.0" text="返保" />
+                              <TableColumn prefWidth="66.0" text="全水" />
+                              <TableColumn prefWidth="75.0" text="全保" />
+                              <TableColumn prefWidth="75.0" text="合计" />
+                           </columns>
+                        </TableView>
+                        <VBox layoutX="780.0" layoutY="25.0" prefHeight="248.0" prefWidth="150.0">
+                           <children>
+                              <Label prefHeight="30.0" prefWidth="150.0" text="         合计" textAlignment="CENTER" textFill="#8a726a">
+                                 <font>
+                                    <Font size="21.0" />
+                                 </font>
+                              </Label>
+                              <TableView prefHeight="200.0" prefWidth="145.0">
+                                 <columns>
+                                    <TableColumn fx:id="tgZJSumType1" prefWidth="90.0" text="类型" />
+                                    <TableColumn fx:id="tgZJSumValue1" prefWidth="57.0" text="值" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
                      </children>
                   </AnchorPane>
                </content>
