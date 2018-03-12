@@ -502,6 +502,22 @@ public class TGController implements Initializable{
 		if(CollectUtil.isHaveValue(teamBtns)) {
 			teamBtns.clear();
 		}
+		//排序
+		try {
+			if(teamList != null && teamList.size() > 1) {
+				teamList = teamList.stream().sorted((x,y) -> { 
+					String a = x.replaceFirst("[a-zA-Z]+", "");
+					String b = y.replaceFirst("[a-zA-Z]+", "");
+					if(StringUtil.isAnyBlank(a,b)) {
+						return 1;
+					}else {
+						return Integer.valueOf(a).compareTo(Integer.valueOf(b));
+					}
+				})
+				.collect(Collectors.toList());
+			}
+		}catch(Exception e) {e.printStackTrace();}
+		
 		teamList.forEach(teamId -> {
 			Button teamBtn = getTeamButton(teamId);
 			teamBtns.add(teamBtn);
