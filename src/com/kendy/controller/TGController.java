@@ -18,6 +18,7 @@ import com.kendy.db.DBUtil;
 import com.kendy.entity.ProxyTeamInfo;
 import com.kendy.entity.TGCommentInfo;
 import com.kendy.entity.TGCompanyModel;
+import com.kendy.entity.TGFwfinfo;
 import com.kendy.entity.TGKaixiaoInfo;
 import com.kendy.entity.TGTeamInfo;
 import com.kendy.entity.TGTeamModel;
@@ -137,7 +138,21 @@ public class TGController implements Initializable{
 	@FXML private TableColumn<TypeValueInfo,String> tgWZTeamId;
 	@FXML private TableColumn<TypeValueInfo,String> tgWZTeamValue;
 	
+	//=====================================================================外债数据表
 	@FXML private HBox tgWZTeamHBox; // 存储动态的团队外债数据表
+	
+	//=====================================================================托管玩家备注表
+	@FXML public TableView<TGFwfinfo>  tableTGFwf;     
+	@FXML private TableColumn<TGFwfinfo,String> tgFwfCompany;
+	@FXML private TableColumn<TGFwfinfo,String> tgFwfTeamId;
+	@FXML private TableColumn<TGFwfinfo,String> tgFwfHuishui;
+	@FXML private TableColumn<TGFwfinfo,String> tgFwfHuiBao;
+	@FXML private TableColumn<TGFwfinfo,String> tgFwfProfit;
+	@FXML private TableColumn<TGFwfinfo,String> tgFwfFanshui;
+	@FXML private TableColumn<TGFwfinfo,String> tgFwfFanbao;
+	@FXML private TableColumn<TGFwfinfo,String> tgFwfQuanshui;
+	@FXML private TableColumn<TGFwfinfo,String> tgFwfQuanbao;
+	@FXML private TableColumn<TGFwfinfo,String> tgFwfHeji;
 	
 	
 	
@@ -152,6 +167,7 @@ public class TGController implements Initializable{
 		//绑定列值属性
 		MyController.bindCellValue(tgKaixiaoDate,tgKaixiaoPlayerName,tgKaixiaoPayItem,tgKaixiaoMoney,tgKaixiaoCompany);
 		MyController.bindCellValue(tgCommentDate,tgCommentPlayerId,tgCommentPlayerName,tgCommentType,tgCommentId,tgCommentName,tgCommentBeizhu);
+		MyController.bindCellValue(tgFwfCompany, tgFwfTeamId, tgFwfHuishui, tgFwfHuiBao, tgFwfProfit, tgFwfFanshui, tgFwfFanbao, tgFwfQuanshui, tgFwfQuanbao, tgFwfHeji);
 		binCellValueDiff(tgTeamId,"type");
 		binCellValueDiff(tgTeamRate,"value");
 		binCellValueDiff(tgZJSumType,"type");
@@ -160,6 +176,7 @@ public class TGController implements Initializable{
 		binCellValueDiff(tgWZTeamValue,"value");
 		MyController.bindCellValue(tgPlayerId,tgPlayerName,tgYSZJ,tgZJ25,tgZJUnknow,tgProfit,tgHuiBao,tgBaoxian,tgChangci);
 		bindColorColumn(tgYSZJ, tgZJ25, tgZJUnknow, tgProfit, tgHuiBao, tgBaoxian);
+		bindColorColumnTGFwfinfo(tgFwfHuishui, tgFwfHuiBao, tgFwfProfit, tgFwfFanshui, tgFwfFanbao, tgFwfQuanshui, tgFwfQuanbao, tgFwfHeji);
 		
 		//tabs切换事件
 		tabsAction();
@@ -182,6 +199,10 @@ public class TGController implements Initializable{
 		for(TableColumn<TGTeamInfo, String> column  : columns)
 			column.setCellFactory(MyController.getColorCellFactory(new TGTeamInfo()));
 	}
+	private  void bindColorColumnTGFwfinfo(TableColumn<TGFwfinfo, String>... columns) {
+		for(TableColumn<TGFwfinfo, String> column  : columns)
+			column.setCellFactory(MyController.getColorCellFactory(new TGFwfinfo()));
+	}
 	
 	
 	/**
@@ -203,6 +224,9 @@ public class TGController implements Initializable{
             	}
             	if("托管外债".equals(tab.getText().trim())) {
             		refreshTabTGWaizhai();//刷新
+            	}
+            	if("服务费明细".equals(tab.getText().trim())) {
+            		
             	}
             }
 		});
@@ -343,7 +367,7 @@ public class TGController implements Initializable{
 		List<TGKaixiaoInfo> tgKaixiaoList = DBUtil.get_all_tg_kaixiao();
 		String company = currentTGCompanyLabel.getText();
 		if(StringUtil.isAnyBlank(company)) {
-			ShowUtil.show("请请求托管公司！");
+			ShowUtil.show("请选择托管公司！");
 		}else if(CollectUtil.isHaveValue(tgKaixiaoList)) {
 			tgKaixiaoList  = tgKaixiaoList.stream().filter(info -> company.equals(info.getTgKaixiaoCompany())).collect(Collectors.toList());
 		}
@@ -660,7 +684,7 @@ public class TGController implements Initializable{
 	 * @param info
 	 * @return
 	 */
-	private String getRecordProfit(TGTeamInfo info) {
+	public String getRecordProfit(TGTeamInfo info) {
 		String teamRate25 = info.getTgZJ25();
 		String teamRateUnknow = info.getTgZJUnknow();
 		String baoxian = info.getTgBaoxian();
@@ -677,7 +701,7 @@ public class TGController implements Initializable{
 	 * @param teamId
 	 * @return
 	 */
-	private List<ProxyTeamInfo> getProxyTeamInfoList(String teamId){
+	public List<ProxyTeamInfo> getProxyTeamInfoList(String teamId){
 
 		List<ProxyTeamInfo> proxyTeamList = new ArrayList<>();
 		ObservableList<String> obList = TeamProxyService.teamIDCombox.getItems();
@@ -728,7 +752,7 @@ public class TGController implements Initializable{
 	 * @time 2018年3月7日
 	 * @return
 	 */
-	private Map<String,Double> getTgTeamRateMap(){
+	public Map<String,Double> getTgTeamRateMap(){
 		List<TypeValueInfo> tableTGTeams = getTableTGTeams();
 		//toMap方法，当key相同时会报错
 		Map<String,Double> map = tableTGTeams.stream().distinct()
@@ -751,7 +775,7 @@ public class TGController implements Initializable{
 	 * @time 2018年3月6日
 	 * @return
 	 */
-	private List<TypeValueInfo> getTableTGTeams(){
+	public List<TypeValueInfo> getTableTGTeams(){
 		ObservableList<TypeValueInfo> tgTeamRates = tableTGTeamRate.getItems();
 		return CollectUtil.isNullOrEmpty(tgTeamRates) ? FXCollections.observableArrayList() : tgTeamRates;
 	}

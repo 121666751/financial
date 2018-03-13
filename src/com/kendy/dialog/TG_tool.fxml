@@ -301,18 +301,18 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="536.0">
                      <children>
-                        <TableView layoutY="32.0" prefHeight="593.0" prefWidth="764.0">
+                        <TableView fx:id="tableTGFwf" layoutY="32.0" prefHeight="593.0" prefWidth="764.0">
                            <columns>
-                              <TableColumn prefWidth="72.0" text="托管公司" />
-                              <TableColumn prefWidth="77.0" text="托管团队" />
-                              <TableColumn prefWidth="66.0" text="回水" />
-                              <TableColumn prefWidth="70.0" text="回保" />
-                              <TableColumn prefWidth="82.0" text="总利润合计" />
-                              <TableColumn prefWidth="85.0" text="返水" />
-                              <TableColumn prefWidth="82.0" text="返保" />
-                              <TableColumn prefWidth="66.0" text="全水" />
-                              <TableColumn prefWidth="75.0" text="全保" />
-                              <TableColumn prefWidth="75.0" text="合计" />
+                              <TableColumn fx:id="tgFwfCompany" prefWidth="72.0" text="托管公司" />
+                              <TableColumn fx:id="tgFwfTeamId" prefWidth="77.0" text="托管团队" />
+                              <TableColumn fx:id="tgFwfHuishui" prefWidth="66.0" text="回水" />
+                              <TableColumn fx:id="tgFwfHuiBao" prefWidth="70.0" text="回保" />
+                              <TableColumn fx:id="tgFwfProfit" prefWidth="82.0" text="总利润合计" />
+                              <TableColumn fx:id="tgFwfFanshui" prefWidth="85.0" text="返水" />
+                              <TableColumn fx:id="tgFwfFanbao" prefWidth="82.0" text="返保" />
+                              <TableColumn fx:id="tgFwfQuanshui" prefWidth="66.0" text="全水" />
+                              <TableColumn fx:id="tgFwfQuanbao" prefWidth="75.0" text="全保" />
+                              <TableColumn fx:id="tgFwfHeji" prefWidth="75.0" text="合计" />
                            </columns>
                         </TableView>
                         <VBox layoutX="780.0" layoutY="25.0" prefHeight="248.0" prefWidth="150.0">
