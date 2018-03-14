@@ -23,6 +23,7 @@ import com.kendy.entity.TGKaixiaoInfo;
 import com.kendy.entity.TGTeamInfo;
 import com.kendy.entity.TGTeamModel;
 import com.kendy.entity.TypeValueInfo;
+import com.kendy.service.TGFwfService;
 import com.kendy.service.TeamProxyService;
 import com.kendy.service.TgWaizhaiService;
 import com.kendy.util.CollectUtil;
@@ -154,6 +155,14 @@ public class TGController implements Initializable{
 	@FXML private TableColumn<TGFwfinfo,String> tgFwfQuanbao;
 	@FXML private TableColumn<TGFwfinfo,String> tgFwfHeji;
 	
+
+	//=====================================================================托管服务费总和表
+	@FXML public TableView<TypeValueInfo> tableTGFwfSum;
+	@FXML private TableColumn<TypeValueInfo,String> tableTGFwfType;
+	@FXML private TableColumn<TypeValueInfo,String> tableTGFwfValue;
+	
+	
+	
 	
 	
 
@@ -226,7 +235,8 @@ public class TGController implements Initializable{
             		refreshTabTGWaizhai();//刷新
             	}
             	if("服务费明细".equals(tab.getText().trim())) {
-            		
+            		TGFwfService tgFwfService = new TGFwfService();
+            		tgFwfService.setFwfDetail(currentTGCompanyLabel.getText(), tableTGFwf);
             	}
             }
 		});
@@ -236,6 +246,7 @@ public class TGController implements Initializable{
 	 * 获取当前托管公司的值 
 	 * 
 	 * @time 2018年3月4日
+	 * 
 	 * @return
 	 */
 	public String getCurrentTGCompany() {

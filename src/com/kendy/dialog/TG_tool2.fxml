@@ -322,10 +322,10 @@
                                     <Font size="21.0" />
                                  </font>
                               </Label>
-                              <TableView prefHeight="200.0" prefWidth="145.0">
+                              <TableView fx:id="tableTGFwfSum" prefHeight="200.0" prefWidth="145.0">
                                  <columns>
-                                    <TableColumn fx:id="tgZJSumType1" prefWidth="90.0" text="类型" />
-                                    <TableColumn fx:id="tgZJSumValue1" prefWidth="57.0" text="值" />
+                                    <TableColumn fx:id="tableTGFwfType" prefWidth="90.0" text="类型" />
+                                    <TableColumn fx:id="tableTGFwfTypeValue" prefWidth="57.0" text="值" />
                                  </columns>
                               </TableView>
                            </children>
