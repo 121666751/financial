@@ -242,7 +242,7 @@ public class TGController implements Initializable{
             	}
             	if("服务费明细".equals(tab.getText().trim())) {
             		TGFwfService tgFwfService = new TGFwfService();
-            		tgFwfService.setFwfDetail(currentTGCompanyLabel.getText(), tableTGFwf, tableTGFwfSum);
+            		tgFwfService.setFwfDetail(StringUtil.nvl(currentTGCompanyLabel.getText(),""), tableTGFwf, tableTGFwfSum);
             	}
             }
 		});
@@ -661,7 +661,6 @@ public class TGController implements Initializable{
 	private List<TGTeamInfo> convert2TGTeamInfo(String teamId, List<ProxyTeamInfo> proxyTeamInfoList){
 		List<TGTeamInfo> list = new ArrayList<>();
 		Map<String, Double> tgTeamRateMap = getTgTeamRateMap();
-		System.out.println("tgTeamRateMap:"+tgTeamRateMap);
 		
 		Double teamUnknowValue = tgTeamRateMap.getOrDefault(teamId, 0d);
 		//更改列名称

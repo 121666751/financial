@@ -44,7 +44,6 @@ public class TGFwfService {
 		}
 		
 		TGController tgController = MyController.tgController;
-		
 		List<TGCompanyModel> tgCompanys = DBUtil.get_all_tg_company();
 		
 		Set<String> teamSet = new HashSet<>();
@@ -71,14 +70,11 @@ public class TGFwfService {
 			return;
 		}
 		
-		Map<String, Double> tgTeamRateMap = tgController.getTgTeamRateMap();
-		 
 		//转化为托管公司的团队数据
 		Map<String, List<TGTeamInfo>> teamProxys = companyProxyTeamInfo.stream()
 				.collect(Collectors.groupingBy(TGTeamInfo::getTgTeamId));
 		
 		List<TGFwfinfo> tgFwfInfoList = new ArrayList<>();
-		
 		teamProxys.forEach((teamID, tgTeamInfoList) -> {
 			
 			// 1 战绩2.5%：
@@ -87,7 +83,6 @@ public class TGFwfService {
 				.sum();
 			
 			// 2 战绩未知
-			String columnName = "ss";// tgTeamRateMap.getOrDefault(teamID, 0d);
 			double zjRateUnknowSum = tgTeamInfoList.stream()
 					.mapToDouble(info-> NumUtil.getNum(info.getTgZJUnknow()))
 					.sum();
@@ -122,6 +117,20 @@ public class TGFwfService {
 		});
 		
 		//排序
+		sort(tgFwfInfoList);
+		//设值
+		tableTGFwf.setItems(FXCollections.observableArrayList(tgFwfInfoList));
+		//设总和表
+		setTableTGFwfSumData(tableTGFwf, tableTGFwfSum);
+	}
+	
+	/**
+	 * 排序
+	 * 
+	 * @time 2018年3月15日
+	 * @param tgFwfInfoList
+	 */
+	private void sort( List<TGFwfinfo> tgFwfInfoList ) {
 		try {
 			if(CollectUtil.isHaveValue(tgFwfInfoList)) {
 				Collections.sort(tgFwfInfoList, new Comparator<TGFwfinfo>() {
@@ -138,10 +147,6 @@ public class TGFwfService {
 				});
 			}
 		}catch(Exception e) {e.printStackTrace();}
-		
-		tableTGFwf.setItems(FXCollections.observableArrayList(tgFwfInfoList));
-		//
-		setTableTGFwfSumData(tableTGFwf, tableTGFwfSum);
 	}
 	
 	/**
