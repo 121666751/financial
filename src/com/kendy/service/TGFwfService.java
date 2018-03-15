@@ -1,12 +1,15 @@
 package com.kendy.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.Comparator;
 
 import com.kendy.controller.TGController;
 import com.kendy.db.DBUtil;
@@ -22,7 +25,9 @@ import com.kendy.util.StringUtil;
 
 import application.MyController;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
+
 
 /**
  * 托管公司的服务费
@@ -32,7 +37,7 @@ import javafx.scene.control.TableView;
  */
 public class TGFwfService {
 	
-	public void setFwfDetail(String tgCompany, TableView<TGFwfinfo>  tableTGFwf) {
+	public void setFwfDetail(String tgCompany, TableView<TGFwfinfo>  tableTGFwf, TableView<TypeValueInfo> tableTGFwfSum) {
 		if(StringUtil.isBlank(tgCompany)) {
 			ShowUtil.show("请选择托管公司");
 			//return;
@@ -116,7 +121,58 @@ public class TGFwfService {
 			
 		});
 		
+		//排序
+		try {
+			if(CollectUtil.isHaveValue(tgFwfInfoList)) {
+				Collections.sort(tgFwfInfoList, new Comparator<TGFwfinfo>() {
+					@Override
+					public int compare(TGFwfinfo x, TGFwfinfo y) {
+						String a = x.getTgFwfTeamId().replaceFirst("[a-zA-Z]+", "");
+						String b = y.getTgFwfTeamId().replaceFirst("[a-zA-Z]+", "");
+						if(StringUtil.isAnyBlank(a,b)) {
+							return -1000;
+						}else {
+							return Integer.valueOf(a).compareTo(Integer.valueOf(b));
+						}
+					}
+				});
+			}
+		}catch(Exception e) {e.printStackTrace();}
+		
 		tableTGFwf.setItems(FXCollections.observableArrayList(tgFwfInfoList));
+		//
+		setTableTGFwfSumData(tableTGFwf, tableTGFwfSum);
+	}
+	
+	/**
+	 * 设置总和表
+	 * 
+	 * @time 2018年3月15日
+	 * @param tableTGFwf
+	 * @param tableTGFwfSum
+	 */
+	private void setTableTGFwfSumData(TableView<TGFwfinfo>  tableTGFwf, TableView<TypeValueInfo> tableTGFwfSum ) {
+		ObservableList<TGFwfinfo> items = tableTGFwf.getItems();
+		if(CollectUtil.isHaveValue(items)) {
+			double sumFanbao = items.stream().mapToDouble(info-> NumUtil.getNum(info.getTgFwfFanbao())).sum();
+			double sumFanshui = items.stream().mapToDouble(info-> NumUtil.getNum(info.getTgFwfFanshui())).sum();
+			double sumHeji = items.stream().mapToDouble(info-> NumUtil.getNum(info.getTgFwfHeji())).sum();
+			double sumHuibao = items.stream().mapToDouble(info-> NumUtil.getNum(info.getTgFwfHuiBao())).sum();
+			double sumHuishui = items.stream().mapToDouble(info-> NumUtil.getNum(info.getTgFwfHuishui())).sum();
+			double sumProfit = items.stream().mapToDouble(info-> NumUtil.getNum(info.getTgFwfProfit())).sum();
+			double sumQuanbao = items.stream().mapToDouble(info-> NumUtil.getNum(info.getTgFwfQuanbao())).sum();
+			double sumQuanshui = items.stream().mapToDouble(info-> NumUtil.getNum(info.getTgFwfQuanshui())).sum();
+			List<TypeValueInfo> list = new ArrayList<>(Arrays.asList(
+						new TypeValueInfo("总回水", NumUtil.digit2(sumHuishui + "")),
+						new TypeValueInfo("总回保", NumUtil.digit2(sumHuibao + "")),
+						new TypeValueInfo("总利润", NumUtil.digit2(sumProfit + "")),
+						new TypeValueInfo("总返水返保", NumUtil.digit2(sumFanshui + sumFanbao + "")),
+						new TypeValueInfo("总全水全保", NumUtil.digit2(sumQuanshui + sumQuanbao + "")),
+						new TypeValueInfo("总服务费合计", NumUtil.digit2(sumHeji + ""))
+					)
+			);
+			tableTGFwfSum.setItems(FXCollections.observableArrayList(list));
+		}
 	}
 	
 	

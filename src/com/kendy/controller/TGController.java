@@ -158,8 +158,8 @@ public class TGController implements Initializable{
 
 	//=====================================================================托管服务费总和表
 	@FXML public TableView<TypeValueInfo> tableTGFwfSum;
-	@FXML private TableColumn<TypeValueInfo,String> tableTGFwfType;
-	@FXML private TableColumn<TypeValueInfo,String> tableTGFwfValue;
+	@FXML private TableColumn<TypeValueInfo,String> tgFwfType;
+	@FXML private TableColumn<TypeValueInfo,String> tgFwfValue;
 	
 	
 	
@@ -183,6 +183,8 @@ public class TGController implements Initializable{
 		binCellValueDiff(tgZJSumValue,"value");
 		binCellValueDiff(tgWZTeamId,"type");
 		binCellValueDiff(tgWZTeamValue,"value");
+		binCellValueDiff(tgFwfType,"type");
+		binCellValueDiff(tgFwfValue,"value");
 		MyController.bindCellValue(tgPlayerId,tgPlayerName,tgYSZJ,tgZJ25,tgZJUnknow,tgProfit,tgHuiBao,tgBaoxian,tgChangci);
 		bindColorColumn(tgYSZJ, tgZJ25, tgZJUnknow, tgProfit, tgHuiBao, tgBaoxian);
 		bindColorColumnTGFwfinfo(tgFwfHuishui, tgFwfHuiBao, tgFwfProfit, tgFwfFanshui, tgFwfFanbao, tgFwfQuanshui, tgFwfQuanbao, tgFwfHeji);
@@ -199,9 +201,13 @@ public class TGController implements Initializable{
 	}
 	
 	private <T>  void   binCellValueDiff(TableColumn<T, String> column, String bindName) {
-        column.setStyle("-fx-alignment: CENTER;");
-        column.setCellValueFactory(
-        		new PropertyValueFactory<T, String>(bindName));
+        try {
+			column.setStyle("-fx-alignment: CENTER;");
+			column.setCellValueFactory(
+					new PropertyValueFactory<T, String>(bindName));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private  void bindColorColumn(TableColumn<TGTeamInfo, String>... columns) {
@@ -236,7 +242,7 @@ public class TGController implements Initializable{
             	}
             	if("服务费明细".equals(tab.getText().trim())) {
             		TGFwfService tgFwfService = new TGFwfService();
-            		tgFwfService.setFwfDetail(currentTGCompanyLabel.getText(), tableTGFwf);
+            		tgFwfService.setFwfDetail(currentTGCompanyLabel.getText(), tableTGFwf, tableTGFwfSum);
             	}
             }
 		});

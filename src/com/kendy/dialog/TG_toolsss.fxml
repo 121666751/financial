@@ -315,7 +315,7 @@
                               <TableColumn fx:id="tgFwfHeji" prefWidth="75.0" text="合计" />
                            </columns>
                         </TableView>
-                        <VBox layoutX="780.0" layoutY="25.0" prefHeight="248.0" prefWidth="150.0">
+                        <VBox layoutX="780.0" layoutY="25.0" prefHeight="248.0" prefWidth="160.0">
                            <children>
                               <Label prefHeight="30.0" prefWidth="150.0" text="         合计" textAlignment="CENTER" textFill="#8a726a">
                                  <font>
@@ -324,8 +324,8 @@
                               </Label>
                               <TableView fx:id="tableTGFwfSum" prefHeight="200.0" prefWidth="145.0">
                                  <columns>
-                                    <TableColumn fx:id="tableTGFwfType" prefWidth="90.0" text="类型" />
-                                    <TableColumn fx:id="tableTGFwfTypeValue" prefWidth="57.0" text="值" />
+                                    <TableColumn fx:id="tgFwfType" prefWidth="77.0" text="类型" />
+                                    <TableColumn fx:id="tgFwfValue" prefWidth="78.0" text="值" />
                                  </columns>
                               </TableView>
                            </children>
