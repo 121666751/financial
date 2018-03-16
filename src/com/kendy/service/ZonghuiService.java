@@ -139,7 +139,7 @@ public class ZonghuiService {
 		Map<String,Map<String,String>> lockedMap = DataConstans.All_Locked_Data_Map;
 		String sumOfKaixiao = "0";
 		if(lockedMap.size() > 0) {
-			Map<String,String> map = lockedMap.get(DataConstans.All_Locked_Data_Map.size()+"");
+			Map<String,String> map = lockedMap.get(DataConstans.Index_Table_Id_Map.size()+"");
 			List<KaixiaoInfo> KaixiaoInfoList = JSON.parseObject(MoneyService.getJsonString(map,"实时开销"), new TypeReference<List<KaixiaoInfo>>() {});
 			for(KaixiaoInfo infos : KaixiaoInfoList) {
 				obList.add(new ZonghuiKaixiaoInfo(infos.getKaixiaoType(),infos.getKaixiaoMoney()));

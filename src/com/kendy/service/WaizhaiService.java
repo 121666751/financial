@@ -80,7 +80,7 @@ public class WaizhaiService {
 		if(allTables != null && allTables.size() > 0)
 			hbox.getChildren().remove(0, allTables.size());
 		
-		if(DataConstans.All_Locked_Data_Map.size() == 0) {
+		if(DataConstans.Index_Table_Id_Map.size() == 0) {
 			ShowUtil.show("你当前还未锁定任意一局，查询没有数据!",2);
 			return;
 		}
@@ -185,7 +185,7 @@ public class WaizhaiService {
 	 * @return
 	 */
 	public static Map<String,List<CurrentMoneyInfo>> get_SSJE_Gudong_Map(TableView<CurrentMoneyInfo> tableCurrentMoneyInfo, TableView<TeamInfo> tableTeam) {
-		int pageIndex = DataConstans.All_Locked_Data_Map.size();
+		int pageIndex = DataConstans.Index_Table_Id_Map.size();
 		if(pageIndex < 0) {return new HashMap<>();}
 		//获取实时金额数据
 		Map<String,String> map = DataConstans.All_Locked_Data_Map.get(pageIndex+"");
@@ -562,7 +562,7 @@ public class WaizhaiService {
 	}
 	
 //	public static Map<String,List<CurrentMoneyInfo>> get_SSJE_Gudong_Map(TableView<CurrentMoneyInfo> tableCurrentMoneyInfo, TableView<TeamInfo> tableTeam) {
-//		int pageIndex = DataConstans.All_Locked_Data_Map.size();
+//		int pageIndex = DataConstans.Index_Table_Id_Map.size();
 //		if(pageIndex < 0) {return new HashMap<>();}
 //		//获取实时金额数据
 //		Map<String,String> map = DataConstans.All_Locked_Data_Map.get(pageIndex+"");

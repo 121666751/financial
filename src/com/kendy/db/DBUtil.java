@@ -803,7 +803,7 @@ public class DBUtil {
 		int lockedIndex = 0;
 		Map<String,String> lastLockedDataMap = DataConstans.getLockedDataMap();
 		String json_all_locked_data = JSON.toJSONString(lastLockedDataMap);
-		int ju_size = DataConstans.All_Locked_Data_Map.size();
+		int ju_size = DataConstans.Index_Table_Id_Map.size();
 		try {
 			log.info("================插入锁定数据进数据库...开始");
 			con = DBConnection.getConnection();

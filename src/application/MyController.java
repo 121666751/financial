@@ -2074,7 +2074,7 @@ public class MyController implements Initializable{
 	}
 	//获取上一个联盟对帐与本局联盟对帐的总值
 	public String getNewLMVal(String dangjuLMVal) {
-		int preJuIndex = DataConstans.All_Locked_Data_Map.size();
+		int preJuIndex = DataConstans.Index_Table_Id_Map.size();
 		if(DataConstans.All_Locked_Data_Map.get(preJuIndex+"") != null) {
 			String preJuLMVal = DataConstans.All_Locked_Data_Map.get(preJuIndex+"").get("联盟对帐");
 			return MoneyService.digit0(MoneyService.getNum(dangjuLMVal)+MoneyService.getNum(preJuLMVal));
@@ -2085,7 +2085,7 @@ public class MyController implements Initializable{
 	//获取最新的利润总和
 	public static String getChangciTotalProfit() {
 		String totalProfit = "0";
-		int paijuIndex = DataConstans.All_Locked_Data_Map.size();
+		int paijuIndex = DataConstans.Index_Table_Id_Map.size();
 		if(paijuIndex == 0) return totalProfit;
 		Map<String,String> lastLockedMap = DataConstans.All_Locked_Data_Map.get(paijuIndex+"");
 		if(lastLockedMap != null ) {
@@ -2176,7 +2176,7 @@ public class MyController implements Initializable{
 		int pageIndex = getPageIndex(page,false);
 		pageInput.setText(pageIndex+"");
 		//调用
-		if(DataConstans.All_Locked_Data_Map.size() > 0 && pageIndex >= 1) {
+		if(DataConstans.Index_Table_Id_Map.size() > 0 && pageIndex >= 1) {
 			getResultByPage(pageIndex);
 		}
 	}
@@ -2192,7 +2192,7 @@ public class MyController implements Initializable{
 //		getResultByPage(pageIndex);
 //		
 		//调用
-		if(DataConstans.All_Locked_Data_Map.size() > 0 && pageIndex >= 1) {
+		if(DataConstans.Index_Table_Id_Map.size() > 0 && pageIndex >= 1) {
 			getResultByPage(pageIndex);
 		}
 	}
@@ -2276,7 +2276,7 @@ public class MyController implements Initializable{
 	public void getResultByPage(int pageIndex) {
 		try {
 			//add 2017-11-11 若是开始新的一天则最后一场和第一场不做重新加载
-			if(DataConstans.All_Locked_Data_Map.size() == 0) {
+			if(DataConstans.Index_Table_Id_Map.size() == 0) {
 				return;
 			}
 			
@@ -2416,7 +2416,7 @@ public class MyController implements Initializable{
 		    	//当局已结算的团队服务费之和  要置为0
 		    	current_Jiesuaned_team_fwf_sum = 0d;
 		    	
-			    if(DataConstans.All_Locked_Data_Map.size() == 0) {
+			    if(DataConstans.Index_Table_Id_Map.size() == 0) {
 			    	LMLabel.setText(getLMValFirstTime());
 			    	//MoneyService.fillTableCurrentMoneyInfo(tableCurrentMoneyInfo, tableZijin, tableProfit,tableKaixiao,LMLabel);
 			    	fillTables(tableCurrentMoneyInfo, tableZijin, tableProfit,tableKaixiao,LMLabel);
@@ -2531,7 +2531,7 @@ public class MyController implements Initializable{
 			
 			//恢复上一场的团队累计 getLockedInfo
 			int currentPage = Integer.parseInt(pageInput.getText());
-			int size = DataConstans.All_Locked_Data_Map.size();
+			int size = DataConstans.Index_Table_Id_Map.size();
 			if(currentPage - size == 1) {
 				//此情况下要从上一场加载==团队回水总和
 				DataConstans.SumMap = new HashMap<String,Double>();
@@ -2553,7 +2553,7 @@ public class MyController implements Initializable{
 	public void recoverySumMap() {
 		//恢复上一场的团队累计 getLockedInfo
 		int currentPage = Integer.parseInt(pageInput.getText());
-		int size = DataConstans.All_Locked_Data_Map.size();
+		int size = DataConstans.Index_Table_Id_Map.size();
 		if(currentPage - size == 1) {
 			//此情况下要从上一场加载==团队回水总和
 			DataConstans.SumMap = new HashMap<String,Double>();
@@ -2908,7 +2908,7 @@ public class MyController implements Initializable{
 	 * 获取最新的锁定数据
 	 */
 	public Map<String, String>  getLastLockedData() {
-		int paijuIndex = DataConstans.All_Locked_Data_Map.size();
+		int paijuIndex = DataConstans.Index_Table_Id_Map.size();
 		return DataConstans.All_Locked_Data_Map.get(paijuIndex+"");//总缓存数据
 //		Map<String,String> map = new HashMap<>();
 //		map.put("战绩", JSON.toJSONString(TotalInfoList));

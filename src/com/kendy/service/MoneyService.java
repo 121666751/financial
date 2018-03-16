@@ -705,7 +705,7 @@ public class MoneyService {
 		//2获取InfoList
 		ObservableList<ProfitInfo> observableList3 = FXCollections.observableArrayList();
 		Map<String,String> profitMap = null;
-		if(DataConstans.All_Locked_Data_Map.size() == 0) {
+		if(DataConstans.Index_Table_Id_Map.size() == 0) {
 			log.info("=========================刷新（从昨天加载数据）");
 			if(DBUtil.isPreData2017VeryFirst()) {
 				profitMap = JSON.parseObject(DataConstans.preDataMap.get("昨日利润"), new TypeReference<Map<String,String>>() {});
@@ -725,7 +725,7 @@ public class MoneyService {
 			
 		}else {
 			log.info("=========================刷新（从上一场加载数据）");
-			Map<String,String> map = DataConstans.All_Locked_Data_Map.get(DataConstans.All_Locked_Data_Map.size()+"");
+			Map<String,String> map = DataConstans.All_Locked_Data_Map.get(DataConstans.Index_Table_Id_Map.size()+"");
 			List<ProfitInfo> ProfitInfoList = JSON.parseObject(MoneyService.getJsonString(map,"利润"), new TypeReference<List<ProfitInfo>>() {});
 			for(ProfitInfo infos : ProfitInfoList) {
 				observableList3.add(infos);
@@ -733,7 +733,7 @@ public class MoneyService {
 			
 			//sumMap相关设值
 			MyController mc = Main.myController;
-			int size = DataConstans.All_Locked_Data_Map.size();
+			int size = DataConstans.Index_Table_Id_Map.size();
 			if(size >= 1) {
 				//此情况下要从上一场加载==团队回水总和
 //				DataConstans.SumMap = new HashMap<String,Double>();
@@ -1262,7 +1262,7 @@ public class MoneyService {
 	 */
 	public static String getLockedInfo(String keyOfJu,String subKey) {
 		String value = "";//可能是JSONString,也可能是普通字符串
-		if(DataConstans.All_Locked_Data_Map.size() != 0 ) {
+		if(DataConstans.Index_Table_Id_Map.size() != 0 ) {
 			Map<String,String> map = DataConstans.All_Locked_Data_Map.get(keyOfJu);
 			if(map != null) {
 				value =  map.get(subKey);
