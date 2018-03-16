@@ -232,21 +232,40 @@ public class TGController implements Initializable{
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             	Tab tab = (Tab)newValue;
             	log.info(" newTab:"+tab.getText());
-            	if("开销".equals(tab.getText().trim())) {
-            		refreshTableTGKaixiao();//刷新
-            	}
-            	if("玩家备注".equals(tab.getText().trim())) {
-            		refreshTableTGComment();//刷新
-            	}
-            	if("托管外债".equals(tab.getText().trim())) {
-            		refreshTabTGWaizhai();//刷新
-            	}
-            	if("服务费明细".equals(tab.getText().trim())) {
-            		TGFwfService tgFwfService = new TGFwfService();
-            		tgFwfService.setFwfDetail(StringUtil.nvl(currentTGCompanyLabel.getText(),""), tableTGFwf, tableTGFwfSum);
-            	}
+            	refreshSmallTabData();
+//            	String selectedTab = tab.getText().trim();
+//            	if("开销".equals(selectedTab)) {
+//            		refreshTableTGKaixiao();//刷新
+//            	}
+//            	if("玩家备注".equals(selectedTab)) {
+//            		refreshTableTGComment();//刷新
+//            	}
+//            	if("托管外债".equals(selectedTab)) {
+//            		refreshTabTGWaizhai();//刷新
+//            	}
+//            	if("服务费明细".equals(selectedTab)) {
+//            		TGFwfService tgFwfService = new TGFwfService();
+//            		tgFwfService.setFwfDetail(StringUtil.nvl(currentTGCompanyLabel.getText(),""), tableTGFwf, tableTGFwfSum);
+//            	}
             }
 		});
+	}
+	
+	private void refreshSmallTabData() {
+		String selectedTab = tabs.getSelectionModel().getSelectedItem().getText().trim();
+		if("开销".equals(selectedTab)) {
+    		refreshTableTGKaixiao();//刷新
+    	}
+    	if("玩家备注".equals(selectedTab)) {
+    		refreshTableTGComment();//刷新
+    	}
+    	if("托管外债".equals(selectedTab)) {
+    		refreshTabTGWaizhai();//刷新
+    	}
+    	if("服务费明细".equals(selectedTab)) {
+    		TGFwfService tgFwfService = new TGFwfService();
+    		tgFwfService.setFwfDetail(StringUtil.nvl(currentTGCompanyLabel.getText(),""), tableTGFwf, tableTGFwfSum);
+    	}
 	}
 	
 	/**
@@ -534,6 +553,8 @@ public class TGController implements Initializable{
 			}
 			//设置托管公司的相关信息
 			setTGCompanyInfo(company);
+			//设置下面那个小Tab的当前Tab数据
+			refreshSmallTabData();
 		});
 		
 		return companyBtn;
