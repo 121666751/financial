@@ -2419,7 +2419,7 @@ public class DBUtil {
 		try {
 			con = DBConnection.getConnection();
 			String sql;
-			sql = "replace into tg_comment(id, tg_date, tg_player_id, tg_player_name, tg_type, tg_id, tg_name, tg_beizhu, tg_gudong) values(?,?,?,?,?,?,?,?,?)";
+			sql = "replace into tg_comment(id, tg_date, tg_player_id, tg_player_name, tg_type, tg_id, tg_name, tg_beizhu, tg_company) values(?,?,?,?,?,?,?,?,?)";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, comment.getTgCommentEntityId());
 			ps.setString(2, comment.getTgCommentDate());
@@ -2429,7 +2429,7 @@ public class DBUtil {
 			ps.setString(6, comment.getTgCommentId());
 			ps.setString(7, comment.getTgCommentName());
 			ps.setString(8, comment.getTgCommentBeizhu());
-			ps.setString(9, comment.getTgCommentGudong());
+			ps.setString(9, comment.getTgCommentCompany());
 			ps.execute();
 			isOK = true;
 		}catch (SQLException e) {

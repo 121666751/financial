@@ -24,7 +24,7 @@ public class TGCommentInfo implements Entity{
 	private SimpleStringProperty tgCommentName = new SimpleStringProperty();//支出项目
 	private SimpleStringProperty tgCommentBeizhu = new SimpleStringProperty();//玩家名称
 	
-	private SimpleStringProperty tgCommentGudong = new SimpleStringProperty();//玩家名称
+	private SimpleStringProperty tgCommentCompany = new SimpleStringProperty();//玩家名称
 	
 	public TGCommentInfo() {
 		super();
@@ -32,7 +32,7 @@ public class TGCommentInfo implements Entity{
 
 	
 	public TGCommentInfo(String tgCommentEntityId, String tgCommentDate, String tgCommentPlayerId, String tgCommentPlayerName, String tgCommentType
-			,String tgCommentId, String tgCommentName, String tgCommentBeizhu, String tgCommentGudong) {
+			,String tgCommentId, String tgCommentName, String tgCommentBeizhu, String tgCommentCompany) {
 		this.tgCommentEntityId = new SimpleStringProperty(tgCommentEntityId);
 		this.tgCommentDate = new SimpleStringProperty(tgCommentDate);
 		this.tgCommentPlayerId = new SimpleStringProperty(tgCommentPlayerId);
@@ -41,7 +41,7 @@ public class TGCommentInfo implements Entity{
 		this.tgCommentId = new SimpleStringProperty(tgCommentId);
 		this.tgCommentName = new SimpleStringProperty(tgCommentName);
 		this.tgCommentBeizhu = new SimpleStringProperty(tgCommentBeizhu);
-		this.tgCommentGudong = new SimpleStringProperty(tgCommentGudong);
+		this.tgCommentCompany = new SimpleStringProperty(tgCommentCompany);
 	}
 	
 	//=====================
@@ -141,15 +141,15 @@ public class TGCommentInfo implements Entity{
 		this.tgCommentBeizhuProperty().set(tgCommentBeizhu);
 	}
 	//=====================
-	public SimpleStringProperty tgCommentGudongProperty() {
-		return this.tgCommentGudong;
+	public SimpleStringProperty tgCommentCompanyProperty() {
+		return this.tgCommentCompany;
 	}
 
-	public String getTgCommentGudong() {
-		return this.tgCommentGudongProperty().get();
+	public String getTgCommentCompany() {
+		return this.tgCommentCompanyProperty().get();
 	}
 
-	public void setTgCommentGudong(final String tgCommentGudong) {
-		this.tgCommentGudongProperty().set(tgCommentGudong);
+	public void setTgCommentCompany(final String tgCommentCompany) {
+		this.tgCommentCompanyProperty().set(tgCommentCompany);
 	}
 }

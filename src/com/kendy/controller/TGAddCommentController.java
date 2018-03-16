@@ -222,6 +222,7 @@ public class TGAddCommentController implements Initializable{
 				beizhuField.getText(),
 				tgCompany
 				);
+		
 		return entity;
 	}
 	
@@ -242,6 +243,7 @@ public class TGAddCommentController implements Initializable{
 		//传递给主控制类处理逻辑 TODO
 		TGCommentInfo tgCommentInfo = getSubmitData();
 		TGController tgController = MyController.tgController;
+		
 		//保存到数据库
 		DBUtil.saveOrUpdate_tg_comment(tgCommentInfo);
 		//刷新界面

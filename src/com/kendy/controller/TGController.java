@@ -132,6 +132,7 @@ public class TGController implements Initializable{
 	@FXML private TableColumn<TGCommentInfo,String> tgCommentId;
 	@FXML private TableColumn<TGCommentInfo,String> tgCommentName;
 	@FXML private TableColumn<TGCommentInfo,String> tgCommentBeizhu;
+	@FXML private TableColumn<TGCommentInfo,String> tgCommentCompany;
 	@FXML public ListView<String> tgCommentSumView; // 玩家备注合计
 	
 	//=====================================================================托管团队外债表
@@ -175,7 +176,7 @@ public class TGController implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		//绑定列值属性
 		MyController.bindCellValue(tgKaixiaoDate,tgKaixiaoPlayerName,tgKaixiaoPayItem,tgKaixiaoMoney,tgKaixiaoCompany);
-		MyController.bindCellValue(tgCommentDate,tgCommentPlayerId,tgCommentPlayerName,tgCommentType,tgCommentId,tgCommentName,tgCommentBeizhu);
+		MyController.bindCellValue(tgCommentDate,tgCommentPlayerId,tgCommentPlayerName,tgCommentType,tgCommentId,tgCommentName,tgCommentBeizhu,tgCommentCompany);
 		MyController.bindCellValue(tgFwfCompany, tgFwfTeamId, tgFwfHuishui, tgFwfHuiBao, tgFwfProfit, tgFwfFanshui, tgFwfFanbao, tgFwfQuanshui, tgFwfQuanbao, tgFwfHeji);
 		binCellValueDiff(tgTeamId,"type");
 		binCellValueDiff(tgTeamRate,"value");
@@ -432,6 +433,12 @@ public class TGController implements Initializable{
 		//从数据库获取最新数据
 		List<TGCommentInfo> tgCommentList = DBUtil.get_all_tg_comment();
 		//过滤某个托管公司 TODO 
+		String company = currentTGCompanyLabel.getText();
+		if(StringUtil.isAnyBlank(company)) {
+			ShowUtil.show("请选择托管公司！");
+		}else if(CollectUtil.isHaveValue(tgCommentList)) {
+			tgCommentList  = tgCommentList.stream().filter(info -> company.equals(info.getTgCommentCompany())).collect(Collectors.toList());
+		}
 		
 		//赋值
 		ObservableList<TGCommentInfo> obList ;

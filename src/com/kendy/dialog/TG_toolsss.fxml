@@ -209,7 +209,7 @@
                         <TableView fx:id="tableTGComment" layoutY="32.0" prefHeight="593.0" prefWidth="754.0">
                            <columns>
                               <TableColumn fx:id="tgCommentDate" prefWidth="94.0" text="日期" />
-                              <TableColumn fx:id="tgCommentBeizhu1" prefWidth="71.0" text="托管公司" />
+                              <TableColumn fx:id="tgCommentCompany" prefWidth="71.0" text="托管公司" />
                               <TableColumn fx:id="tgCommentPlayerId" prefWidth="106.0" text="玩家ID" />
                               <TableColumn fx:id="tgCommentPlayerName" prefWidth="88.0" text="玩家名称" />
                               <TableColumn fx:id="tgCommentType" prefWidth="86.0" text="类别" />
