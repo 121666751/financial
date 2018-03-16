@@ -86,6 +86,8 @@ public class ShangmaService {
 	//玩家ID=上码次日列表   ShangmaDetailInfo 存到数据库时对应ShangmaNextday
 	public static Map<String,List<ShangmaDetailInfo>> SM_NextDay_Map= new HashMap<>();
 	
+	public static Map<String, List<String>> teamIdAndPlayerIdMap = new HashMap<>();
+	
 	/**
 	 * 初始化上码相关配置
 	 */
@@ -193,6 +195,27 @@ public class ShangmaService {
 		}
 	}
 	
+	//获取最新的团队ID与玩家ID列表的映射
+	public static void refreshTeamIdAndPlayerId() {
+		final Map<String,Player> memberMap = DataConstans.membersMap;
+		Map<String,List<String>> teamWanjiaMap = new HashMap<>();
+		if(memberMap != null && memberMap.size()>0) {
+			List<String> list = null;
+			String teamId = "";
+			for(Map.Entry<String, Player> entry : memberMap.entrySet()) {
+				Player wanjia = entry.getValue();
+				teamId = wanjia.getTeamName();
+				if(!StringUtil.isBlank(teamId)) {
+					list = teamWanjiaMap.get(teamId);
+					list = list == null ? new ArrayList<>() : list ;
+					list.add(entry.getKey());
+					teamWanjiaMap.put(teamId, list);
+				}
+			}
+		}
+		teamIdAndPlayerIdMap = teamWanjiaMap;
+	}
+	
 	/**
 	 * 加载上码主表
 	 * 
@@ -203,7 +226,7 @@ public class ShangmaService {
 		double teamSumYiSM, teamSumZJ;
 		try {
 			ObservableList<ShangmaInfo> obList = FXCollections.observableArrayList();
-			List<String> wanjiaIdList = DataConstans.teamWanjiaIdMap.get(teamId);
+			List<String> wanjiaIdList = teamIdAndPlayerIdMap.get(teamId);
 			String playerName,edu,yicunJifen,sumAvailableEdu,sumYiSM,sumZJ;
 			teamSumYiSM = 0d;
 			teamSumZJ = 0d;

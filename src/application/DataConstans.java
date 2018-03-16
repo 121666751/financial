@@ -43,7 +43,7 @@ public class DataConstans {
 	//缓存人员名单登记Excel中的数据{玩家ID={}}
 	public static Map<String, Player> membersMap = new HashMap<>();//撤销后不变
 	//团队ID=玩家ID列表
-	public static Map<String, List<String>> teamWanjiaIdMap = new HashMap<>();//撤销后不变
+//	public static Map<String, List<String>> teamWanjiaIdMap = new HashMap<>();//撤销后不变
 	//玩家ID=上码详情列表（正在使用的值）
 	public static Map<String,List<ShangmaDetailInfo>> SM_Detail_Map= new HashMap<>();
 	//玩家ID=上码详情列表（上一场所定的数据，用于撤销时恢复原数据）
@@ -132,7 +132,7 @@ public class DataConstans {
 		
 //		团队ID=玩家ID列表
 //		public static Map<String, List<String>> teamWanjiaIdMap = new HashMap<>();//撤销后不变
-		lastLockedDataMap.put("teamWanjiaIdMap", JSON.toJSONString(DataConstans.teamWanjiaIdMap));
+//		lastLockedDataMap.put("teamWanjiaIdMap", JSON.toJSONString(DataConstans.teamWanjiaIdMap));
 		
 //		玩家ID=上码详情列表（正在使用的值）
 //		public static Map<String,List<ShangmaDetailInfo>> SM_Detail_Map= new HashMap<>();
@@ -224,7 +224,7 @@ public class DataConstans {
 		//缓存人员名单登记Excel中的数据{玩家ID={}}
 		membersMap = new HashMap<>();//撤销后不变
 		//团队ID=玩家ID列表
-		teamWanjiaIdMap = new HashMap<>();//撤销后不变
+//		teamWanjiaIdMap = new HashMap<>();//撤销后不变
 		//玩家ID=上码详情列表（正在使用的值）
 		SM_Detail_Map= new HashMap<>();
 		//玩家ID=上码详情列表（上一场所定的数据，用于撤销时恢复原数据）
@@ -363,7 +363,7 @@ public class DataConstans {
 		//缓存人员名单登记Excel中的数据{玩家ID={}}
 //		membersMap = JSON.parseObject(map.get("membersMap"), new TypeReference<Map<String, Player>>() {});
 		//团队ID=玩家ID列表
-		teamWanjiaIdMap = JSON.parseObject(map.get("teamWanjiaIdMap"), new TypeReference<Map<String, List<String>>>() {});
+//		teamWanjiaIdMap = JSON.parseObject(map.get("teamWanjiaIdMap"), new TypeReference<Map<String, List<String>>>() {});
 		//玩家ID=上码详情列表（正在使用的值）
 		SM_Detail_Map= JSON.parseObject(map.get("SM_Detail_Map"), new TypeReference<Map<String, List<ShangmaDetailInfo>>>() {});
 		//玩家ID=上码详情列表（上一场所定的数据，用于撤销时恢复原数据）

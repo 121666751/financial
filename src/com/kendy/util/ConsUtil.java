@@ -46,26 +46,7 @@ public class ConsUtil {
 		    return tail;
 	}
 	
-	//获取最新的团队ID与玩家ID列表的映射
-	public static void refreshTeamIdAndPlayerId() {
-		final Map<String,Player> memberMap = DataConstans.membersMap;
-		Map<String,List<String>> teamWanjiaMap = new HashMap<>();
-		if(memberMap != null && memberMap.size()>0) {
-			List<String> list = null;
-			String teamId = "";
-			for(Map.Entry<String, Player> entry : memberMap.entrySet()) {
-				Player wanjia = entry.getValue();
-				teamId = wanjia.getTeamName();
-				if(!StringUtil.isBlank(teamId)) {
-					list = teamWanjiaMap.get(teamId);
-					list = list == null ? new ArrayList<>() : list ;
-					list.add(entry.getKey());
-					teamWanjiaMap.put(teamId, list);
-				}
-			}
-		}
-		DataConstans.teamWanjiaIdMap = teamWanjiaMap;
-	}
+
 	
 	//同步SM_Detail_Map
 	

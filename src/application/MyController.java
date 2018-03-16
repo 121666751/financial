@@ -842,7 +842,7 @@ public class MyController implements Initializable{
             	}
             	if("实时上码系统".equals(tab.getText())) {
             		//刷新上码中的teamWanjiaIdMap
-    				ConsUtil.refreshTeamIdAndPlayerId();
+    				ShangmaService.refreshTeamIdAndPlayerId(); // update 2018-3-16
             		
             		//获取最新的实时金额Map {玩家ID={}}
             		Map<String,CurrentMoneyInfo> lastCMIMap = new HashMap<>();;
@@ -1008,7 +1008,7 @@ public class MyController implements Initializable{
 				
 				ShowUtil.show("导入人员名单成功", 2);
 				//刷新相关缓存
-				ConsUtil.refreshTeamIdAndPlayerId();
+//				ConsUtil.refreshTeamIdAndPlayerId();
 				ConsUtil.refresh_SM_Detail_Map();//加载测试数据
 			} catch (Exception e) {
 				ErrorUtil.err("导入人员名单失败",e);
@@ -2760,7 +2760,7 @@ public class MyController implements Initializable{
 			//实时上码表：清空所有SM_Detail
 			DataConstans.SM_Detail_Map= new HashMap<>();//新一天统计时应该清空昨日数据
 			//实时上码表：获取最新的团队ID与玩家ID列表的映射
-			ConsUtil.refreshTeamIdAndPlayerId();
+//			ConsUtil.refreshTeamIdAndPlayerId();
 			//ConsUtil.refresh_SM_Detail_Map();//新一天统计时应该清空昨日数据
 			
 			//初始化股东列表
