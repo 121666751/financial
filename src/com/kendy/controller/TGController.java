@@ -227,30 +227,25 @@ public class TGController implements Initializable{
 	 */
 	@SuppressWarnings("unchecked")
 	private void tabsAction() {
-		tabs.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-            	Tab tab = (Tab)newValue;
-            	log.info(" newTab:"+tab.getText());
-            	refreshSmallTabData();
-//            	String selectedTab = tab.getText().trim();
-//            	if("开销".equals(selectedTab)) {
-//            		refreshTableTGKaixiao();//刷新
-//            	}
-//            	if("玩家备注".equals(selectedTab)) {
-//            		refreshTableTGComment();//刷新
-//            	}
-//            	if("托管外债".equals(selectedTab)) {
-//            		refreshTabTGWaizhai();//刷新
-//            	}
-//            	if("服务费明细".equals(selectedTab)) {
-//            		TGFwfService tgFwfService = new TGFwfService();
-//            		tgFwfService.setFwfDetail(StringUtil.nvl(currentTGCompanyLabel.getText(),""), tableTGFwf, tableTGFwfSum);
-//            	}
-            }
+//		tabs.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+//            	Tab tab = (Tab)newValue;
+//            	log.info(" newTab:"+tab.getText());
+//            	refreshSmallTabData();
+//            }
+//		});
+		tabs.getSelectionModel().selectedItemProperty().addListener(info-> {
+			//Tab tab = (Tab)info;
+			refreshSmallTabData();
 		});
 	}
 	
+	/**
+	 * 选择托管公司按钮 或 手动点击小tab时自动刷新界面数据
+	 * 
+	 * @time 2018年3月16日
+	 */
 	private void refreshSmallTabData() {
 		String selectedTab = tabs.getSelectionModel().getSelectedItem().getText().trim();
 		if("开销".equals(selectedTab)) {

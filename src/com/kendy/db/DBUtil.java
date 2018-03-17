@@ -1817,7 +1817,7 @@ public class DBUtil {
 	
 	
 	/**
-	 * 清空所有统计信息(club and record)
+	 * 清空所有统计信息(record)
 	 * 
 	 * @time 2017年11月14日
 	 * @param playerId
@@ -1826,13 +1826,36 @@ public class DBUtil {
 		try {
 			con = DBConnection.getConnection();
 			String sql;
-//			sql = "delete from club ";
-//			ps = con.prepareStatement(sql);
-//			ps.execute();
 			
 			sql = "delete from record ";
 			ps = con.prepareStatement(sql);
 			ps.execute();
+			
+		}catch (SQLException e) {
+			ErrorUtil.err("清空所有统计信息失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	/**
+	 * 清空所有统计信息(record zhuofei kaixiao)
+	 * 
+	 * @time 2017年11月14日
+	 * @param playerId
+	 */
+	public static void del_all_record_and_zhuofei_and_kaixiao() {
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			
+			sql = "delete from record ";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+			
+			//add 2018 - 3 -17
+			DBUtil.del_all_club_zhuofei();
+			DBUtil.del_all_gudong_kaixiao();
 		}catch (SQLException e) {
 			ErrorUtil.err("清空所有统计信息失败", e);
 		}finally{

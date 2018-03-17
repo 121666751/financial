@@ -1396,7 +1396,7 @@ public class GDController implements Initializable{
 			clearBtn.fire();
 			
 			//删除数据库
-			DBUtil.del_all_record();
+			DBUtil.del_all_record_and_zhuofei_and_kaixiao();
 			
 			log.info("客户手动删除数据库中所有白名单数据成功！！");
 			ShowUtil.show("手动删除成功！", 2);
