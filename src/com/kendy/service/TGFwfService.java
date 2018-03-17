@@ -3,13 +3,13 @@ package com.kendy.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.Comparator;
 
 import com.kendy.controller.TGController;
 import com.kendy.db.DBUtil;
@@ -17,6 +17,7 @@ import com.kendy.entity.ProxyTeamInfo;
 import com.kendy.entity.TGCompanyModel;
 import com.kendy.entity.TGFwfinfo;
 import com.kendy.entity.TGTeamInfo;
+import com.kendy.entity.TGTeamModel;
 import com.kendy.entity.TypeValueInfo;
 import com.kendy.util.CollectUtil;
 import com.kendy.util.NumUtil;
@@ -191,7 +192,7 @@ public class TGFwfService {
 	private List<TGTeamInfo> convert2TGTeamInfo(List<ProxyTeamInfo> proxyTeamInfoList){
 		List<TGTeamInfo> list = new ArrayList<>();
 		TGController tgController = MyController.tgController;
-		Map<String, Double> tgTeamRateMap = tgController.getTgTeamRateMap();
+		Map<String, TGTeamModel> tgTeamRateMap = tgController.getTgTeamModelMap();
 		
 		if(CollectUtil.isHaveValue(proxyTeamInfoList)) {
 			list = proxyTeamInfoList.stream().map(info -> {
@@ -200,16 +201,20 @@ public class TGFwfService {
 				tgTeam.setTgPlayerName(info.getProxyPlayerName());
 				tgTeam.setTgYSZJ(info.getProxyYSZJ());
 				tgTeam.setTgBaoxian(info.getProxyBaoxian());
-				tgTeam.setTgHuiBao(StringUtil.nvl(info.getProxyHuiBao(), "0.00"));
 				tgTeam.setTgChangci(info.getProxyTableId());
 				//设置战绩2.5% 
 				String percent25Str = NumUtil.digit2(NumUtil.getNum(info.getProxyYSZJ()) * 0.025 + "");
 				tgTeam.setTgZJ25(percent25Str);
 				//设置战绩未知%
 				String teamId = info.getProxyTeamId();
-				Double teamUnknowValue = tgTeamRateMap.getOrDefault(teamId, 0d);
-				String teamUnknowStr = NumUtil.digit2(NumUtil.getNum(info.getProxyYSZJ()) * teamUnknowValue + "");
+				TGTeamModel tgTeamModel = tgTeamRateMap.get(teamId);
+				String teamUnknowValue = tgTeamModel == null ? "0.0" : tgTeamModel.getTgHuishui();
+				String teamUnknowStr = NumUtil.digit2(NumUtil.getNumTimes(info.getProxyYSZJ(), teamUnknowValue) + "");
 				tgTeam.setTgZJUnknow(teamUnknowStr);
+				//设置回保
+				String teamHuibaoRateValue = tgTeamModel == null ? "0.0" : tgTeamModel.getTgHuiBao();
+				String teamHuibaoRateStr =  NumUtil.digit2((-1) * 0.975 * NumUtil.getNumTimes(tgTeam.getTgBaoxian(), teamHuibaoRateValue) + "");
+				tgTeam.setTgHuiBao(StringUtil.nvl(teamHuibaoRateStr, "0.00"));
 				//设置利润
 				String profit = tgController.getRecordProfit(tgTeam);
 				tgTeam.setTgProfit(profit);

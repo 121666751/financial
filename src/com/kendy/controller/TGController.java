@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -227,14 +228,6 @@ public class TGController implements Initializable{
 	 */
 	@SuppressWarnings("unchecked")
 	private void tabsAction() {
-//		tabs.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-//            @Override
-//            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-//            	Tab tab = (Tab)newValue;
-//            	log.info(" newTab:"+tab.getText());
-//            	refreshSmallTabData();
-//            }
-//		});
 		tabs.getSelectionModel().selectedItemProperty().addListener(info-> {
 			//Tab tab = (Tab)info;
 			refreshSmallTabData();
@@ -248,6 +241,7 @@ public class TGController implements Initializable{
 	 */
 	private void refreshSmallTabData() {
 		String selectedTab = tabs.getSelectionModel().getSelectedItem().getText().trim();
+		log.info(" newTab:"+selectedTab);
 		if("开销".equals(selectedTab)) {
     		refreshTableTGKaixiao();//刷新
     	}
@@ -683,11 +677,16 @@ public class TGController implements Initializable{
 	 */
 	private List<TGTeamInfo> convert2TGTeamInfo(String teamId, List<ProxyTeamInfo> proxyTeamInfoList){
 		List<TGTeamInfo> list = new ArrayList<>();
-		Map<String, Double> tgTeamRateMap = getTgTeamRateMap();
+		TGController tgController = MyController.tgController;
+		Map<String, TGTeamModel> tgTeamRateMap = tgController.getTgTeamModelMap();
 		
-		Double teamUnknowValue = tgTeamRateMap.getOrDefault(teamId, 0d);
+		TGTeamModel tgTeamModel = tgTeamRateMap.get(teamId);
+		String teamUnknowValue = tgTeamModel == null ? "0.0" : tgTeamModel.getTgHuishui();
+		
+		String teamHuibaoRateValue = tgTeamModel == null ? "0.0" : tgTeamModel.getTgHuiBao();
+		
 		//更改列名称
-		changeColumnName_TeamUnknowRate(teamUnknowValue);
+		changeColumnName_TeamUnknowRate(NumUtil.getNum(teamUnknowValue));
 		
 		if(CollectUtil.isHaveValue(proxyTeamInfoList)) {
 			list = proxyTeamInfoList.stream().map(info -> {
@@ -696,14 +695,17 @@ public class TGController implements Initializable{
 				tgTeam.setTgPlayerName(info.getProxyPlayerName());
 				tgTeam.setTgYSZJ(info.getProxyYSZJ());
 				tgTeam.setTgBaoxian(info.getProxyBaoxian());
-				tgTeam.setTgHuiBao(StringUtil.nvl(info.getProxyHuiBao(), "0.00"));
 				tgTeam.setTgChangci(info.getProxyTableId());
 				//设置战绩2.5% 
 				String percent25Str = NumUtil.digit2(NumUtil.getNum(info.getProxyYSZJ()) * 0.025 + "");
 				tgTeam.setTgZJ25(percent25Str);
 				//设置战绩未知%
-				String teamUnknowStr = NumUtil.digit2(NumUtil.getNum(info.getProxyYSZJ()) * teamUnknowValue + "");
+				String teamUnknowStr = NumUtil.digit2(NumUtil.getNumTimes(info.getProxyYSZJ(), teamUnknowValue) + "");
 				tgTeam.setTgZJUnknow(teamUnknowStr);
+				//设置回保
+				String teamHuibaoRateStr =  NumUtil.digit2((-1) * 0.975 * NumUtil.getNumTimes(tgTeam.getTgBaoxian(), teamHuibaoRateValue) + "");
+				tgTeam.setTgHuiBao(StringUtil.nvl(teamHuibaoRateStr, "0.00"));
+				
 				//设置利润
 				String profit = getRecordProfit(tgTeam);
 				tgTeam.setTgProfit(profit);
@@ -787,16 +789,35 @@ public class TGController implements Initializable{
 	
 	/**
 	 * 获取团队比例映射
+	 * 使用getTgTeamModelMap方法代替
 	 * 
 	 * @time 2018年3月7日
 	 * @return
 	 */
+	@Deprecated
 	public Map<String,Double> getTgTeamRateMap(){
 		List<TypeValueInfo> tableTGTeams = getTableTGTeams();
 		//toMap方法，当key相同时会报错
 		Map<String,Double> map = tableTGTeams.stream().distinct()
 				.collect(Collectors.toMap(TypeValueInfo::getType, info -> 
 						NumUtil.getNumByPercent(info.getValue())));
+		return map == null ? new HashMap<>() : map;
+	}
+	
+	/**
+	 * 获取托管团队的托管回水比例和回保比例
+	 * 
+	 * @time 2018年3月17日
+	 * @return
+	 */
+	public Map<String,TGTeamModel> getTgTeamModelMap(){
+		List<TGTeamModel> tableTGTeams = DBUtil.get_all_tg_team();
+		if(CollectUtil.isNullOrEmpty(tableTGTeams)) {
+			tableTGTeams = new ArrayList<>();
+		}
+		//toMap方法，当key相同时会报错
+		Map<String,TGTeamModel> map = tableTGTeams.stream().distinct()
+				.collect(Collectors.toMap(TGTeamModel::getTgTeamId, Function.identity()));
 		return map == null ? new HashMap<>() : map;
 	}
 	

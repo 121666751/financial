@@ -168,7 +168,19 @@ public class NumUtil {
 	 * @return
 	 */
 	public static Double getNumTimes(String str1, String str2) {
-		return NumUtil.getNum(str1) * NumUtil.getNum(str2);
+		Double a = 0.0;
+		Double b = 0.0;
+		if(str1.contains("%")) {
+			a = NumUtil.getNumByPercent(str1);
+		}else {
+			a = NumUtil.getNum(str1);
+		}
+		if(str2.contains("%")) {
+			b = NumUtil.getNumByPercent(str2);
+		}else {
+			b = NumUtil.getNum(str2);
+		}
+		return a * b;
 	}
 	
 	/**
