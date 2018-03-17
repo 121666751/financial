@@ -32,7 +32,7 @@ import com.kendy.entity.ShangmaNextday;
 import com.kendy.entity.TGCommentInfo;
 import com.kendy.entity.TGCompanyModel;
 import com.kendy.entity.TGKaixiaoInfo;
-import com.kendy.entity.TGTeamInfo;
+import com.kendy.entity.TGLirunInfo;
 import com.kendy.entity.TGTeamModel;
 import com.kendy.util.ErrorUtil;
 import com.kendy.util.NumUtil;
@@ -2818,6 +2818,99 @@ public class DBUtil {
 			close(con,ps);
 		}
 	}
+	
+	/***************************************************************************
+	 * 
+	 * 				托管日利润表
+	 * 
+	 **************************************************************************/
+	/**
+	 * 保存或修改托管日利润表
+	 * 
+	 */
+	public static boolean saveOrUpdate_tg_lirun(final TGLirunInfo lirun) {
+		boolean isOK = false;
+		try {
+			con = DBConnection.getConnection();
+			String sql;
+			sql = "replace into tg_lirun(tg_lirun_date, tg_lirun_total_profit, tg_lirun_total_kaixiao, tg_lirun_atm_company,"
+					+ "tg_lirun_tg_company,tg_lirun_team_profit,tg_lirun_tg_heji,tg_lirun_rest_heji,tg_lirun_company_name) "
+					+ "values(?,?,?,?,?,?,?,?,?)";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, lirun.getTgLirunDate());
+			ps.setString(2, lirun.getTgLirunTotalProfit());
+			ps.setString(3, lirun.getTgLirunTotalKaixiao());
+			ps.setString(4, lirun.getTgLirunATMCompany());
+			ps.setString(5, lirun.getTgLirunTGCompany());
+			ps.setString(6, lirun.getTgLirunTeamProfit());
+			ps.setString(7, lirun.getTgLirunHeji());
+			ps.setString(8, lirun.getTgLirunRestHeji());
+			ps.execute();
+			isOK = true;
+		}catch (SQLException e) {
+			ErrorUtil.err(lirun.toString()+",保存或修改托管日利润失败", e);
+			isOK = false;
+		}finally{
+			close(con,ps);
+		}
+		return isOK;
+	}
+	
+	/**
+	 * 获取所有托管日利润
+	 * 
+	 * @time 2018年3月4日
+	 * @return
+	 */
+	public static List<TGLirunInfo> get_all_tg_lirun() {
+		List<TGLirunInfo> list = new ArrayList<>();
+		try {
+			con = DBConnection.getConnection();
+			String sql = "select * from tg_lirun";
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				TGLirunInfo lirun = new TGLirunInfo(
+						rs.getString(1),
+						rs.getString(2),
+						rs.getString(3),
+						rs.getString(4),
+						rs.getString(5),
+						rs.getString(6),
+						rs.getString(7),
+						rs.getString(8),
+						rs.getString(9)
+						);
+				list.add(lirun);
+			}
+		} catch (SQLException e) {
+			ErrorUtil.err("获取所有托管日利润失败",e);
+		}finally{
+			close(con,ps);
+		}
+		return list;
+	}
+	
+	/**
+	 * 删除所有的托管日利润
+	 * 
+	 * @time 2018年3月4日
+	 * @param key
+	 */
+	public static void del_all_tg_lirun() {
+		try {
+			con = DBConnection.getConnection();
+			String sql  = "delete from tg_lirun ";
+			ps = con.prepareStatement(sql);
+			ps.execute();
+		}catch (SQLException e) {
+			ErrorUtil.err("删除所有的托管日利润失败", e);
+		}finally{
+			close(con,ps);
+		}
+	}
+	
+	
 	
 	
 }

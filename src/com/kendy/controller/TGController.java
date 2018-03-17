@@ -21,6 +21,7 @@ import com.kendy.entity.TGCommentInfo;
 import com.kendy.entity.TGCompanyModel;
 import com.kendy.entity.TGFwfinfo;
 import com.kendy.entity.TGKaixiaoInfo;
+import com.kendy.entity.TGLirunInfo;
 import com.kendy.entity.TGTeamInfo;
 import com.kendy.entity.TGTeamModel;
 import com.kendy.entity.TypeValueInfo;
@@ -38,8 +39,7 @@ import application.Constants;
 import application.DataConstans;
 import application.Main;
 import application.MyController;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -53,7 +53,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -163,6 +162,17 @@ public class TGController implements Initializable{
 	@FXML private TableColumn<TypeValueInfo,String> tgFwfType;
 	@FXML private TableColumn<TypeValueInfo,String> tgFwfValue;
 	
+	//=====================================================================托管服务费总和表
+	@FXML public TableView<TGLirunInfo>  tableTGLirun;   
+	@FXML private TableColumn<TGLirunInfo,String>  tgLirunDate;
+	@FXML private TableColumn<TGLirunInfo,String>  tgLirunTotalProfit;
+	@FXML private TableColumn<TGLirunInfo,String>  tgLirunTotalKaixiao;
+	@FXML private TableColumn<TGLirunInfo,String>  tgLirunATMCompany;
+	@FXML private TableColumn<TGLirunInfo,String>  tgLirunTGCompany;
+	@FXML private TableColumn<TGLirunInfo,String>  tgLirunTeamProfit;
+	@FXML private TableColumn<TGLirunInfo,String>  tgLirunRestHeji;//合计
+	@FXML private TableColumn<TGLirunInfo,String>  tgLirunHeji;//托管合计
+	@FXML private TableColumn<TGLirunInfo,String>  tgLirunCompanyName;//托管公司
 	
 	
 	
@@ -179,6 +189,7 @@ public class TGController implements Initializable{
 		MyController.bindCellValue(tgKaixiaoDate,tgKaixiaoPlayerName,tgKaixiaoPayItem,tgKaixiaoMoney,tgKaixiaoCompany);
 		MyController.bindCellValue(tgCommentDate,tgCommentPlayerId,tgCommentPlayerName,tgCommentType,tgCommentId,tgCommentName,tgCommentBeizhu,tgCommentCompany);
 		MyController.bindCellValue(tgFwfCompany, tgFwfTeamId, tgFwfHuishui, tgFwfHuiBao, tgFwfProfit, tgFwfFanshui, tgFwfFanbao, tgFwfQuanshui, tgFwfQuanbao, tgFwfHeji);
+		MyController.bindCellValue(tgLirunDate, tgLirunTotalProfit, tgLirunTotalKaixiao, tgLirunATMCompany, tgLirunTGCompany, tgLirunTeamProfit, tgLirunRestHeji, tgLirunHeji);
 		binCellValueDiff(tgTeamId,"type");
 		binCellValueDiff(tgTeamRate,"value");
 		binCellValueDiff(tgZJSumType,"type");

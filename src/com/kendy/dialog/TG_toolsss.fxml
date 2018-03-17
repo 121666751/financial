@@ -268,19 +268,20 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="536.0">
                      <children>
-                        <TableView layoutY="32.0" prefHeight="593.0" prefWidth="692.0">
+                        <TableView fx:id="tableTGLirun" layoutY="32.0" prefHeight="593.0" prefWidth="777.0">
                           <columns>
-                            <TableColumn prefWidth="102.0" text="日期" />
-                            <TableColumn prefWidth="78.0" text="总利润" />
-                              <TableColumn prefWidth="82.0" text="总开销" />
-                              <TableColumn prefWidth="75.0" text="合计" />
-                              <TableColumn prefWidth="81.0" text="公司占股" />
-                              <TableColumn prefWidth="95.0" text="托管公司占股" />
-                              <TableColumn prefWidth="83.0" text="团队利润" />
-                              <TableColumn prefWidth="83.0" text="托管合计" />
+                            <TableColumn fx:id="tgLirunDate" prefWidth="102.0" text="日期" />
+                              <TableColumn fx:id="tgLirunCompanyName" prefWidth="83.0" text="托管公司" />
+                            <TableColumn fx:id="tgLirunTotalProfit" prefWidth="78.0" text="总利润" />
+                              <TableColumn fx:id="tgLirunTotalKaixiao" prefWidth="82.0" text="总开销" />
+                              <TableColumn fx:id="tgLirunRestHeji" prefWidth="75.0" text="合计" />
+                              <TableColumn fx:id="tgLirunATMCompany" prefWidth="81.0" text="公司占股" />
+                              <TableColumn fx:id="tgLirunTGCompany" prefWidth="95.0" text="托管公司占股" />
+                              <TableColumn fx:id="tgLirunTeamProfit" prefWidth="83.0" text="团队利润" />
+                              <TableColumn fx:id="tgLirunHeji" prefWidth="83.0" text="托管合计" />
                           </columns>
                         </TableView>
-                        <VBox layoutX="741.0" layoutY="32.0" prefHeight="249.0" prefWidth="150.0">
+                        <VBox layoutX="794.0" layoutY="32.0" prefHeight="249.0" prefWidth="150.0">
                            <children>
                               <Label prefHeight="30.0" prefWidth="107.0" text="合计：" textFill="#cd2753">
                                  <font>
@@ -291,8 +292,7 @@
                               <AnchorPane prefHeight="18.0" prefWidth="107.0" />
                            </children>
                         </VBox>
-                        <Button layoutX="741.0" layoutY="299.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="月底手动清除利润" />
-                        <TextArea layoutX="716.0" layoutY="363.0" prefHeight="261.0" prefWidth="177.0" text="月利润：此页面为全自动无手动修改页面，自动提取所有数值。&#10;&#10;日期：跟财务软件一样，取系统导入01的时间，只截取到日，如20180201，2018年2月1号。&#10;&#10;总利润：托管公司利润+公司利润+团队利润&#10;&#10;总开销：提取开销页面的合计。&#10;&#10;公司占股：在新建托管公司输入的占比，在这里使用，托管公司旗下所有团队共创利润的分红占比，计算公式可参考股东贡献值。&#10;&#10;XX占比：这个是显示托管公司的名称，占比同上。&#10;&#10;团队利润：托管公司旗下团队的总利润，是团队的总回水+总回保。&#10;&#10;托管公司+团队：托管公司+团队的总利润值。&#10;计算公司就是按上方细节计算出总和。&#10;&#10;注意：这个页面是记忆功能，软件关闭以及过新的一天都会保存，增加手动清空按钮，到了当月最后一天则点击清空按钮。" />
+                        <Button layoutX="794.0" layoutY="303.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="月底手动清除利润" />
                      </children>
                   </AnchorPane>
             </content>
