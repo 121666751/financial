@@ -681,12 +681,12 @@ public class TGController implements Initializable{
 		Map<String, TGTeamModel> tgTeamRateMap = tgController.getTgTeamModelMap();
 		
 		TGTeamModel tgTeamModel = tgTeamRateMap.get(teamId);
-		String teamUnknowValue = tgTeamModel == null ? "0.0" : tgTeamModel.getTgHuishui();
+		String teamUnknowValue = tgTeamModel == null ? "0%" : tgTeamModel.getTgHuishui();
 		
 		String teamHuibaoRateValue = tgTeamModel == null ? "0.0" : tgTeamModel.getTgHuiBao();
 		
 		//更改列名称
-		changeColumnName_TeamUnknowRate(NumUtil.getNum(teamUnknowValue));
+		changeColumnName_TeamUnknowRate(teamUnknowValue);
 		
 		if(CollectUtil.isHaveValue(proxyTeamInfoList)) {
 			list = proxyTeamInfoList.stream().map(info -> {
@@ -704,7 +704,10 @@ public class TGController implements Initializable{
 				tgTeam.setTgZJUnknow(teamUnknowStr);
 				//设置回保
 				String teamHuibaoRateStr =  NumUtil.digit2((-1) * 0.975 * NumUtil.getNumTimes(tgTeam.getTgBaoxian(), teamHuibaoRateValue) + "");
-				tgTeam.setTgHuiBao(StringUtil.nvl(teamHuibaoRateStr, "0.00"));
+				if(tgTeam.getTgBaoxian().equals("0")) {
+					teamHuibaoRateStr = "0";
+				}
+				tgTeam.setTgHuiBao(teamHuibaoRateStr);
 				
 				//设置利润
 				String profit = getRecordProfit(tgTeam);
@@ -821,12 +824,12 @@ public class TGController implements Initializable{
 		return map == null ? new HashMap<>() : map;
 	}
 	
-	private void changeColumnName_TeamUnknowRate(Double teamUnknowRate) {
-		String newColumnName = "0%";
-		if(teamUnknowRate.intValue() >= 0) {
-			newColumnName = NumUtil.getPercentStr(teamUnknowRate);
-		}
-		tableTGZhanji.getColumns().get(5).setText("战绩"+newColumnName);
+	private void changeColumnName_TeamUnknowRate(String teamUnknowRate) {
+//		String newColumnName = "0%";
+//		if(teamUnknowRate.intValue() >= 0) {
+//			newColumnName = NumUtil.getPercentStr(teamUnknowRate);
+//		}
+		tableTGZhanji.getColumns().get(5).setText("战绩"+teamUnknowRate);
 	}
 	
 	

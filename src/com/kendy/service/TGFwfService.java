@@ -214,7 +214,10 @@ public class TGFwfService {
 				//设置回保
 				String teamHuibaoRateValue = tgTeamModel == null ? "0.0" : tgTeamModel.getTgHuiBao();
 				String teamHuibaoRateStr =  NumUtil.digit2((-1) * 0.975 * NumUtil.getNumTimes(tgTeam.getTgBaoxian(), teamHuibaoRateValue) + "");
-				tgTeam.setTgHuiBao(StringUtil.nvl(teamHuibaoRateStr, "0.00"));
+				if(tgTeam.getTgBaoxian().equals("0")) {
+					teamHuibaoRateStr = "0";
+				}
+				tgTeam.setTgHuiBao(teamHuibaoRateStr);
 				//设置利润
 				String profit = tgController.getRecordProfit(tgTeam);
 				tgTeam.setTgProfit(profit);
