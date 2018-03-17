@@ -717,8 +717,6 @@ public class MyController implements Initializable{
 	    try {
 	    	FXMLLoader loader = new FXMLLoader();
 	    	Parent root = loader.load(getClass().getResource("/com/kendy/dialog/TG_toolsss.fxml").openStream());
-//	    	loader.setController(new TGController());
-	    	//loader.setController(new TGController());
 	    	Tab gdTab = new Tab();
 	    	gdTab.setText("托管工具");
 	    	gdTab.setClosable(false);

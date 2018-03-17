@@ -69,9 +69,10 @@
             </Button>
          </children>
       </HBox>
-      <HBox layoutX="308.0" layoutY="48.0" prefHeight="30.0" prefWidth="909.0">
+      <HBox layoutX="283.0" layoutY="48.0" prefHeight="30.0" prefWidth="968.0">
          <children>
-            <Label prefHeight="30.0" prefWidth="30.0" text="押金">
+            <Button mnemonicParsing="false" onAction="#saveCompanyInfoAction" prefHeight="25.0" prefWidth="112.0" text="保存押金与额度" />
+            <Label prefHeight="30.0" prefWidth="52.0" text="     押金">
                <font>
                   <Font size="13.0" />
                </font>
@@ -80,17 +81,22 @@
                <HBox.margin>
                   <Insets />
                </HBox.margin></TextField>
-            <Label prefHeight="30.0" prefWidth="65.0" text="          额度">
+            <Label prefHeight="30.0" prefWidth="48.0" text="    额度">
                <font>
                   <Font size="13.0" />
                </font>
             </Label>
             <TextField fx:id="tgCompanyEdu" prefHeight="29.0" prefWidth="59.0" />
+            <Label layoutX="642.0" layoutY="49.0" prefHeight="30.0" prefWidth="60.0" text="    已分红 ">
+               <font>
+                  <Font size="13.0" />
+               </font></Label>
+            <TextField fx:id="tgYifenhong" prefHeight="29.0" prefWidth="59.0" />
             <Label layoutX="329.0" layoutY="42.0" prefHeight="30.0" prefWidth="64.0" text="      外债：">
                <font>
                   <Font size="13.0" />
                </font></Label>
-            <Label layoutX="380.0" layoutY="49.0" prefHeight="30.0" prefWidth="82.0" text="0.0" textFill="#9a1d1d">
+            <Label fx:id="totalWaizhai" layoutX="380.0" layoutY="49.0" prefHeight="30.0" prefWidth="92.0" text="0.0" textFill="#9a1d1d">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font></Label>
@@ -98,27 +104,19 @@
                <font>
                   <Font size="13.0" />
                </font></Label>
-            <Label layoutX="533.0" layoutY="49.0" prefHeight="30.0" prefWidth="72.0" text="0.0" textFill="#9a1d1d">
+            <Label fx:id="tgTotalProfit" layoutX="533.0" layoutY="49.0" prefHeight="30.0" prefWidth="81.0" text="0.0" textFill="#9a1d1d">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font></Label>
-            <Label layoutX="642.0" layoutY="49.0" prefHeight="30.0" prefWidth="57.0" text="已分红：">
+            <Label layoutX="824.0" layoutY="57.0" prefHeight="30.0" prefWidth="46.0" text="可分配">
                <font>
                   <Font size="13.0" />
                </font></Label>
-            <Label layoutX="738.0" layoutY="57.0" prefHeight="30.0" prefWidth="77.0" text="0.0" textFill="#9a1d1d">
+            <Label fx:id="tgAvailable" layoutX="899.0" layoutY="64.0" prefHeight="30.0" prefWidth="88.0" text="0.0" textFill="#9a1d1d">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font></Label>
-            <Label layoutX="824.0" layoutY="57.0" prefHeight="30.0" prefWidth="57.0" text="可分配：">
-               <font>
-                  <Font size="13.0" />
-               </font></Label>
-            <Label layoutX="899.0" layoutY="64.0" prefHeight="30.0" prefWidth="72.0" text="0.0" textFill="#9a1d1d">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font></Label>
-            <Button mnemonicParsing="false" onAction="#saveCompanyInfoAction" prefHeight="25.0" prefWidth="135.0" text="保存押金与额度" />
+            <Button mnemonicParsing="false" onAction="#refreshFirstRowAction" prefHeight="25.0" prefWidth="70.0" text="刷新此行" />
          </children>
       </HBox>
       <TabPane fx:id="tabs" layoutX="304.0" layoutY="149.0" prefHeight="664.0" prefWidth="944.0" tabClosingPolicy="UNAVAILABLE">
@@ -264,39 +262,6 @@
                   </AnchorPane>
                </content>
             </Tab>
-          <Tab text="      月利润       ">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="536.0">
-                     <children>
-                        <TableView fx:id="tableTGLirun" layoutY="32.0" prefHeight="593.0" prefWidth="777.0">
-                          <columns>
-                            <TableColumn fx:id="tgLirunDate" prefWidth="102.0" text="日期" />
-                              <TableColumn fx:id="tgLirunCompanyName" prefWidth="83.0" text="托管公司" />
-                            <TableColumn fx:id="tgLirunTotalProfit" prefWidth="78.0" text="总利润" />
-                              <TableColumn fx:id="tgLirunTotalKaixiao" prefWidth="82.0" text="总开销" />
-                              <TableColumn fx:id="tgLirunRestHeji" prefWidth="75.0" text="合计" />
-                              <TableColumn fx:id="tgLirunATMCompany" prefWidth="81.0" text="公司占股" />
-                              <TableColumn fx:id="tgLirunTGCompany" prefWidth="95.0" text="托管公司占股" />
-                              <TableColumn fx:id="tgLirunTeamProfit" prefWidth="83.0" text="团队利润" />
-                              <TableColumn fx:id="tgLirunHeji" prefWidth="83.0" text="托管合计" />
-                          </columns>
-                        </TableView>
-                        <VBox layoutX="794.0" layoutY="32.0" prefHeight="249.0" prefWidth="150.0">
-                           <children>
-                              <Label prefHeight="30.0" prefWidth="107.0" text="合计：" textFill="#cd2753">
-                                 <font>
-                                    <Font size="21.0" />
-                                 </font>
-                              </Label>
-                              <ListView prefHeight="200.0" prefWidth="145.0" />
-                              <AnchorPane prefHeight="18.0" prefWidth="107.0" />
-                           </children>
-                        </VBox>
-                        <Button layoutX="794.0" layoutY="303.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="月底手动清除利润" />
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
             <Tab text="   服务费明细   ">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="536.0">
@@ -334,6 +299,29 @@
                   </AnchorPane>
                </content>
             </Tab>
+          <Tab text="      月利润       ">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="536.0">
+                     <children>
+                        <TableView fx:id="tableTGLirun" layoutY="32.0" prefHeight="593.0" prefWidth="777.0">
+                          <columns>
+                            <TableColumn fx:id="tgLirunDate" prefWidth="102.0" text="日期" />
+                              <TableColumn fx:id="tgLirunCompanyName" prefWidth="83.0" text="托管公司" />
+                            <TableColumn fx:id="tgLirunTotalProfit" prefWidth="78.0" text="总利润" />
+                              <TableColumn fx:id="tgLirunTotalKaixiao" prefWidth="82.0" text="总开销" />
+                              <TableColumn fx:id="tgLirunRestHeji" prefWidth="75.0" text="合计" />
+                              <TableColumn fx:id="tgLirunATMCompany" prefWidth="81.0" text="公司占股" />
+                              <TableColumn fx:id="tgLirunTGCompany" prefWidth="95.0" text="托管公司占股" />
+                              <TableColumn fx:id="tgLirunTeamProfit" prefWidth="83.0" text="团队利润" />
+                              <TableColumn fx:id="tgLirunHeji" prefWidth="83.0" text="托管合计" />
+                          </columns>
+                        </TableView>
+                        <Button layoutX="794.0" layoutY="62.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="月底手动清除利润" />
+                        <Button layoutX="794.0" layoutY="113.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="保存该托管公司的日利润" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
         </tabs>
       </TabPane>
       <HBox layoutX="50.0" layoutY="36.0">

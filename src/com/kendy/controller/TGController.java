@@ -25,6 +25,7 @@ import com.kendy.entity.TGLirunInfo;
 import com.kendy.entity.TGTeamInfo;
 import com.kendy.entity.TGTeamModel;
 import com.kendy.entity.TypeValueInfo;
+import com.kendy.interfaces.Entity;
 import com.kendy.service.TGFwfService;
 import com.kendy.service.TeamProxyService;
 import com.kendy.service.TgWaizhaiService;
@@ -34,12 +35,12 @@ import com.kendy.util.NumUtil;
 import com.kendy.util.ShowUtil;
 import com.kendy.util.StringUtil;
 import com.kendy.util.TableUtil;
+import com.kendy.util.TimeUtil;
 
 import application.Constants;
 import application.DataConstans;
 import application.Main;
 import application.MyController;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -89,6 +90,12 @@ public class TGController implements Initializable{
 	
 	@FXML private TextField tgCompanyYajin; //托管公司押金
 	@FXML private TextField tgCompanyEdu; //托管公司额度
+	
+	@FXML private TextField tgYifenhong; //托管公司已分红
+	@FXML private Label totalWaizhai; // 总外债
+	@FXML private Label tgTotalProfit; // 总利润
+	@FXML private Label tgAvailable; // 总可分配
+	
 	
 	//=====================================================================
 	@FXML private TabPane tabs;
@@ -140,7 +147,6 @@ public class TGController implements Initializable{
 	@FXML private TableColumn<TypeValueInfo,String> tgWZTeamId;
 	@FXML private TableColumn<TypeValueInfo,String> tgWZTeamValue;
 	
-	//=====================================================================外债数据表
 	@FXML private HBox tgWZTeamHBox; // 存储动态的团队外债数据表
 	
 	//=====================================================================托管玩家备注表
@@ -162,7 +168,7 @@ public class TGController implements Initializable{
 	@FXML private TableColumn<TypeValueInfo,String> tgFwfType;
 	@FXML private TableColumn<TypeValueInfo,String> tgFwfValue;
 	
-	//=====================================================================托管服务费总和表
+	//=====================================================================托管利润表表
 	@FXML public TableView<TGLirunInfo>  tableTGLirun;   
 	@FXML private TableColumn<TGLirunInfo,String>  tgLirunDate;
 	@FXML private TableColumn<TGLirunInfo,String>  tgLirunTotalProfit;
@@ -175,9 +181,6 @@ public class TGController implements Initializable{
 	@FXML private TableColumn<TGLirunInfo,String>  tgLirunCompanyName;//托管公司
 	
 	
-	
-	
-
 	private static final String TG_TEAM_RATE_DB_KEY = "tg_team_rate"; //保存到数据库的key
 	
 	/**
@@ -189,7 +192,7 @@ public class TGController implements Initializable{
 		MyController.bindCellValue(tgKaixiaoDate,tgKaixiaoPlayerName,tgKaixiaoPayItem,tgKaixiaoMoney,tgKaixiaoCompany);
 		MyController.bindCellValue(tgCommentDate,tgCommentPlayerId,tgCommentPlayerName,tgCommentType,tgCommentId,tgCommentName,tgCommentBeizhu,tgCommentCompany);
 		MyController.bindCellValue(tgFwfCompany, tgFwfTeamId, tgFwfHuishui, tgFwfHuiBao, tgFwfProfit, tgFwfFanshui, tgFwfFanbao, tgFwfQuanshui, tgFwfQuanbao, tgFwfHeji);
-		MyController.bindCellValue(tgLirunDate, tgLirunTotalProfit, tgLirunTotalKaixiao, tgLirunATMCompany, tgLirunTGCompany, tgLirunTeamProfit, tgLirunRestHeji, tgLirunHeji);
+		MyController.bindCellValue(tgLirunDate, tgLirunTotalProfit, tgLirunTotalKaixiao, tgLirunATMCompany, tgLirunTGCompany, tgLirunTeamProfit, tgLirunRestHeji, tgLirunHeji,tgLirunCompanyName);
 		binCellValueDiff(tgTeamId,"type");
 		binCellValueDiff(tgTeamRate,"value");
 		binCellValueDiff(tgZJSumType,"type");
@@ -199,9 +202,9 @@ public class TGController implements Initializable{
 		binCellValueDiff(tgFwfType,"type");
 		binCellValueDiff(tgFwfValue,"value");
 		MyController.bindCellValue(tgPlayerId,tgPlayerName,tgYSZJ,tgZJ25,tgZJUnknow,tgProfit,tgHuiBao,tgBaoxian,tgChangci);
-		bindColorColumn(tgYSZJ, tgZJ25, tgZJUnknow, tgProfit, tgHuiBao, tgBaoxian);
-		bindColorColumnTGFwfinfo(tgFwfHuishui, tgFwfHuiBao, tgFwfProfit, tgFwfFanshui, tgFwfFanbao, tgFwfQuanshui, tgFwfQuanbao, tgFwfHeji);
-		
+		bindColorColumns(new TGTeamInfo(),tgYSZJ, tgZJ25, tgZJUnknow, tgProfit, tgHuiBao, tgBaoxian);
+		bindColorColumns(new TGFwfinfo(),tgFwfHuishui, tgFwfHuiBao, tgFwfProfit, tgFwfFanshui, tgFwfFanbao, tgFwfQuanshui, tgFwfQuanbao, tgFwfHeji);
+		bindColorColumns(new TGLirunInfo(),tgLirunTotalProfit, tgLirunTotalKaixiao, tgLirunATMCompany, tgLirunTGCompany, tgLirunTeamProfit, tgLirunRestHeji, tgLirunHeji);
 		//tabs切换事件
 		tabsAction();
 		
@@ -223,13 +226,15 @@ public class TGController implements Initializable{
 		}
 	}
 	
-	private  void bindColorColumn(TableColumn<TGTeamInfo, String>... columns) {
-		for(TableColumn<TGTeamInfo, String> column  : columns)
-			column.setCellFactory(MyController.getColorCellFactory(new TGTeamInfo()));
-	}
-	private  void bindColorColumnTGFwfinfo(TableColumn<TGFwfinfo, String>... columns) {
-		for(TableColumn<TGFwfinfo, String> column  : columns)
-			column.setCellFactory(MyController.getColorCellFactory(new TGFwfinfo()));
+	/**
+	 * 通用红色列
+	 * @time 2018年3月17日
+	 * @param entity
+	 * @param columns
+	 */
+	private  void bindColorColumns(Entity entity,TableColumn<? extends Entity, String>... columns) {
+		for(TableColumn column  : columns)
+			column.setCellFactory(MyController.getColorCellFactory(entity));
 	}
 	
 	
@@ -265,6 +270,9 @@ public class TGController implements Initializable{
     	if("服务费明细".equals(selectedTab)) {
     		TGFwfService tgFwfService = new TGFwfService();
     		tgFwfService.setFwfDetail(StringUtil.nvl(currentTGCompanyLabel.getText(),""), tableTGFwf, tableTGFwfSum);
+    	}
+    	if("月利润".equals(selectedTab)) {
+    		refreshProfitTab();
     	}
 	}
 	
@@ -1053,6 +1061,124 @@ public class TGController implements Initializable{
 		
 		DBUtil.saveOrUpdate_tg_company(db_company);
 		ShowUtil.show("保存成功", 2);
+	}
+	
+	/**
+	 * 刷新月利润表
+	 * @time 2018年3月17日
+	 */
+	public void refreshProfitTab() {
+		String tgCompany = currentTGCompanyLabel.getText();
+		if(StringUtil.isBlank(tgCompany)) {
+			ShowUtil.show("请先选择托管公司！");
+//			return;
+		}
+		System.out.println("===========================刷新月利润表");
+		List<TGLirunInfo> list = new ArrayList<>();
+		TGLirunInfo lirun = new TGLirunInfo();
+		
+		//获取数据库的历史日利润表 TODO
+		
+		
+		//获取日期（日期与当前托管公司为主键）
+		String dateString = TimeUtil.getDateString();
+		lirun.setTgLirunDate(dateString);
+		lirun.setTgLirunCompanyName(tgCompany);
+		//获取总利润（即服务费明细中的总利润）
+		ObservableList<TypeValueInfo> fwfList = tableTGFwfSum.getItems();
+		String tgLirunTotalProfit = fwfList.stream().filter(info->"总利润".equals(info.getType())).map(TypeValueInfo::getValue).findFirst().orElse("0");
+		lirun.setTgLirunTotalProfit(tgLirunTotalProfit);
+		//获取总开销
+		List<TGKaixiaoInfo> allTGKaixiaos = DBUtil.get_all_tg_kaixiao();
+		double sumOfKaixiao = allTGKaixiaos.stream()
+			.filter(info->tgCompany.equals(info.getTgKaixiaoCompany()))
+			.map(TGKaixiaoInfo::getTgKaixiaoMoney)
+			.mapToDouble(NumUtil::getNum)
+			.sum();
+		lirun.setTgLirunTotalKaixiao( NumUtil.digit0(sumOfKaixiao + ""));
+		//设置Rest合计
+		lirun.setTgLirunRestHeji(NumUtil.digit2(NumUtil.getSum(tgLirunTotalProfit, sumOfKaixiao+"")));
+		//设置公司占股
+		TGCompanyModel companyModel = DBUtil.get_tg_company_by_id(tgCompany);
+		String companyRate = companyModel.getCompanyRate();
+		companyRate = companyRate.endsWith("%") ? NumUtil.getNumByPercent(companyRate)+"" : NumUtil.getNum(companyRate)/100.0 + "";
+		Double atmCompanyProfit = NumUtil.getNumTimes(lirun.getTgLirunRestHeji(), companyRate);
+		lirun.setTgLirunATMCompany(NumUtil.digit2(atmCompanyProfit+""));
+		
+		//设置托管公司占股
+		String tgCompanyRate = StringUtil.nvl(companyModel.getTgCompanyRate(),"0%");
+		tgCompanyRate = tgCompanyRate.endsWith("%") ? NumUtil.getNumByPercent(tgCompanyRate)+"" : NumUtil.getNum(tgCompanyRate)/100.0 + "";
+		Double tgCompanyProfit = NumUtil.getNumTimes(lirun.getTgLirunRestHeji(), tgCompanyRate);
+		lirun.setTgLirunTGCompany(NumUtil.digit2(tgCompanyProfit+""));
+		
+		//设置团队服务费 TODO
+		Double tgCompanyProxy = 0.0d;
+		lirun.setTgLirunTeamProfit(tgCompanyProxy + "");
+		
+		//设置托管公司合计 = 托管公司占股 + 托管公司代理
+		Double tgCompanyHeji = tgCompanyProfit + tgCompanyProxy;
+		lirun.setTgLirunHeji(NumUtil.digit2(tgCompanyHeji + ""));
+		
+		list.add(lirun);
+		tableTGLirun.setItems(FXCollections.observableArrayList(list));
+		
+	}
+	
+	
+	/*
+	 * 刷新第一行（总外债、总利润、可分配...）
+	 */
+	public void refreshFirstRowAction(ActionEvent event) {
+		//总外债
+		totalWaizhai.setText(getTotalTeamWaizhai());
+		//总利润
+		tgTotalProfit.setText(getTotalTGProfit());
+		//可分配
+		tgAvailable.setText(getTotalAvailable());
+	}
+	
+	/**
+	 * 获取总外债
+	 * @time 2018年3月17日
+	 * @return
+	 */
+	private String getTotalTeamWaizhai() {
+		String totalWaizhai = tgWZTeamValue.getText();
+		try {
+			Double.valueOf(totalWaizhai);
+		} catch (NumberFormatException e) {
+			totalWaizhai = "0";
+		}
+		return totalWaizhai;
+	}
+	
+	/**
+	 * 获取总利润（就是月利润中的总利润）
+	 * @time 2018年3月17日
+	 * @return
+	 */
+	private String getTotalTGProfit() {
+		double sum = tableTGLirun.getItems().stream()
+			.map(TGLirunInfo::getTgLirunHeji)
+			.mapToDouble(NumUtil::getNum)
+			.sum();
+		return sum + "";
+	}
+	
+	/**
+	 * 获取总利润（就是月利润中的总利润）
+	 * @time 2018年3月17日
+	 * @return
+	 */
+	private String getTotalAvailable() {
+		//总外债
+		String zongWaizhai = totalWaizhai.getText();
+		//总利润
+		String zongLirun = tgTotalProfit.getText();
+		//已分红
+		String yiFenhong = StringUtil.nvl(tgYifenhong.getText(),"0");
+		Double availabel = NumUtil.getNum(zongLirun) - NumUtil.getNum(zongWaizhai) -  NumUtil.getNum(yiFenhong);
+		return availabel + "";
 	}
 	
 	
